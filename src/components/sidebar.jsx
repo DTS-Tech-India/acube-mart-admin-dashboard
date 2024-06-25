@@ -83,7 +83,7 @@ const Sidebar = () => {
     return (
         <>
             <div className="w-64 hidden md:flex flex-col items-center h-full fixed inset-y-0 border">
-                <Link href="/" className="flex items-center  w-full p-4 border-b gap-2">
+                <Link href="/" className="flex items-center  w-full p-4 gap-2">
                     <svg id="logo-35" width="50" height="39" viewBox="0 0 50 39" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z" className="ccompli1" fill="#007AFF"></path> <path d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z" className="ccustom" fill="#312ECB"></path> </svg>
                     <h1 className="font-bold">Acube Mart</h1>
                 </Link>
@@ -121,10 +121,9 @@ const Sidebar = () => {
                 </div>
             </div>
             <div className="w-12 md:hidden flex flex-col items-center h-full fixed inset-y-0 border">
-                <div className="w-full p-1 border-b">
-                    <Menu className="w-8 h-8 p-1" />
-                </div>
-                
+                <Link href="/" className="flex items-center  w-full p-2 hover:bg-muted ">
+                    <svg id="logo-35" width="50" height="39" viewBox="0 0 50 39" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z" className="ccompli1" fill="#007AFF"></path> <path d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z" className="ccustom" fill="#312ECB"></path> </svg>
+                </Link>
                 <div className=" w-full h-full p-1 flex flex-col">
                     <div className="mt-2 flex flex-col gap-1">
                         {routes.map((routes) => (
