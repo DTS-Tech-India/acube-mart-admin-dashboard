@@ -12,8 +12,18 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-  
 
+  import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuIndicator,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+    NavigationMenuViewport,
+  } from "@/components/ui/navigation-menu"
+import { Separator } from "@radix-ui/react-dropdown-menu"
 import { 
     ChevronDown, 
     Menu,
@@ -22,31 +32,35 @@ import {
     Mail,
     Calendar 
 } from "lucide-react"
+import { Button } from "./ui/button"
 
 const MainHeader = () => {
     return (
         <div className="w-full h-16 border-b p-4 flex gap-2">
             <div className="flex flex-1 items-center justify-between">
-                <Menu className="w-8 h-8 p-1" />
+                <Button variant="ghost"><Menu className="w-8 h-8 p-1" /></Button>
+                
                 <div className="flex items-center gap-4">
-                    <Search className="w-8 h-8 p-1" />
-                    <Bell className="w-8 h-8 p-1" />
-                    <Mail className="w-8 h-8 p-1" />
-                    <Calendar className="w-8 h-8 p-1" />
+                    <Button variant="ghost"><Search className="w-8 h-8 p-1" /></Button>
+                    <Button variant="ghost"><Calendar className="w-8 h-8 p-1" /></Button>
+                    <Button variant="ghost"><Bell className="w-8 h-8 p-1" /></Button>
+                    <Button variant="ghost"><Mail className="w-8 h-8 p-1" /></Button>
+                    
+                    
                 </div>
             </div>
-            <div className="flex flex-end items-center p-2 ml-auto border-l">
+            <div className="flex flex-end items-center p-4 ml-auto border-l">
                 <DropdownMenu>
-                    <DropdownMenuTrigger className="flex items-center">
-                    <Avatar>
-                        <AvatarImage src="https://picsum.photos/200" />
-                        <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div className="hidden md:flex flex-col p-2 ">
-                        <h2 className="font-semibold text-sm">John Doe</h2>
-                        <p className="text-xs text-muted-foreground">Admin</p>
-                    </div>
-                    <ChevronDown className="w-8 h-8 p-2" />
+                    <DropdownMenuTrigger className="flex items-center p-2 hover:bg-muted gap-2">
+                        <Avatar>
+                            <AvatarImage src="https://picsum.photos/200" />
+                            <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                        <div className="hidden md:flex flex-col items-start ">
+                            <h2 className="font-semibold text-sm">John Doe</h2>
+                            <p className="text-xs text-muted-foreground">Admin</p>
+                        </div>
+                        <ChevronDown className="w-8 h-8 p-2" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -56,6 +70,31 @@ const MainHeader = () => {
                         <DropdownMenuItem>Logout</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
+                {/* <NavigationMenu>
+                    <NavigationMenuList>
+                        <NavigationMenuItem>
+                            <NavigationMenuTrigger  className="flex items-center p-2 gap-2">
+                                <Avatar>
+                                    <AvatarImage src="https://picsum.photos/200" />
+                                    <AvatarFallback>CN</AvatarFallback>
+                                </Avatar>
+                                <div className="hidden md:flex flex-col items-start ">
+                                    <h2 className="font-semibold text-sm">John Doe</h2>
+                                    <p className="text-xs text-muted-foreground">Admin</p>
+                                </div>
+                            </NavigationMenuTrigger>
+                            <NavigationMenuContent>
+
+                                <NavigationMenuLink href="/">profile</NavigationMenuLink>
+                                <Separator />
+                                <NavigationMenuLink>Settings</NavigationMenuLink>
+                                <Separator />
+                                <NavigationMenuLink>Logout</NavigationMenuLink>
+                                <Separator />
+                            </NavigationMenuContent>
+                        </NavigationMenuItem>
+                    </NavigationMenuList>
+                </NavigationMenu> */}
             </div>
         </div>
     )
