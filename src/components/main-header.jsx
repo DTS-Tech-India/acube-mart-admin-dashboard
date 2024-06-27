@@ -40,7 +40,7 @@ const MainHeader = () => {
             <div className="flex flex-1 items-center justify-between">
                 <Button variant="ghost"><Menu className="w-8 h-8 p-1" /></Button>
                 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
                     <Button variant="ghost"><Search className="w-8 h-8 p-1" /></Button>
                     <Button variant="ghost"><Calendar className="w-8 h-8 p-1" /></Button>
                     <Button variant="ghost"><Bell className="w-8 h-8 p-1" /></Button>

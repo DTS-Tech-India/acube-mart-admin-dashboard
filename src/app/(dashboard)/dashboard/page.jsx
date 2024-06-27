@@ -28,7 +28,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils";
 
-export default function Home() {
+export default function Dashboard() {
 
   const quickCards = [
     {
@@ -69,9 +69,9 @@ export default function Home() {
 
 
   return (
-    <main className="w-full h-full min-h-screen flex flex-col items-center">
+    <main className="w-full h-full min-h-screen flex flex-col items-center gap-4">
       {/* Header Menu */}
-      <header className="flex flex-wrap items-center justify-between  w-full my-4">
+      <header className="flex flex-wrap items-center justify-between  w-full">
         <Tabs defaultValue="all time" className="w-[400px]">
           <TabsList>
             <TabsTrigger value="all time">All Time</TabsTrigger>
@@ -86,13 +86,13 @@ export default function Home() {
           <TabsContent value="7 days">7 Days Data.</TabsContent>
           <TabsContent value="24 hours">24 Hours Data.</TabsContent> */}
         </Tabs>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <DatePickerWithRange />
           <Button className="bg-indigo-500">+ Add Products</Button>
         </div>
       </header>
       {/* Quick Details Cards */}
-      <div className="w-full flex flex-wrap justify-between gap-4 my-4">
+      <div className="w-full flex flex-wrap justify-between gap-4">
       {quickCards.map((card) => (
         <Card key={card.title} className="aspect-[16/9] w-full max-w-64">
           <CardHeader>

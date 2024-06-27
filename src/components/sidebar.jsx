@@ -33,33 +33,33 @@ const Sidebar = () => {
         {
             label: "Dashboard",
             icon: LayoutDashboard,
-            href: "/",
+            href: "/dashboard",
         },
         {
             label: "Products",
             icon: ShoppingBag,
-            href: "/products",
+            href: "/dashboard/products",
         },
         {
             label: "Orders",
             icon: ShoppingCart,
-            href: "/orders",
+            href: "/dashboard/orders",
         },
         {
             label: "Customers",
             icon: Users,
-            href: "/customers",
+            href: "/dashboard/customers",
         },
         
         {
             label: "Analytics",
             icon: LineChart,
-            href: "/analytics", 
+            href: "/dashboard/analytics", 
         },
         {
             label: "Coupons",
             icon: Star,
-            href: "/coupons",
+            href: "/dashboard/coupons",
         }
     ]
 
