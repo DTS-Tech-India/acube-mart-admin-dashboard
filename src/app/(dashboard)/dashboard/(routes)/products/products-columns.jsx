@@ -52,7 +52,7 @@ export const columns = [
             return (
                 <div className={cn(
                     "font-medium p-0.5 flex items-center justify-center rounded-full",
-                     status === "active" ? "text-green-600 bg-green-100" : "text-gray-600 bg-gray-100"
+                     status === "Available" ? "text-green-600 bg-green-100" : "text-gray-600 bg-gray-100"
                      )}>
                     {status}
                 </div>
@@ -75,9 +75,9 @@ export const columns = [
           cell: ({ row }) => {
             const date = row.getValue("date");
             return (
-                <>
+                <div suppressHydrationWarning>
                     {new Date(date).toLocaleDateString()}
-                </>
+                </div>
             )
         }
     },

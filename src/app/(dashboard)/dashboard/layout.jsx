@@ -7,7 +7,7 @@ export default function DashboardLayout({ children }) {
             <Sidebar />
             <div className="ml-12 md:ml-64 w-full h-full flex flex-col items-center">
                 <MainHeader />
-                <div className="w-full h-full p-4 bg-indigo-50 overflow-auto">
+                <div className="w-full h-full min-h-screen p-4 bg-indigo-50 overflow-auto">
                    {children}   
                 </div>
                 
