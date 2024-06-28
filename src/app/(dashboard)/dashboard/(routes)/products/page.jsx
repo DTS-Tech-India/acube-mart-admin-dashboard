@@ -1,4 +1,5 @@
 "use client"
+
 import { useQuery } from "@tanstack/react-query";
 
 import Link from "next/link"
@@ -12,14 +13,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { SlidersHorizontal, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { DatePickerWithRange } from "@/components/date-range-picker";
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./products-columns";
-import { useEffect } from "react";
+
 import ProductsList from "./get-products";
+import { useMemo } from "react";
+
 export default function Products() {
     const router = useRouter()
     const { data, isLoading, isError } = useQuery({
@@ -27,9 +28,31 @@ export default function Products() {
         queryFn: async() => await ProductsList(),
     });
 
+    const modifiedData = useMemo(() => {
+        console.log(Array.isArray(data.data))
+        const sortedData = data?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        //console.log(sortedData);
+        return sortedData?.map((product) => {
+          return {
+            id: product._id,
+            //slug: product.slug,
+            name: product.name,
+            category: product.category.name,
+            stock: product.stock,
+            price: product.price,
+            date: product.createdAt,
+            status: product.status,
+            
+          }
+        })
+      }, [data])
+
     if (isLoading) return "Loading...";
     if (isError) return "An error has occurred while fetching products.";
-    console.log(data)
+
+   /*  console.log(data)
+    console.log(modifiedData) */
+
     const products = [
         {
             id: 1,
@@ -147,9 +170,7 @@ export default function Products() {
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                          
                                 <Link href="/dashboard">Dashboard</Link>
-                            
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
@@ -164,10 +185,14 @@ export default function Products() {
                     <Button onClick={() => {router.push("/dashboard/products/add-products")}}>Add Products</Button> 
                 </div>
             </header>
-            <DataTable
+            {/* <DataTable
                 data={products}
                 columns={columns}
-            />  
+            />  */} 
+            <DataTable
+                data={modifiedData}
+                columns={columns}
+            /> 
         </div>
     );
 }
