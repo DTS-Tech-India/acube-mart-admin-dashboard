@@ -51,8 +51,11 @@ export const columns = [
             const status = row.getValue("status");
             return (
                 <div className={cn(
-                    "font-medium p-0.5 flex items-center justify-center rounded-full",
-                     status === "Available" ? "text-green-600 bg-green-100" : "text-gray-600 bg-gray-100"
+                    "font-medium p-1 px-3 flex items-center justify-center rounded-full",
+                     status === "published" && "text-green-600 bg-green-100",
+                     status === "draft" &&  "text-gray-600 bg-gray-100",
+                     status === "out of stock" && "text-red-600 bg-red-100",
+                     status === "low stock" && "text-yellow-600 bg-yellow-100",
                      )}>
                     {status}
                 </div>
@@ -88,9 +91,9 @@ export const columns = [
             const user = row.original;
             return (
               <div className="flex gap-0.5">
-                <Button variant="ghost" className="p-1"><Eye className="w-6 h-6 p-1" /></Button>
-                <Button variant="ghost" className="p-1"><Pen className="w-6 h-6 p-1" /></Button>
-                <Button variant="ghost" className="p-1"><Trash2 className="w-6 h-6 p-1" /></Button>
+                <Button variant="ghost" className="p-1 hover:text-green-500"><Eye className="w-6 h-6 p-0.5" /></Button>
+                <Button variant="ghost" className="p-1 hover:text-indigo-500"><Pen className="w-6 h-6 p-0.5" /></Button>
+                <Button variant="ghost" className="p-1 hover:text-red-500"><Trash2 className="w-6 h-6 p-0.5" /></Button>
               </div>
             )
         }
