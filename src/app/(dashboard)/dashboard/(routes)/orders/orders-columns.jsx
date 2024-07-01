@@ -30,38 +30,12 @@ export const columns = [
           }
     },
     {
-        accessorKey: "name",
-        header: "Name",
+        accessorKey: "orderId",
+        header: "Order ID",
     },
     {
-        accessorKey: "category",
-        header: "Category",
-    },
-    {
-        accessorKey: "stock",
-        header: "Stock",
-    },
-    {
-        accessorKey: "price",
-        header: "Price",
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => {
-            const status = row.getValue("status");
-            return (
-                <div className={cn(
-                    "font-medium p-1 px-3 flex items-center justify-center rounded-full",
-                     status === "published" && "text-green-600 bg-green-100",
-                     status === "draft" &&  "text-gray-600 bg-gray-100",
-                     status === "out of stock" && "text-red-600 bg-red-100",
-                     status === "low stock" && "text-yellow-600 bg-yellow-100",
-                     )}>
-                    {status}
-                </div>
-            )
-        }
+        accessorKey: "product",
+        header: "Product",
     },
     {
         accessorKey: "date",
@@ -86,6 +60,39 @@ export const columns = [
         }
     },
     {
+        accessorKey: "customer",
+        header: "Customer",
+    },
+    {
+        accessorKey: "total",
+        header: "Total",
+    },
+    {
+        accessorKey: "payment",
+        header: "Payment",
+    },
+    {
+        accessorKey: "status",
+        header: "Status",
+        cell: ({ row }) => {
+            const status = row.getValue("status");
+            return (
+                <div className={cn(
+                    "font-medium p-1 px-3 flex items-center justify-center rounded-full",
+                     status === "delivered" && "text-green-600 bg-green-100",
+                     status === "placed" &&  "text-indigo-600 bg-indigo-100",
+                     status === "shipped" && "text-sky-600 bg-sky-100",
+                     status === "pending" &&  "text-gray-600 bg-gray-100",
+                     status === "cancelled" && "text-red-600 bg-red-100",
+                     status === "processing" && "text-yellow-600 bg-yellow-100",
+                     )}>
+                    {status}
+                </div>
+            )
+        }
+    },
+    
+    {
         accessorKey: "action",
         header: "Action",
         cell: ({ row }) => {
@@ -100,18 +107,12 @@ export const columns = [
                         <Eye className="w-6 h-6 p-0.5" />
                 </Link>
                 <Link 
-                    href={`/dashboard/products/edit-product`} 
+                    href={`#`} 
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
                 >
                     <Pen className="w-6 h-6 p-0.5" />
                 </Link>
-                <Link 
-                    href={`#`}
-                    variant="ghost" 
-                    className="p-2 hover:text-red-500 hover:bg-muted rounded-md"
-                    >
-                        <Trash2 className="w-6 h-6 p-0.5" />
-                </Link>
+                
               </div>
             )
         }

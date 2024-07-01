@@ -26,7 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-export default function AddProducts() {
+export default function EditProduct() {
     return (
         <div className="w-full h-full flex flex-col gap-4">
             <h1 className="text-2xl font-semi">Add Products</h1>
@@ -43,7 +43,7 @@ export default function AddProducts() {
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
                             <BreadcrumbPage>
-                                Add Products
+                                Add Product
                             </BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
@@ -226,6 +226,42 @@ export default function AddProducts() {
                                 <div className="w-full">
                                     <Label htmlFor="description">Attribute value</Label>
                                     <Input id="name" placeholder="Attribute value" />
+                                </div>
+                                <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Varients
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                        <div className="flex  gap-4">
+                               <div className="w-full">
+                                    <Label htmlFor="name">Varient name</Label>
+                                    <Input id="name" placeholder="Varient name" />
+                                </div>
+                                <Button className="w-full mt-auto">+ Add Varient</Button>
+                            </div>
+                            <div className="flex gap-4">
+                               <div className="w-full">
+                                    <Label htmlFor="name">Varient name</Label>
+                                    <Input id="name" placeholder="Varient name" />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Varient value</Label>
+                                    <Input id="name" placeholder="Varient value" />
+                                </div>
+                                <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
+                            </div>
+                            <div className="flex gap-4">
+                               <div className="w-full">
+                                    <Label htmlFor="name">Varient name</Label>
+                                    <Input id="name" placeholder="Varient name" />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Varient value</Label>
+                                    <Input id="name" placeholder="Varient value" />
                                 </div>
                                 <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
                             </div>
