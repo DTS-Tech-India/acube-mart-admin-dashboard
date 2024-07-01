@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 export default function AddProducts() {
     return (
         <div className="w-full h-full flex flex-col gap-4">
@@ -85,7 +86,102 @@ export default function AddProducts() {
                             </button>
                         </CardContent>
                     </Card>
-                   
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Pricing
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                            <div>
+                                <Label htmlFor="name">Base Price</Label>
+                                <Input id="name" placeholder="Type product base price here..." />
+                            </div>
+                            <div className="flex gap-4 w-full">
+                                <div className="w-full">
+                                    <Label htmlFor="description">Discount Type</Label>
+                                    <Select>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="draft">Draft</SelectItem>
+                                            <SelectItem value="published">Published</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Discount Percentage (%)</Label>
+                                    <Input id="name" placeholder="Type product base price..." />
+                                </div>
+                            </div>
+                            <div className="w-full flex gap-4">
+                                <div className="w-full">
+                                    <Label htmlFor="description">Tax Class</Label>
+                                    <Select>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="draft">Draft</SelectItem>
+                                            <SelectItem value="published">Published</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">VAT Amount (%)</Label>
+                                    <Input id="name" placeholder="Type VAT amount..." />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Inventory
+                        </CardHeader>
+                        <CardContent className="flex gap-4">
+                            <div className="w-full">
+                                <Label htmlFor="name">SKU</Label>
+                                <Input id="name" placeholder="Type product SKU here..." />
+                            </div>
+                            <div className="w-full">
+                                <Label htmlFor="description">Barcode</Label>
+                                <Input id="name" placeholder="Type product Barcode here..." />
+                            </div>
+                            <div className="w-full">
+                                <Label htmlFor="description">Quantity</Label>
+                                <Input id="name" placeholder="Type product Quantity here..." />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Shiping
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                            <div className="flex gap-2">
+                                <Checkbox />
+                                <Label htmlFor="name">This is a physical product</Label>
+                            </div>
+                            <div className="flex gap-4">
+                               <div className="w-full">
+                                    <Label htmlFor="name">Weight</Label>
+                                    <Input id="name" placeholder="weight(kg)" />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Height</Label>
+                                    <Input id="name" placeholder="height(cm)" />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Length</Label>
+                                    <Input id="name" placeholder="length(cm)" />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Width</Label>
+                                    <Input id="name" placeholder="width(cm)" />
+                                </div> 
+                            </div>
+                            
+                        </CardContent>
+                    </Card>
                 </div>
                 <div className="w-full h-full max-w-xs flex flex-col gap-4">
                     <Card className="w-full h-full">
