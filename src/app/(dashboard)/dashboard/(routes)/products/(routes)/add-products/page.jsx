@@ -79,11 +79,24 @@ export default function AddProducts() {
                                 <Label htmlFor="images">Gallery</Label>
                                 <Input id="images" type="file" multiple placeholder="Type product name here..." />
                             </div>
-                            <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
-                                <span className="p-4 rounded-full hover:bg-muted">
-                                    <Upload className="h-4 w-4 text-muted-foreground" />
-                                </span>
-                            </button>
+                            <div className="flex gap-4">
+                                <button className="flex aspect-square w-full max-w-64 items-center justify-center rounded-md border border-dashed">
+                                    <span className="p-4 rounded-full hover:bg-muted">
+                                        <Upload className="h-4 w-4 text-muted-foreground" />
+                                    </span>
+                                </button>
+                                <button className="flex aspect-square w-full max-w-64 items-center justify-center rounded-md border border-dashed">
+                                    <span className="p-4 rounded-full hover:bg-muted">
+                                        <Upload className="h-4 w-4 text-muted-foreground" />
+                                    </span>
+                                </button>
+                                <button className="flex aspect-square w-full max-w-64 items-center justify-center rounded-md border border-dashed">
+                                    <span className="p-4 rounded-full hover:bg-muted">
+                                        <Upload className="h-4 w-4 text-muted-foreground" />
+                                    </span>
+                                </button>
+                            </div>
+                            
                         </CardContent>
                     </Card>
                     <Card className="w-full h-full">
@@ -182,12 +195,48 @@ export default function AddProducts() {
                             
                         </CardContent>
                     </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Attributes
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                        <div className="flex  gap-4">
+                               <div className="w-full">
+                                    <Label htmlFor="name">Attribute name</Label>
+                                    <Input id="name" placeholder="Attribute name" />
+                                </div>
+                                <Button className="w-full mt-auto">+ Add attribute</Button>
+                            </div>
+                            <div className="flex gap-4">
+                               <div className="w-full">
+                                    <Label htmlFor="name">Attribute name</Label>
+                                    <Input id="name" placeholder="Attribute name" />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Attribute value</Label>
+                                    <Input id="name" placeholder="Attribute value" />
+                                </div>
+                                <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
+                            </div>
+                            <div className="flex gap-4">
+                               <div className="w-full">
+                                    <Label htmlFor="name">Attribute name</Label>
+                                    <Input id="name" placeholder="Attribute name" />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Attribute value</Label>
+                                    <Input id="name" placeholder="Attribute value" />
+                                </div>
+                                <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
                 <div className="w-full h-full max-w-xs flex flex-col gap-4">
                     <Card className="w-full h-full">
                         <CardHeader className=" flex flex-row items-center justify-between">
-                            <span className="text-semibold">Status</span>
-                            <span className="p-1 px-3 rounded-full bg-slate-200 text-base">Draft</span>
+                            <span className="font-bold">Status</span>
+                            <span className="p-1 px-3 rounded-full bg-slate-200 text-xs">Draft</span>
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                             <div>
@@ -278,6 +327,16 @@ export default function AddProducts() {
                             </div>
                         </CardContent>
                     </Card>
+                </div>
+            </div>
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm">
+                    <h2>Product Completion</h2>
+                    <p className="px-4 p-1 bg-green-50 text-green-500 rounded-full">0%</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Button variant="outline"><X className="w-8 h-8 p-2" /> cancel</Button>
+                    <Button onClick={() => {}}>Add Product</Button> 
                 </div>
             </div>
         </div>
