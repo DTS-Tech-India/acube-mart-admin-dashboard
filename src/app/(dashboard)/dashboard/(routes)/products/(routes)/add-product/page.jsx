@@ -271,7 +271,7 @@ export default function AddProduct() {
                 <div className="w-full h-full max-w-xs flex flex-col gap-4">
                     <Card className="w-full h-full">
                         <CardHeader className=" flex flex-row items-center justify-between">
-                            <span className="font-bold">Status</span>
+                            <span className="font-semibold">Status</span>
                             <span className="p-1 px-3 rounded-full bg-slate-200 text-xs">Draft</span>
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">

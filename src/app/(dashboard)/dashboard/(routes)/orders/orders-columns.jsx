@@ -32,6 +32,17 @@ export const columns = [
     {
         accessorKey: "orderId",
         header: "Order ID",
+        cell: ({ row }) => {
+            const orderId = row.getValue("orderId");
+            return (
+                <Link 
+                    className="text-blue-600 hover:underline" 
+                    href={`/orders/${orderId}`}
+                >
+                    #{orderId}
+                </Link>
+            )
+        }
     },
     {
         accessorKey: "product",
@@ -100,7 +111,7 @@ export const columns = [
             return (
               <div className="flex gap-0.5">
                 <Link 
-                    href={`#`} 
+                    href={`/dashboard/orders/order-details`} 
                     variant="ghost" 
                     className="p-2 hover:text-green-500 hover:bg-muted rounded-md"
                     >

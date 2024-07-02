@@ -62,7 +62,7 @@ export function DataTable({
     <>
         <div className="flex items-center justify-between">
                 <Input 
-                    placeholder="Search products..." 
+                    placeholder="Search..." 
                     className="w-1/4" 
                     type="text" 
                     value={globalFilter ?? ''}
