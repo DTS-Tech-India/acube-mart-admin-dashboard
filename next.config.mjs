@@ -7,6 +7,11 @@ const nextConfig = {
                 hostname: "picsum.photos",
                 port: "",
             },
+            {
+                protocol: "https",
+                hostname: "res.cloudinary.com",
+                port: "",
+            },
         ]
     }
 };

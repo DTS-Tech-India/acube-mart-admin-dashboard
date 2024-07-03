@@ -119,9 +119,10 @@ export default function AddProduct() {
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="processing">Processing</SelectItem>
                             <SelectItem value="pending">Pending</SelectItem>
                             <SelectItem value="placed">Placed</SelectItem>
+                            <SelectItem value="processing">Processing</SelectItem>
+                            <SelectItem value="dispatched">Dispatched</SelectItem>
                             <SelectItem value="shipped">Shipped</SelectItem>
                             <SelectItem value="delivered">Delivered</SelectItem>
                             <SelectItem value="cancelled">Cancelled</SelectItem>
@@ -140,8 +141,9 @@ export default function AddProduct() {
                                     className={cn(
                                         " px-4 py-1 text-sm rounded-full",
                                         status === "processing" && "bg-orange-100 text-orange-600",
-                                        status === "pending" && "bg-yellow-100 text-yellow-600",
+                                        status === "pending" && "bg-gray-100 text-gray-600",
                                         status === "placed" && "bg-sky-100 text-sky-600",
+                                        status === "dispatched" && "bg-yellow-100 text-yellow-600",
                                         status === "shipped" && "bg-purple-100 text-purple-600",
                                         status === "delivered" && "bg-green-100 text-green-600",
                                         status === "cancelled" && "bg-red-100 text-red-600",
@@ -265,7 +267,7 @@ export default function AddProduct() {
                         <Card className="w-full">
                             <CardHeader className="flex flex-row items-center justify-between">
                                 <h2 className=" font-semibold">Order List</h2>
-                                
+                                <p className="px-4 py-1 text-sm rounded-full text-green-600 bg-green-100">{orderList.length} Products</p>
                             </CardHeader>
                             <CardContent className="">
                                 <Table>

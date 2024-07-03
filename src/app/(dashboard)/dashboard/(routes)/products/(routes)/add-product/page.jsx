@@ -1,6 +1,8 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button"; 
 import {
@@ -23,10 +25,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
-import { useState } from "react";
+
 import { Checkbox } from "@/components/ui/checkbox";
 export default function AddProduct() {
+    const [productData, setProductData] = useState({
+        name: "",
+        category: "",
+        description: "",
+        stock: "",
+        price: "",
+        image: "",
+        status: "",
+        type: "",
+        category: "",
+        element: "",
+        brand: "",
+        model: "",
+    });
+    const handleChange = (e) => {
+        setProductData({ ...productData, [e.target.name]: e.target.value });
+        console.log(productData);
+    }
     return (
         <div className="w-full h-full flex flex-col gap-4">
             <h1 className="text-2xl font-semi">Add Products</h1>
@@ -62,11 +81,11 @@ export default function AddProduct() {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="name">Name</Label>
-                                <Input id="name" placeholder="Type product name here..." />
+                                <Input name="name" onChange={handleChange} placeholder="Type product name here..." />
                             </div>
                             <div>
                                 <Label htmlFor="description">Description</Label>
-                                <Textarea id="description" placeholder="Type product description here..." />
+                                <Textarea name="description" onChange={handleChange} placeholder="Type product description here..." />
                             </div>
                         </CardContent>
                     </Card>
@@ -77,7 +96,7 @@ export default function AddProduct() {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="images">Gallery</Label>
-                                <Input id="images" type="file" multiple placeholder="Type product name here..." />
+                                <Input name="images" type="file" multiple placeholder="Type product name here..." />
                             </div>
                             <div className="flex gap-4">
                                 <button className="flex aspect-square w-full max-w-64 items-center justify-center rounded-md border border-dashed">
@@ -105,8 +124,8 @@ export default function AddProduct() {
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                             <div>
-                                <Label htmlFor="name">Base Price</Label>
-                                <Input id="name" placeholder="Type product base price here..." />
+                                <Label htmlFor="price">Base Price</Label>
+                                <Input name="price" onChange={handleChange} placeholder="Type product base price here..." />
                             </div>
                             <div className="flex gap-4 w-full">
                                 <div className="w-full">

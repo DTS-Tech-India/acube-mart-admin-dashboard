@@ -37,6 +37,7 @@ export default function Products() {
             id: product._id,
             slug: product.slug,
             name: product.name,
+            image: product.image[0]?.url,
             category: product.category.name,
             stock: product.stock,
             price: product.price,
@@ -54,7 +55,7 @@ export default function Products() {
     );
     if (isError) return "An error has occurred while fetching products.";
 
-   /*  console.log(data)
+    /* console.log(data)
     console.log(modifiedData) */
 
     return (

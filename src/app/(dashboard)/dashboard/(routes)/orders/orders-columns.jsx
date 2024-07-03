@@ -95,7 +95,7 @@ export const columns = [
                      status === "shipped" && "text-sky-600 bg-sky-100",
                      status === "pending" &&  "text-gray-600 bg-gray-100",
                      status === "cancelled" && "text-red-600 bg-red-100",
-                     status === "processing" && "text-yellow-600 bg-yellow-100",
+                     status === "processing" && "text-orange-600 bg-orange-100",
                      )}>
                     {status}
                 </div>
