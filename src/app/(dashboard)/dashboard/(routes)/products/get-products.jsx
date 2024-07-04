@@ -1,5 +1,5 @@
 async function getProducts() {
-    const res = await fetch("https://acubemart-backend.vercel.app/api/product/all");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/all`);
     if (!res.ok) {
         throw new Error("Failed to fetch products");
     }

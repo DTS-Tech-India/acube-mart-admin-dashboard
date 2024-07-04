@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image";
 import { useState } from "react";
-
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button"; 
 import {
   Breadcrumb,
@@ -27,7 +27,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import { Checkbox } from "@/components/ui/checkbox";
+import getApiData from "../get-api-data";
 export default function AddProduct() {
+    
     const [productData, setProductData] = useState({
         name: "",
         category: "",
@@ -42,10 +44,20 @@ export default function AddProduct() {
         brand: "",
         model: "",
     });
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["apiData"],
+        queryFn: async() => await getApiData(),
+    });
+
+    if (isLoading) return "Loading...";
+    if (isError) return "An error has occurred.";
+    console.log(data);
     const handleChange = (e) => {
         setProductData({ ...productData, [e.target.name]: e.target.value });
         console.log(productData);
     }
+    
     return (
         <div className="w-full h-full flex flex-col gap-4">
             <h1 className="text-2xl font-semi">Add Products</h1>
