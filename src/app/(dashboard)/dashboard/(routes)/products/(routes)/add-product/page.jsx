@@ -36,7 +36,7 @@ export default function AddProduct() {
         description: "",
         stock: "",
         price: "",
-        image: "",
+        images: [],
         status: "",
         type: "",
         category: "",
@@ -52,10 +52,87 @@ export default function AddProduct() {
 
     if (isLoading) return "Loading...";
     if (isError) return "An error has occurred.";
-    console.log(data);
+    //console.log(data);
+
     const handleChange = (e) => {
         setProductData({ ...productData, [e.target.name]: e.target.value });
+        //console.log(productData);
+    }
+
+    const handleImagesChange = (e) => {
+        setProductData({ ...productData, images: e.target.files });
+        //console.log(productData);
+    }
+
+    const handleTypeChange = (value) => {
+        setProductData({ ...productData, type: value });
+        //console.log(value);
+    }
+
+    const handleStatusChange = (value) => {
+        setProductData({ ...productData, status: value });
+        //console.log(value);
+    }
+
+    const handleCategoryChange = (value) => {
+        setProductData({ ...productData, category: value });
+        //console.log(value);
+    }
+
+    const handleElementChange = (value) => {
+        setProductData({ ...productData, element: value });
+        //console.log(value);
+    }
+
+    const handleBrandChange = (value) => {
+        setProductData({ ...productData, brand: value });
+        //console.log(value);
+    }
+
+    const handleModelChange = (value) => {
+        setProductData({ ...productData, model: value });
+        //console.log(value);
+    }
+
+    const handleAddProduct = () => {
         console.log(productData);
+
+        // Add product to database
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/add`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(productData),
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            
+            console.log(data);
+            if (data.success) {
+                const resParsed = JSON.parse(data.data);
+                const imageData = new FormData();
+                productData.images.forEach((image) => {
+                    imageData.append("images", image);
+                })
+                imageData.append("productId", resParsed._id);
+                console.log(imageData);
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add/multiple`, {
+                    method: "POST",
+                    body: imageData,
+                })
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     }
     
     return (
@@ -108,7 +185,7 @@ export default function AddProduct() {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="images">Gallery</Label>
-                                <Input name="images" type="file" multiple placeholder="Type product name here..." />
+                                <Input name="images" type="file" multiple onChange={handleImagesChange} placeholder="Type product name here..." />
                             </div>
                             <div className="flex gap-4">
                                 <button className="flex aspect-square w-full max-w-64 items-center justify-center rounded-md border border-dashed">
@@ -137,7 +214,7 @@ export default function AddProduct() {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="price">Base Price</Label>
-                                <Input name="price" onChange={handleChange} placeholder="Type product base price here..." />
+                                <Input name="price" onChange={handleChange} type="number" min={0} placeholder="Type product base price here..." />
                             </div>
                             <div className="flex gap-4 w-full">
                                 <div className="w-full">
@@ -192,7 +269,7 @@ export default function AddProduct() {
                             </div>
                             <div className="w-full">
                                 <Label htmlFor="description">Quantity</Label>
-                                <Input id="name" placeholder="Type product Quantity here..." />
+                                <Input name="stock" onChange={handleChange} type="number" min={1} placeholder="Type product Quantity here..." />
                             </div>
                         </CardContent>
                     </Card>
@@ -308,7 +385,7 @@ export default function AddProduct() {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Product Status</Label>
-                                <Select>
+                                <Select onValueChange={(value) => handleStatusChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select status" />
                                     </SelectTrigger>
@@ -327,37 +404,40 @@ export default function AddProduct() {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Type</Label>
-                                <Select>
+                                <Select onValueChange={(value) => handleTypeChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select type" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="draft">Car</SelectItem>
-                                        <SelectItem value="published">Bike</SelectItem>
+                                        {data.types.map((type) => (
+                                            <SelectItem key={type._id} value={type._id}>{type.name}</SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div>
                                 <Label htmlFor="status">Category</Label>
-                                <Select>
+                                <Select onValueChange={(value) => handleCategoryChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a category" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="draft">Interior</SelectItem>
-                                        <SelectItem value="published">Exterior</SelectItem>
+                                        {data.categories.map((category) => (
+                                            <SelectItem key={category._id} value={category._id}>{category.name}</SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div>
                                 <Label htmlFor="status">Element</Label>
-                                <Select>
+                                <Select onValueChange={(value) => handleElementChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select an element" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="draft">Handle Bars</SelectItem>
-                                        <SelectItem value="published">Seat cover</SelectItem>
+                                        {data.elements.map((element) => (
+                                            <SelectItem key={element._id} value={element._id}>{element.name}</SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -370,25 +450,27 @@ export default function AddProduct() {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="price">Brand</Label>
-                                <Select>
+                                <Select onValueChange={(value) => handleBrandChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a brand" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="draft">Handle Bars</SelectItem>
-                                        <SelectItem value="published">Seat cover</SelectItem>
+                                        {data.brands.map((brand) => (
+                                            <SelectItem key={brand._id} value={brand._id}>{brand.name}</SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div>
                                 <Label htmlFor="price">Model</Label>
-                                <Select>
+                                <Select onValueChange={(value) => handleModelChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a model" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="draft">Handle Bars</SelectItem>
-                                        <SelectItem value="published">Seat cover</SelectItem>
+                                        {data.models.map((model) => (
+                                            <SelectItem key={model._id} value={model._id}>{model.name}</SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -403,7 +485,7 @@ export default function AddProduct() {
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline"><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button onClick={() => {}}>Add Product</Button> 
+                    <Button onClick={handleAddProduct}>Add Product</Button> 
                 </div>
             </div>
         </div>
