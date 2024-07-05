@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button"; 
+import { toast } from "sonner"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -95,10 +96,8 @@ export default function AddProduct() {
     }
 
     const handleAddProduct = () => {
-        console.log(productData);
-
         // Add product to database
-        fetch(`http://localhost:8000/api/product/add`, {
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/add`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -111,8 +110,7 @@ export default function AddProduct() {
             console.log(data);
             if (data.success) {
                 // send multipart formdata for images upload with productId
-
-                // Add images to database
+                toast.success(data.message);
                 const formData = new FormData();
                 for (let i = 0; i < productData.images.length; i++) {
                     formData.append("images", productData.images[i], productData.images[i].name);
@@ -120,21 +118,24 @@ export default function AddProduct() {
                 formData.append("productId", data.data._id)
                 //console.log(formData);
 
-                fetch(`http://localhost:8000/api/image/add/multiple`, {
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add/multiple`, {
                     method: "POST",
                     body: formData,
                 })
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data);
+                    //console.log(data);
+                    toast.success(data.message);
                 })
                 .catch((err) => {
-                    console.log(err);
+                    //console.log(err);
+                    toast.error(err.message);
                 });
             }
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
+            toast.error(err.message);
         });
     }
     
