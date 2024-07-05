@@ -45,7 +45,19 @@ export default function AddProduct() {
         brand: "",
         model: "",
     });
-
+    const [attributeUi, setAttributeUi] = useState(
+        <div className="flex gap-4">
+            <div className="w-full">
+                <Label htmlFor="name">Attribute name</Label>
+                <Input id="name" placeholder="Attribute name" />
+            </div>
+            <div className="w-full">
+                <Label htmlFor="description">Attribute value</Label>
+                <Input id="name" placeholder="Attribute value" />
+            </div>
+            <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
+        </div>
+    );
     const { data, isLoading, isError } = useQuery({
         queryKey: ["apiData"],
         queryFn: async() => await getApiData(),
@@ -137,6 +149,24 @@ export default function AddProduct() {
             //console.log(err);
             toast.error(err.message);
         });
+    }
+
+    const addNewAttribute = () => {
+        // add new attribute field
+        const attributeUi = (
+            <div className="flex gap-4">
+                <div className="w-full">
+                    <Label htmlFor="name">Attribute name</Label>
+                    <Input id="name" placeholder="Attribute name" />
+                </div>
+                <div className="w-full">
+                    <Label htmlFor="description">Attribute value</Label>
+                    <Input id="name" placeholder="Attribute value" />
+                </div>
+                <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
+            </div>
+        )
+
     }
     
     return (
