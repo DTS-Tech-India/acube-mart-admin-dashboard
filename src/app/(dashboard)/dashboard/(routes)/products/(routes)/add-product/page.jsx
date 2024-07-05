@@ -98,7 +98,7 @@ export default function AddProduct() {
         console.log(productData);
 
         // Add product to database
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/add`, {
+        fetch(`http://localhost:8000/api/product/add`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -110,16 +110,19 @@ export default function AddProduct() {
             
             console.log(data);
             if (data.success) {
-                const resParsed = JSON.parse(data.data);
-                const imageData = new FormData();
-                productData.images.forEach((image) => {
-                    imageData.append("images", image);
-                })
-                imageData.append("productId", resParsed._id);
-                console.log(imageData);
-                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add/multiple`, {
+                // send multipart formdata for images upload with productId
+
+                // Add images to database
+                const formData = new FormData();
+                for (let i = 0; i < productData.images.length; i++) {
+                    formData.append("images", productData.images[i], productData.images[i].name);
+                }
+                formData.append("productId", data.data._id)
+                //console.log(formData);
+
+                fetch(`http://localhost:8000/api/image/add/multiple`, {
                     method: "POST",
-                    body: imageData,
+                    body: formData,
                 })
                 .then((res) => res.json())
                 .then((data) => {

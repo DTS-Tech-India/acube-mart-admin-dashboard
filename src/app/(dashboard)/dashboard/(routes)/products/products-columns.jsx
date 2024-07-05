@@ -108,7 +108,20 @@ export const columns = [
         accessorKey: "action",
         header: "Action",
         cell: ({ row }) => {
-            const user = row.original;
+            const product = row.original;
+            const handleDeleteProduct = () => {
+                // delete product by product id
+                console.log(product.id);
+
+                // Delete product from database
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/delete/${product.id}`, {
+                    method: "DELETE",
+                })
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                })
+            }
             return (
               <div className="flex gap-0.5">
                 <Link 
@@ -124,13 +137,14 @@ export const columns = [
                 >
                     <Pen className="w-6 h-6 p-0.5" />
                 </Link>
-                <Link 
+                <Button 
                     href={`#`}
-                    variant="ghost" 
+                    variant="ghost"
                     className="p-2 hover:text-red-500 hover:bg-muted rounded-md"
+                    onClick={handleDeleteProduct}
                     >
                         <Trash2 className="w-6 h-6 p-0.5" />
-                </Link>
+                </Button>
               </div>
             )
         }
