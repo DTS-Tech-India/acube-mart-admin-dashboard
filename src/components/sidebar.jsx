@@ -52,9 +52,9 @@ const Sidebar = () => {
         },
         
         {
-            label: "Analytics",
+            label: "Categories",
             icon: LineChart,
-            href: "/dashboard/analytics", 
+            href: "/dashboard/categories", 
         },
         {
             label: "Coupons",
