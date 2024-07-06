@@ -22,7 +22,8 @@ import {
     Headphones,
     Star,
     LogOut,
-    Menu
+    Menu,
+    Network
 } from "lucide-react"
 
 
@@ -41,6 +42,11 @@ const Sidebar = () => {
             href: "/dashboard/products",
         },
         {
+            label: "Categories",
+            icon: Network,
+            href: "/dashboard/categories", 
+        },
+        {
             label: "Orders",
             icon: ShoppingCart,
             href: "/dashboard/orders",
@@ -49,12 +55,6 @@ const Sidebar = () => {
             label: "Customers",
             icon: Users,
             href: "/dashboard/customers",
-        },
-        
-        {
-            label: "Categories",
-            icon: LineChart,
-            href: "/dashboard/categories", 
         },
         {
             label: "Coupons",
