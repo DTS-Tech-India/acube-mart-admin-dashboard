@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./orders-columns";
 
-//import ProductsList from "./get-products";
+//import { products } from "@/lib/get-api-data";
 //import { useMemo } from "react";
 //import { Skeleton } from "@/components/ui/skeleton";
 

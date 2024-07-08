@@ -28,8 +28,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import getApiData from "../../../../../../../lib/get-api-data";
+
 import { useRouter } from "next/navigation";
+import { getApiData } from "@/lib/get-api-data";
 export default function AddCategory() {
     const router = useRouter();
     const [categoryData, setCategoryData] = useState({

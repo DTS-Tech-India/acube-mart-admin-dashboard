@@ -31,7 +31,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { getApiData } from "@/lib/get-api-data";
 
 export default function AddProduct() {
-    
+    const [images, setImages] = useState([]);
     const [productData, setProductData] = useState({
         name: "",
         category: "",
@@ -75,12 +75,19 @@ export default function AddProduct() {
 
     const handleImagesChange = (e) => {
         setProductData({ ...productData, images: e.target.files });
-        //console.log(productData);
+        //console.log(productData.images);
+        //Set Images url array
+        setImages(
+            Array.from(e.target.files).map((file) => {
+                return URL.createObjectURL(file);
+            })
+        )
     }
 
     const handleTypeChange = (value) => {
         setProductData({ ...productData, type: value });
         //console.log(value);
+
     }
 
     const handleStatusChange = (value) => {
@@ -222,24 +229,34 @@ export default function AddProduct() {
                                 <Label htmlFor="images">Gallery</Label>
                                 <Input name="images" type="file" multiple onChange={handleImagesChange} placeholder="Type product name here..." />
                             </div>
+                            {/* preview image before upload */}
+                            {images.length > 0 ? (
+                                    <div className="flex gap-4">
+                                        {images.map((image) => (
+                                            <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
+                                                <Image src={image} alt={image} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                            </div>
+                                        ))}
+                                    </div>
+                            ) : (
                             <div className="flex gap-4">
-                                <button className="flex aspect-square w-full max-w-64 items-center justify-center rounded-md border border-dashed">
+                                <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
                                     <span className="p-4 rounded-full hover:bg-muted">
                                         <Upload className="h-4 w-4 text-muted-foreground" />
                                     </span>
                                 </button>
-                                <button className="flex aspect-square w-full max-w-64 items-center justify-center rounded-md border border-dashed">
+                                <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
                                     <span className="p-4 rounded-full hover:bg-muted">
                                         <Upload className="h-4 w-4 text-muted-foreground" />
                                     </span>
                                 </button>
-                                <button className="flex aspect-square w-full max-w-64 items-center justify-center rounded-md border border-dashed">
+                                <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
                                     <span className="p-4 rounded-full hover:bg-muted">
                                         <Upload className="h-4 w-4 text-muted-foreground" />
                                     </span>
                                 </button>
                             </div>
-                            
+                            )}
                         </CardContent>
                     </Card>
                     <Card className="w-full h-full">
@@ -343,13 +360,7 @@ export default function AddProduct() {
                             Attributes
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
-                        <div className="flex  gap-4">
-                               <div className="w-full">
-                                    <Label htmlFor="name">Attribute name</Label>
-                                    <Input id="name" placeholder="Attribute name" />
-                                </div>
-                                <Button className="w-full mt-auto">+ Add attribute</Button>
-                            </div>
+                            
                             <div className="flex gap-4">
                                <div className="w-full">
                                     <Label htmlFor="name">Attribute name</Label>
@@ -371,6 +382,9 @@ export default function AddProduct() {
                                     <Input id="name" placeholder="Attribute value" />
                                 </div>
                                 <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
+                            </div>
+                            <div className="flex gap-4">
+                                <Button className="mt-auto">+ Add attribute</Button>
                             </div>
                         </CardContent>
                     </Card>
@@ -379,13 +393,6 @@ export default function AddProduct() {
                             Varients
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
-                        <div className="flex  gap-4">
-                               <div className="w-full">
-                                    <Label htmlFor="name">Varient name</Label>
-                                    <Input id="name" placeholder="Varient name" />
-                                </div>
-                                <Button className="w-full mt-auto">+ Add Varient</Button>
-                            </div>
                             <div className="flex gap-4">
                                <div className="w-full">
                                     <Label htmlFor="name">Varient name</Label>
@@ -407,6 +414,9 @@ export default function AddProduct() {
                                     <Input id="name" placeholder="Varient value" />
                                 </div>
                                 <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
+                            </div>
+                            <div className="flex  gap-4">
+                                <Button className="mt-auto">+ Add Varient</Button>
                             </div>
                         </CardContent>
                     </Card>
