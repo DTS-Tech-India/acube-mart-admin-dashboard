@@ -18,20 +18,20 @@ import { useRouter } from "next/navigation";
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./products-columns";
 
-import ProductsList from "./get-products";
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { products } from "@/lib/get-api-data";
 
 export default function Products() {
     const router = useRouter()
     const { data, isLoading, isError } = useQuery({
         queryKey: ["products"],
-        queryFn: async() => await ProductsList(),
+        queryFn: async() => await products(),
     });
 
     const modifiedData = useMemo(() => {
         
-        const sortedData = data?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const sortedData = data?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         return sortedData?.map((product) => {
           return {
             id: product._id,
