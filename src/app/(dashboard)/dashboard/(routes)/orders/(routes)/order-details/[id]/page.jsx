@@ -60,7 +60,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { MobileIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 
-export default function OrderDetails() {
+export default function OrderDetails({ params }) {
     const [status, setStatus] = useState("");
 
     const orderList = [
@@ -136,7 +136,7 @@ export default function OrderDetails() {
                 <div className="w-full flex gap-4 ">
                         <Card className="w-full">
                             <CardHeader className="flex flex-row items-center justify-between">
-                                <h2 className=" font-semibold">Order #3467293492</h2>
+                                <h2 className=" font-semibold">Order #{params.id}</h2>
                                 <span 
                                     className={cn(
                                         " px-4 py-1 text-sm rounded-full",

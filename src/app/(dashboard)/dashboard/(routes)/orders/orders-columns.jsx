@@ -37,7 +37,7 @@ export const columns = [
             return (
                 <Link 
                     className="text-blue-600 hover:underline" 
-                    href={`/orders/${orderId}`}
+                    href={`/dashboard/orders/order-details/${orderId}`}
                 >
                     #{orderId}
                 </Link>
@@ -111,7 +111,7 @@ export const columns = [
             return (
               <div className="flex gap-0.5">
                 <Link 
-                    href={`/dashboard/orders/order-details`} 
+                    href={`/dashboard/orders/order-details/${user.orderId}`} 
                     variant="ghost" 
                     className="p-2 hover:text-green-500 hover:bg-muted rounded-md"
                     >

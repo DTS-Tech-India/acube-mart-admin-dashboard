@@ -170,13 +170,18 @@ export default function CustomerDetails({ params }) {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-4 w-full">
-                                        <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
+                                        <div className="flex items-center mb-auto w-10 h-10 p-2 bg-muted rounded-full">
                                             <MapPin className="w-8 h-8" />
                                         </div>
-                                        <div className="flex flex-col text-sm">
-                                            <h2 className="font-semibold">Delivery Address</h2>
-                                            <p>Shastri Nagar, Delhi, India, 123456</p>
-                                           
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex flex-col text-sm">
+                                                <h2 className="font-semibold">Delivery Address</h2>
+                                                <p>Shastri Nagar, Delhi, India, 123456</p>
+                                            </div>
+                                            <div className="flex flex-col text-sm">
+                                                <h2 className="font-semibold">Delivery Address</h2>
+                                                <p>Shastri Nagar, Delhi, India, 123456</p>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-4 w-full">
