@@ -51,6 +51,17 @@ export const columns = [
     {
         accessorKey: "name",
         header: "Category",
+        cell: ({ row }) => {
+            const category = row.original;
+            return (
+                <div suppressHydrationWarning className="flex-col gap-1">
+                    
+                    <p>{category.name}</p>
+                    <p className="text-xs text-muted-foreground">{category.type}</p>
+                    <p className="text-xs text-muted-foreground">{category.category}</p>
+                </div>
+            )
+        }
     },
     {
         accessorKey: "sales",

@@ -21,45 +21,43 @@ import { columns } from "./categories-columns";
 
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { elements } from "@/lib/get-api-data";
 export default function Categories() {
     const router = useRouter();
 
-    const categoriesData = [
-        {
-            id: "1",
-            name: "Category 1",
-            image: "https://picsum.photos/200",
-            added: "2022-01-01",
-            sales: "10",
-            stock: "100",
-        },
-        {
-            id: "2",
-            name: "Category 2",
-            image: "https://picsum.photos/201",
-            added: "2022-01-01",
-            sales: "30",
-            stock: "50",
-        },
-        {
-            id: "3",
-            name: "Category 3",
-            image: "https://picsum.photos/202",
-            added: "2022-01-01",
-            sales: "50",
-            stock: "200",
-        },
+    const {data, isLoading, isError} = useQuery({
+        queryKey: ["elements"],
+        queryFn: async() => await elements(),
+    })
 
-        {
-            id: "4",
-            name: "Category 4",
-            image: "https://picsum.photos/203",
-            added: "2022-01-01",
-            sales: "20",
-            stock: "150",
-        },
+    const modifiedData = useMemo(() => {
+        
+        const sortedData = data?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return sortedData?.map((element) => {
+          return {
+            id: element._id,
+            name: element.name,
+            image: `https://picsum.photos/${200 + Math.floor(Math.random() * 100)}`,
+            sales: Math.floor(Math.random() * 100),
+            stock: Math.floor(Math.random() * 100),
+            added: element.createdAt,
+            type: element.typeId?.name,
+            category: element.categoryId?.name
+          }
+        })
+      }, [data]);
 
-    ]
+    if (isLoading) return (
+        <Skeleton
+            className="h-96 w-full aspect-auto" 
+        />
+    );
+
+    if (isError) return (
+        <div>Error while fetching categories</div>
+    );
+
+    //console.log(data, modifiedData);
 
     return (
         <div className="w-full h-full flex flex-col gap-4">
@@ -84,7 +82,7 @@ export default function Categories() {
             </div>
         </header>
         <DataTable
-            data={categoriesData}
+            data={modifiedData}
             columns={columns}
         /> 
     </div>

@@ -98,7 +98,7 @@ export default function CustomerDetails({ params }) {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                                <Link href="/dashboard/products">Customers</Link>
+                                <Link href="/dashboard/customers">Customers</Link>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
