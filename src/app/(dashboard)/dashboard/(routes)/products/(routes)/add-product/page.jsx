@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button"; 
 import { toast } from "sonner"
+import { TagInput } from 'emblor';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -46,15 +47,17 @@ export default function AddProduct() {
         brand: "",
         model: "",
     });
+    const [tags, setTags] = useState([]);
     const [attribute, setAttribute] = useState({
         name: "",
-        value: "",
+        value: [],
     });
     const [Varient, setVarient] = useState({
         name: "",
         value: "",
     })
     const [attributes, setAttributes] = useState([]);
+    const [Varients, setVarients] = useState([]);
     const { data, isLoading, isError } = useQuery({
         queryKey: ["apiData"],
         queryFn: async() => await getApiData(),
@@ -110,7 +113,51 @@ export default function AddProduct() {
         setProductData({ ...productData, model: value });
         //console.log(value);
     }
+    const handleAttributeChange = (e) => {
+        setAttribute({ ...attribute, [e.target.name]: e.target.value });
+        //console.log(attribute);
+    }
 
+    const addNewAttribute = () => {
+        if (attribute.name === "" || attribute.value === "") {
+            toast.error("Please fill attribute name and value");
+            return;
+        }
+        setAttributes([...attributes, {
+            id: attributes.length,
+            name: attribute.name,
+            value: attribute.value,
+        }]);
+        setAttribute({ name: "", value: "" });
+        //console.log(attributes);
+    }
+
+    const handleDeleteAttribute = (id) => {
+        setAttributes(attributes.filter((attribute) => attribute.id !== id));
+    }
+
+    const handleVarientChange = (e) => {
+        setVarient({ ...Varient, [e.target.name]: e.target.value });
+        //console.log(attribute);
+    }
+
+    const addNewVarient = () => {
+        if (Varient.name === "" || Varient.value === "") {
+            toast.error("Please fill variant name and value");
+            return;
+        }
+        setVarients([...Varients, {
+            id: Varients.length,
+            name: Varient.name,
+            value: Varient.value,
+        }]);
+        setVarient({ name: "", value: "" });
+        //console.log(attributes);
+    }
+
+    const handleDeleteVarient = (id) => {
+        setVarients(Varients.filter((Varient) => Varient.id !== id));
+    }
     const handleAddProduct = () => {
         // Add product to database
         fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/add`, {
@@ -155,24 +202,7 @@ export default function AddProduct() {
         });
     }
 
-    const handleAttributeChange = (e) => {
-        setAttribute({ ...attribute, [e.target.name]: e.target.value });
-        //console.log(attribute);
-    }
-
-    const addNewAttribute = () => {
-        setAttributes([...attributes, {
-            id: attributes.length,
-            name: attribute.name,
-            value: attribute.value,
-        }]);
-        setAttribute({ name: "", value: "" });
-        //console.log(attributes);
-    }
-
-    const handleDeleteAttribute = (id) => {
-        setAttributes(attributes.filter((attribute) => attribute.id !== id));
-    }
+    
     
     return (
         <div className="w-full h-full flex flex-col gap-4">
@@ -366,7 +396,24 @@ export default function AddProduct() {
                                     <Label htmlFor="description">Attribute value</Label>
                                     <Input name="value" placeholder="Attribute value" value={attribute.value} onChange={handleAttributeChange} />
                                 </div>
+                                
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="w-full">
+                                  <Label htmlFor="description">Attribute value</Label>
+                                    <TagInput
+                                        placeholder="Enter a attribute"
+                                        tags={tags}
+                                        className="w-full"
+                                        setTags={(newTags) => {
+                                            setTags(newTags);
+                                            //setValue('value', newTags || []);
+
+                                        }}
+                                    />  
+                                </div>
                                 <Button className="mt-auto" onClick={addNewAttribute}>+ Add</Button>
+                            
                             </div>
                             {attributes && attributes.map(attribute => (
                                 <div key={attribute.id} className="flex gap-4">
@@ -392,28 +439,27 @@ export default function AddProduct() {
                             <div className="flex gap-4">
                                <div className="w-full">
                                     <Label htmlFor="name">Varient name</Label>
-                                    <Input id="name" placeholder="Varient name" />
+                                    <Input name="name" placeholder="Varient name" value={Varient.name} onChange={handleVarientChange} />
                                 </div>
                                 <div className="w-full">
                                     <Label htmlFor="description">Varient value</Label>
-                                    <Input id="name" placeholder="Varient value" />
+                                    <Input name="value" placeholder="Varient value" value={Varient.value} onChange={handleVarientChange} />
                                 </div>
-                                <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
+                                <Button className="mt-auto" onClick={addNewVarient}>+ Add</Button>
                             </div>
-                            <div className="flex gap-4">
-                               <div className="w-full">
-                                    <Label htmlFor="name">Varient name</Label>
-                                    <Input id="name" placeholder="Varient name" />
+                            {Varients && Varients.map(Varient => (
+                                <div key={Varient.id} className="flex gap-4">
+                                    <div className="w-full">
+                                        <Label htmlFor="name">Varient name</Label>
+                                        <Input name="name" defaultValue={Varient.name} placeholder="Varient name" />
+                                    </div>
+                                    <div className="w-full">
+                                        <Label htmlFor="description">Varient value</Label>
+                                        <Input name="value" defaultValue={Varient.value} placeholder="Varient value" />
+                                    </div>
+                                    <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
                                 </div>
-                                <div className="w-full">
-                                    <Label htmlFor="description">Varient value</Label>
-                                    <Input id="name" placeholder="Varient value" />
-                                </div>
-                                <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
-                            </div>
-                            <div className="flex  gap-4">
-                                <Button className="mt-auto">+ Add Varient</Button>
-                            </div>
+                            ))}
                         </CardContent>
                     </Card>
                 </div>
