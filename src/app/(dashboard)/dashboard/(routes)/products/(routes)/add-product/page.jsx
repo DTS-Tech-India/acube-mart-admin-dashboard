@@ -46,19 +46,15 @@ export default function AddProduct() {
         brand: "",
         model: "",
     });
-    const [attributeUi, setAttributeUi] = useState(
-        <div className="flex gap-4">
-            <div className="w-full">
-                <Label htmlFor="name">Attribute name</Label>
-                <Input id="name" placeholder="Attribute name" />
-            </div>
-            <div className="w-full">
-                <Label htmlFor="description">Attribute value</Label>
-                <Input id="name" placeholder="Attribute value" />
-            </div>
-            <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
-        </div>
-    );
+    const [attribute, setAttribute] = useState({
+        name: "",
+        value: "",
+    });
+    const [Varient, setVarient] = useState({
+        name: "",
+        value: "",
+    })
+    const [attributes, setAttributes] = useState([]);
     const { data, isLoading, isError } = useQuery({
         queryKey: ["apiData"],
         queryFn: async() => await getApiData(),
@@ -159,22 +155,23 @@ export default function AddProduct() {
         });
     }
 
-    const addNewAttribute = () => {
-        // add new attribute field
-        const attributeUi = (
-            <div className="flex gap-4">
-                <div className="w-full">
-                    <Label htmlFor="name">Attribute name</Label>
-                    <Input id="name" placeholder="Attribute name" />
-                </div>
-                <div className="w-full">
-                    <Label htmlFor="description">Attribute value</Label>
-                    <Input id="name" placeholder="Attribute value" />
-                </div>
-                <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
-            </div>
-        )
+    const handleAttributeChange = (e) => {
+        setAttribute({ ...attribute, [e.target.name]: e.target.value });
+        //console.log(attribute);
+    }
 
+    const addNewAttribute = () => {
+        setAttributes([...attributes, {
+            id: attributes.length,
+            name: attribute.name,
+            value: attribute.value,
+        }]);
+        setAttribute({ name: "", value: "" });
+        //console.log(attributes);
+    }
+
+    const handleDeleteAttribute = (id) => {
+        setAttributes(attributes.filter((attribute) => attribute.id !== id));
     }
     
     return (
@@ -360,32 +357,31 @@ export default function AddProduct() {
                             Attributes
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
+                            <div className="flex gap-4">
+                               <div className="w-full">
+                                    <Label htmlFor="name">Attribute name</Label>
+                                    <Input name="name" placeholder="Attribute name" value={attribute.name} onChange={handleAttributeChange} />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Attribute value</Label>
+                                    <Input name="value" placeholder="Attribute value" value={attribute.value} onChange={handleAttributeChange} />
+                                </div>
+                                <Button className="mt-auto" onClick={addNewAttribute}>+ Add</Button>
+                            </div>
+                            {attributes && attributes.map(attribute => (
+                                <div key={attribute.id} className="flex gap-4">
+                                    <div className="w-full">
+                                        <Label htmlFor="name">Attribute name</Label>
+                                        <Input id="name" defaultValue={attribute.name} placeholder="Attribute name" />
+                                    </div>
+                                    <div className="w-full">
+                                        <Label htmlFor="description">Attribute value</Label>
+                                        <Input id="value" defaultValue={attribute.value} placeholder="Attribute value" />
+                                    </div>
+                                    <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteAttribute(attribute.id)} ><X className="w-8 h-8 p-2" /></Button>
+                                </div>
+                            ))}
                             
-                            <div className="flex gap-4">
-                               <div className="w-full">
-                                    <Label htmlFor="name">Attribute name</Label>
-                                    <Input id="name" placeholder="Attribute name" />
-                                </div>
-                                <div className="w-full">
-                                    <Label htmlFor="description">Attribute value</Label>
-                                    <Input id="name" placeholder="Attribute value" />
-                                </div>
-                                <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
-                            </div>
-                            <div className="flex gap-4">
-                               <div className="w-full">
-                                    <Label htmlFor="name">Attribute name</Label>
-                                    <Input id="name" placeholder="Attribute name" />
-                                </div>
-                                <div className="w-full">
-                                    <Label htmlFor="description">Attribute value</Label>
-                                    <Input id="name" placeholder="Attribute value" />
-                                </div>
-                                <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" ><X className="w-8 h-8 p-2" /></Button>
-                            </div>
-                            <div className="flex gap-4">
-                                <Button className="mt-auto">+ Add attribute</Button>
-                            </div>
                         </CardContent>
                     </Card>
                     <Card className="w-full h-full">
