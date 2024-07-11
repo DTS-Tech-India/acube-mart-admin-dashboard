@@ -30,8 +30,10 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { getApiData } from "@/lib/get-api-data";
+import { useForm } from "react-hook-form";
 
 export default function AddProduct() {
+    const setValue = useForm();
     const [images, setImages] = useState([]);
     const [productData, setProductData] = useState({
         name: "",
@@ -50,7 +52,7 @@ export default function AddProduct() {
     const [tags, setTags] = useState([]);
     const [attribute, setAttribute] = useState({
         name: "",
-        value: [],
+        value: "",
     });
     const [Varient, setVarient] = useState({
         name: "",
@@ -227,7 +229,7 @@ export default function AddProduct() {
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
                     <Button variant="outline"><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button onClick={() => {}}>Add Product</Button> 
+                    <Button onClick={() => {console.log(tags)}}>Add Product</Button> 
                 </div>
             </div>
             <div className="w-full h-full flex gap-4">
@@ -396,25 +398,24 @@ export default function AddProduct() {
                                     <Label htmlFor="description">Attribute value</Label>
                                     <Input name="value" placeholder="Attribute value" value={attribute.value} onChange={handleAttributeChange} />
                                 </div>
-                                
+                                <Button className="mt-auto" onClick={addNewAttribute}>+ Add</Button>
                             </div>
-                            <div className="flex gap-4">
+                           {/*  <div className="flex gap-4">
                                 <div className="w-full">
-                                  <Label htmlFor="description">Attribute value</Label>
+                                  <Label htmlFor="description">Attribute values</Label>
                                     <TagInput
-                                        placeholder="Enter a attribute"
+                                        //placeholder="Enter a attribute"
                                         tags={tags}
-                                        className="w-full"
+                                        className=""
                                         setTags={(newTags) => {
                                             setTags(newTags);
-                                            //setValue('value', newTags || []);
-
+                                            //setValue('value', newTags);
                                         }}
                                     />  
                                 </div>
-                                <Button className="mt-auto" onClick={addNewAttribute}>+ Add</Button>
+                                
                             
-                            </div>
+                            </div> */}
                             {attributes && attributes.map(attribute => (
                                 <div key={attribute.id} className="flex gap-4">
                                     <div className="w-full">
