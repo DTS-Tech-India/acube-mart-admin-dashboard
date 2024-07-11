@@ -131,7 +131,7 @@ export default function AddProduct() {
             value: attribute.value,
         }]);
         setAttribute({ name: "", value: "" });
-        //console.log(attributes);
+        console.log(attributes);
     }
 
     const handleDeleteAttribute = (id) => {
@@ -154,7 +154,7 @@ export default function AddProduct() {
             value: Varient.value,
         }]);
         setVarient({ name: "", value: "" });
-        //console.log(attributes);
+        console.log(attributes);
     }
 
     const handleDeleteVarient = (id) => {
@@ -176,6 +176,59 @@ export default function AddProduct() {
             if (data.success) {
                 // send multipart formdata for images upload with productId
                 toast.success(data.message);
+
+                //Add attributes to db
+                
+                for (let i = 0; i < attributes.length; i++) {
+                    const attributeData = {
+                        name: attributes[i].name,
+                        value: [attributes[i].value],
+                        productId: data.data._id,
+                    };
+                    console.log(attributeData);
+                    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/attribute/add`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(attributeData),
+                    })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        console.log(data);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        toast.error(err.message);
+                    });
+                }
+                
+                //Add Varients to db
+                
+                for (let i = 0; i < Varients.length; i++) {
+                    const varientsData = {
+                        name: Varients[i].name,
+                        value: Varients[i].value,
+                        productId: data.data._id,
+                    };
+                    console.log(varientsData);
+                    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/add`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(varientsData),
+                    })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        console.log(data);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        toast.error(err.message);
+                    });
+                }
+
                 const formData = new FormData();
                 for (let i = 0; i < productData.images.length; i++) {
                     formData.append("images", productData.images[i], productData.images[i].name);
