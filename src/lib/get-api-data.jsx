@@ -53,6 +53,12 @@ async function getTransactions() {
     return data.data;
 }
 
+async function getData(url) {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.data;
+}
+
 export const types = async() => await getTypes();
 export const categories = async() => await getCategories();
 export const elements = async() => await getElements();
@@ -62,6 +68,8 @@ export const products = async() => await getProducts();
 export const users = async() => await getUsers();
 export const orders = async() => await getOrders();
 export const transactions = async() => await getTransactions();
+
+export const getApiDataByQuery = async(url) => await getData(url);
 
 export const getApiData = async() => {
     const types = await getTypes();

@@ -51,6 +51,18 @@ export const columns = [
     {
         accessorKey: "name",
         header: "Name",
+        cell: ({ row }) => {
+            const product = row.original;
+            return (
+                <div
+                    className="flex flex-col gap-0.5"
+                >
+                    <p >{product.name}</p>
+                    <p className="text-xs text-muted-foreground">variants: {product.variants.length}</p>
+                    
+                </div>
+            )
+        }
     },
     {
         accessorKey: "category",

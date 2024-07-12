@@ -38,6 +38,7 @@ export default function AddCategory() {
         description: "",
         typeId: "",
         categoryId: "",
+        stock: 0,
     });
 
     
@@ -69,6 +70,7 @@ export default function AddCategory() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "application/json",
             },
             body: JSON.stringify(categoryData),
         })
@@ -162,6 +164,10 @@ export default function AddCategory() {
                             <div>
                                 <Label htmlFor="name">Name</Label>
                                 <Input name="name" onChange={handleChange} placeholder="Type product name here..." />
+                            </div>
+                            <div>
+                                <Label htmlFor="name">Name</Label>
+                                <Input name="stock" onChange={handleChange} type="number" placeholder="Type product stock here..." />
                             </div>
                             <div>
                                 <Label htmlFor="description">Description</Label>

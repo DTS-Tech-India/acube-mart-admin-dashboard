@@ -32,8 +32,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { getApiData } from "@/lib/get-api-data";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function AddProduct() {
+    const router = useRouter();
     const setValue = useForm();
     const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
     const [images, setImages] = useState([]);
@@ -195,21 +197,18 @@ export default function AddProduct() {
         })
         .then((res) => res.json())
         .then((data) => {
-            
-            console.log(data);
+            //console.log(data);
             if (data.success) {
-                // send multipart formdata for images upload with productId
                 toast.success(data.message);
 
                 //Add attributes to db
-                
                 for (let i = 0; i < attributes.length; i++) {
                     const attributeData = {
                         name: attributes[i].name,
                         value: [attributes[i].value],
                         productId: data.data._id,
                     };
-                    console.log(attributeData);
+                    //console.log(attributeData);
                     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/attribute/add`, {
                         method: "POST",
                         headers: {
@@ -219,23 +218,23 @@ export default function AddProduct() {
                     })
                     .then((res) => res.json())
                     .then((data) => {
-                        console.log(data);
+                        //console.log(data);
+                        toast.success(data.message);
                     })
                     .catch((err) => {
-                        console.log(err);
+                        //console.log(err);
                         toast.error(err.message);
                     });
                 }
                 
                 //Add Varients to db
-                
                 for (let i = 0; i < Varients.length; i++) {
                     const varientsData = {
                         name: Varients[i].name,
                         value: Varients[i].value,
                         productId: data.data._id,
                     };
-                    console.log(varientsData);
+                    //console.log(varientsData);
                     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/add`, {
                         method: "POST",
                         headers: {
@@ -245,20 +244,21 @@ export default function AddProduct() {
                     })
                     .then((res) => res.json())
                     .then((data) => {
-                        console.log(data);
+                        //console.log(data);
+                        toast.success(data.message);
                     })
                     .catch((err) => {
-                        console.log(err);
+                        //console.log(err);
                         toast.error(err.message);
                     });
                 }
 
+                // send multipart formdata for images upload with productId
                 const formData = new FormData();
                 for (let i = 0; i < productData.images.length; i++) {
                     formData.append("images", productData.images[i], productData.images[i].name);
                 }
                 formData.append("productId", data.data._id)
-                //console.log(formData);
 
                 fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add/multiple`, {
                     method: "POST",
@@ -268,12 +268,13 @@ export default function AddProduct() {
                 .then((data) => {
                     //console.log(data);
                     toast.success(data.message);
+                    router.push("/dashboard/products");
                 })
                 .catch((err) => {
                     //console.log(err);
                     toast.error(err.message);
                 });
-            }
+            } 
         })
         .catch((err) => {
             //console.log(err);
@@ -306,7 +307,7 @@ export default function AddProduct() {
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
                     <Button variant="outline"><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button onClick={() => {console.log(tags)}}>Add Product</Button> 
+                    <Button onClick={handleAddProduct}>Add Product</Button> 
                 </div>
             </div>
             <div className="w-full h-full flex gap-4">

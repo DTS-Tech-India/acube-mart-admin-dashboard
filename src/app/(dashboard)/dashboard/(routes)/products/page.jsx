@@ -43,7 +43,7 @@ export default function Products() {
             price: product.price,
             date: product.createdAt,
             status: product.status,
-            
+            variants: product.variants
           }
         })
       }, [data])
