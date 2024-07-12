@@ -22,7 +22,7 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-import { Upload, X } from "lucide-react";
+import { ImageIcon, Upload, X } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -31,9 +31,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getApiData } from "@/lib/get-api-data";
 import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 export default function AddProduct() {
     const setValue = useForm();
+    const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
     const [images, setImages] = useState([]);
     const [productData, setProductData] = useState({
         name: "",
@@ -42,12 +44,23 @@ export default function AddProduct() {
         stock: "",
         price: "",
         images: [],
-        status: "",
+        status: "draft",
         type: "",
         category: "",
         element: "",
         brand: "",
         model: "",
+        barcode: "",
+        sku: "",
+        additionalInfo: {
+            isPhysicalProduct: isPhysicalProduct,
+            shortDescription: "",
+            weight: "",
+            dimension: "",
+            materials: "",
+            labels: "",
+
+        },
     });
     const [tags, setTags] = useState([]);
     const [attribute, setAttribute] = useState({
@@ -58,6 +71,7 @@ export default function AddProduct() {
         name: "",
         value: "",
     })
+    
     const [attributes, setAttributes] = useState([]);
     const [Varients, setVarients] = useState([]);
     const { data, isLoading, isError } = useQuery({
@@ -72,6 +86,11 @@ export default function AddProduct() {
     const handleChange = (e) => {
         setProductData({ ...productData, [e.target.name]: e.target.value });
         //console.log(productData);
+    }
+
+    const handleChangeAdditionalInfo = (e) => {
+        setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, [e.target.name]: e.target.value } });
+        console.log(productData.additionalInfo);
     }
 
     const handleImagesChange = (e) => {
@@ -114,6 +133,11 @@ export default function AddProduct() {
     const handleModelChange = (value) => {
         setProductData({ ...productData, model: value });
         //console.log(value);
+    }
+    const handleChangePhysicalProduct = () => {
+        setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, isPhysicalProduct: !isPhysicalProduct } });
+        setIsPhysicalProduct(!isPhysicalProduct);
+        console.log(isPhysicalProduct);
     }
     const handleAttributeChange = (e) => {
         setAttribute({ ...attribute, [e.target.name]: e.target.value });
@@ -324,17 +348,17 @@ export default function AddProduct() {
                             <div className="flex gap-4">
                                 <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
                                     <span className="p-4 rounded-full hover:bg-muted">
-                                        <Upload className="h-4 w-4 text-muted-foreground" />
+                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
                                     </span>
                                 </button>
                                 <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
                                     <span className="p-4 rounded-full hover:bg-muted">
-                                        <Upload className="h-4 w-4 text-muted-foreground" />
+                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
                                     </span>
                                 </button>
                                 <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
                                     <span className="p-4 rounded-full hover:bg-muted">
-                                        <Upload className="h-4 w-4 text-muted-foreground" />
+                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
                                     </span>
                                 </button>
                             </div>
@@ -395,11 +419,11 @@ export default function AddProduct() {
                         <CardContent className="flex gap-4">
                             <div className="w-full">
                                 <Label htmlFor="name">SKU</Label>
-                                <Input id="name" placeholder="Type product SKU here..." />
+                                <Input name="sku" placeholder="Product SKU" onChange={handleChange} />
                             </div>
                             <div className="w-full">
                                 <Label htmlFor="description">Barcode</Label>
-                                <Input id="name" placeholder="Type product Barcode here..." />
+                                <Input name="barcode" placeholder="Product Barcode" onChange={handleChange} />
                             </div>
                             <div className="w-full">
                                 <Label htmlFor="description">Quantity</Label>
@@ -407,36 +431,7 @@ export default function AddProduct() {
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="w-full h-full">
-                        <CardHeader className="font-semibold">
-                            Shiping
-                        </CardHeader>
-                        <CardContent className="flex flex-col gap-4">
-                            <div className="flex gap-2">
-                                <Checkbox />
-                                <Label htmlFor="name">This is a physical product</Label>
-                            </div>
-                            <div className="flex gap-4">
-                               <div className="w-full">
-                                    <Label htmlFor="name">Weight</Label>
-                                    <Input id="name" placeholder="weight(kg)" />
-                                </div>
-                                <div className="w-full">
-                                    <Label htmlFor="description">Height</Label>
-                                    <Input id="name" placeholder="height(cm)" />
-                                </div>
-                                <div className="w-full">
-                                    <Label htmlFor="description">Length</Label>
-                                    <Input id="name" placeholder="length(cm)" />
-                                </div>
-                                <div className="w-full">
-                                    <Label htmlFor="description">Width</Label>
-                                    <Input id="name" placeholder="width(cm)" />
-                                </div> 
-                            </div>
-                            
-                        </CardContent>
-                    </Card>
+                    
                     <Card className="w-full h-full">
                         <CardHeader className="font-semibold">
                             Attributes
@@ -516,23 +511,69 @@ export default function AddProduct() {
                             ))}
                         </CardContent>
                     </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Additional Information
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                            <div className="flex gap-2">
+                                <Checkbox name="isPhysicalProduct" onCheckedChange={handleChangePhysicalProduct} defaultChecked={isPhysicalProduct} />
+                                <Label htmlFor="physical">This is a physical product</Label>
+                            </div>
+                            <div className="flex gap-4">
+                               <div className="w-full">
+                                    <Label htmlFor="dimension">Dimension</Label>
+                                    <Input name="dimension" placeholder="12x12x12 cm" onChange={handleChangeAdditionalInfo} />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="weight">Weight</Label>
+                                    <Input name="weight" placeholder="weight (kg)" onChange={handleChangeAdditionalInfo} />
+                                </div>
+                                
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="w-full">
+                                    <Label htmlFor="material">Materials</Label>
+                                    <Input name="materials" placeholder="materials" onChange={handleChangeAdditionalInfo} />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="lable">Lables</Label>
+                                    <Input name="labels" placeholder="lables" onChange={handleChangeAdditionalInfo} />
+                                </div> 
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="w-full">
+                                    <Label htmlFor="shortDescription">Short Description</Label>
+                                    <Textarea name="shortDescription" placeholder="Type short description here ..." onChange={handleChangeAdditionalInfo} />
+                                </div>
+                            </div>
+                            
+                        </CardContent>
+                    </Card>
                 </div>
                 <div className="w-full h-full max-w-xs flex flex-col gap-4">
                     <Card className="w-full h-full">
                         <CardHeader className=" flex flex-row items-center justify-between">
                             <span className="font-semibold">Status</span>
-                            <span className="p-1 px-3 rounded-full bg-slate-200 text-xs">Draft</span>
+                            <span className={cn("p-1 px-3 rounded-full  text-xs",
+                                productData.status === "published" && "bg-green-100 text-green-600",
+                                productData.status === "archived" && "bg-sky-200 text-sky-600",
+                                productData.status === "draft" && "bg-gray-100 text-gray-600",
+                            )}>
+                                {productData.status}
+                            </span>
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Product Status</Label>
-                                <Select onValueChange={(value) => handleStatusChange(value)}>
+                                <Select onValueChange={(value) => handleStatusChange(value)} defaultValue="draft">
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select status" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="draft">Draft</SelectItem>
                                         <SelectItem value="published">Published</SelectItem>
+                                        <SelectItem value="archived">Archived</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
