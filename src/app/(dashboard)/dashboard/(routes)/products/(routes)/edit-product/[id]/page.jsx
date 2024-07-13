@@ -294,7 +294,7 @@ export default function Page({ params }) {
  
     return (
       <div className="w-full h-full flex flex-col gap-4">
-            <h1 className="text-2xl font-semi">Add Products</h1>
+            <h1 className="text-2xl font-semi">Edit Products</h1>
             <div className="flex items-center justify-between">
                 <Breadcrumb>
                     <BreadcrumbList>

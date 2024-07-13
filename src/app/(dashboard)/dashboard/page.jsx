@@ -27,6 +27,8 @@ import {
   Wallet
 } from "lucide-react"
 import { cn } from "@/lib/utils";
+import { RadialChartComponent } from "@/components/radial-chart";
+import { AreaChartComponent } from "@/components/area-chart";
 
 export default function Dashboard() {
 
@@ -108,6 +110,11 @@ export default function Dashboard() {
         </Card>
       ))}
       </div>
+      <div className="flex flex-col md:flex-row gap-4 w-full">
+        <RadialChartComponent />
+        <AreaChartComponent />
+      </div>
+      
     </main>
   );
 }
