@@ -92,7 +92,7 @@ export default function AddProduct() {
 
     const handleChangeAdditionalInfo = (e) => {
         setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, [e.target.name]: e.target.value } });
-        console.log(productData.additionalInfo);
+        //console.log(productData.additionalInfo);
     }
 
     const handleImagesChange = (e) => {
@@ -139,7 +139,7 @@ export default function AddProduct() {
     const handleChangePhysicalProduct = () => {
         setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, isPhysicalProduct: !isPhysicalProduct } });
         setIsPhysicalProduct(!isPhysicalProduct);
-        console.log(isPhysicalProduct);
+        //console.log(isPhysicalProduct);
     }
     const handleAttributeChange = (e) => {
         setAttribute({ ...attribute, [e.target.name]: e.target.value });
@@ -157,7 +157,7 @@ export default function AddProduct() {
             value: attribute.value,
         }]);
         setAttribute({ name: "", value: "" });
-        console.log(attributes);
+        //console.log(attributes);
     }
 
     const handleDeleteAttribute = (id) => {
@@ -180,7 +180,7 @@ export default function AddProduct() {
             value: Varient.value,
         }]);
         setVarient({ name: "", value: "" });
-        console.log(attributes);
+        //console.log(attributes);
     }
 
     const handleDeleteVarient = (id) => {

@@ -46,13 +46,7 @@ export default function Categories() {
           }
         })
       }, [data]);
-
-    if (isLoading) return (
-        <Skeleton
-            className="h-96 w-full aspect-auto" 
-        />
-    );
-
+      
     if (isError) return (
         <div>Error while fetching categories</div>
     );
@@ -81,10 +75,17 @@ export default function Categories() {
                 <Button onClick={() => {router.push("/dashboard/categories/add-category")}}>Add Category</Button> 
             </div>
         </header>
-        <DataTable
-            data={modifiedData}
-            columns={columns}
-        /> 
+        {isLoading ? (
+             <Skeleton
+                className="h-96 w-full aspect-auto" 
+            />
+        ):(
+          <DataTable
+                data={modifiedData}
+                columns={columns}
+            />   
+        )}
+        
     </div>
 );
 }

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 
 
 
@@ -131,7 +132,12 @@ export const columns = [
                 })
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data);
+                    //console.log(data);
+                    toast.success(data.message);
+                })
+                .catch((err) => {
+                    //console.log(err);
+                    toast.error(err.message);
                 })
             }
             return (

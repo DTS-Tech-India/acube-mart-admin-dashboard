@@ -47,12 +47,6 @@ export default function Products() {
           }
         })
       }, [data])
-
-    if (isLoading) return (
-        <Skeleton
-            className="h-96 w-full aspect-auto" 
-        />
-    );
     if (isError) return "An error has occurred while fetching products.";
 
     /* console.log(data)
@@ -80,14 +74,17 @@ export default function Products() {
                     <Button onClick={() => {router.push("/dashboard/products/add-product")}}>Add Products</Button> 
                 </div>
             </header>
-            {/* <DataTable
-                data={products}
-                columns={columns}
-            />  */} 
-            <DataTable
-                data={modifiedData}
-                columns={columns}
-            /> 
+            {isLoading ? (
+                <Skeleton
+                    className="h-96 w-full aspect-auto" 
+                />
+            ): (
+                <DataTable
+                    data={modifiedData}
+                    columns={columns}
+                />
+            )}
+            
         </div>
     );
 }
