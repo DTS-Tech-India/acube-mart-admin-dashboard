@@ -90,11 +90,10 @@ export default function Page({ params }) {
         queryFn: async() => await getApiData(),
     })
     
-    if (isProductLoading) return <Skeleton className="h-96 w-full aspect-auto" />
     if (isProductError) return <div>Error while fetching the product</div>
-    if (isApiDataLoading) return <Skeleton className="h-96 w-full aspect-auto" />
     if (isApiDataError) return <div>Error while fetching the api</div>
-    console.log(product, apiData);
+    //console.log(product, apiData);
+
     const handleChange = (e) => {
         setProductData({ ...productData, [e.target.name]: e.target.value });
         //console.log(productData);
@@ -320,7 +319,7 @@ export default function Page({ params }) {
                 </div>
             </div>
             {(isApiDataLoading || isProductLoading) ? (
-              <Skeleton className="w-full h-full" />
+              <Skeleton className="w-full h-" />
             ) : (
               <>
               <div className="w-full h-full flex gap-4">
@@ -510,15 +509,15 @@ export default function Page({ params }) {
                                 </div>
                                 <Button className="mt-auto" onClick={addNewVarient}>+ Add</Button>
                             </div>
-                            {product.varients && product.varients.map(varient => (
-                                <div key={varient._id} className="flex gap-4">
+                            {product.variants && product.variants.map(variant => (
+                                <div key={variant._id} className="flex gap-4">
                                     <div className="w-full">
                                         <Label htmlFor="name">Varient name</Label>
-                                        <Input name="name" defaultValue={varient.name} placeholder="Varient name" />
+                                        <Input name="name" defaultValue={variant.name} placeholder="Varient name" />
                                     </div>
                                     <div className="w-full">
                                         <Label htmlFor="description">Varient value</Label>
-                                        <Input name="value" defaultValue={varient.value} placeholder="Varient value" />
+                                        <Input name="value" defaultValue={variant.value} placeholder="Varient value" />
                                     </div>
                                     <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
                                 </div>

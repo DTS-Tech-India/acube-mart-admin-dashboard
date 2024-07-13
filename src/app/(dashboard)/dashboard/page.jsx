@@ -88,7 +88,7 @@ export default function Dashboard() {
         </Tabs>
         <div className="flex flex-wrap items-center gap-2">
           <DatePickerWithRange />
-          <Button className="bg-indigo-500">+ Add Products</Button>
+          <Button className="bg-violet-500">+ Add Products</Button>
         </div>
       </header>
       {/* Quick Details Cards */}
