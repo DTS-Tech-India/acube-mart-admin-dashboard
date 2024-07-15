@@ -44,6 +44,21 @@ export default function SignIn() {
         .then((data) => {
             console.log(data);
             if (data.success) {
+                fetch("/api/signin", {
+                    method: "POST",
+                    body: JSON.stringify(data),
+                })
+                //.then((res) => res.json())
+                .then((res) => {
+                    console.log(res);
+                    //toast.success(data);
+                    //redirect to dashboard
+                    router.push("/dashboard")
+                })
+                .catch((err) => {
+                    console.log(err);
+                    toast.error(err.message);
+                })
                 toast.success(data.message);
                 //redirect to dashboard
                 router.push("/dashboard")

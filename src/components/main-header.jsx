@@ -1,4 +1,4 @@
-
+"use client"
 import { 
     Avatar, 
     AvatarFallback, 
@@ -33,8 +33,30 @@ import {
     Calendar 
 } from "lucide-react"
 import { Button } from "./ui/button"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 const MainHeader = () => {
+    const router = useRouter()
+    const handleLogout = () => {
+        fetch('/api/signout', {
+            method: 'POST',
+            body: JSON.stringify({
+                'message': 'Logout successful'
+            })
+        })
+        .then((res) => {
+            console.log(res)
+            //toast.success(res)
+            if (res.status === 200) {
+                router.push('/signin')
+            }
+        })
+        .catch((err) => {
+            console.log(err)
+            toast.error(err.message)
+        })
+    }
     return (
         <div className="w-full h-16 border-b p-4 flex gap-2">
             <div className="flex flex-1 items-center justify-between">
@@ -67,7 +89,11 @@ const MainHeader = () => {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>Profile</DropdownMenuItem>
                         <DropdownMenuItem>Settings</DropdownMenuItem>
-                        <DropdownMenuItem>Logout</DropdownMenuItem>
+                        <DropdownMenuItem 
+                            onClick={handleLogout}
+                        >
+                            Logout
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
                 {/* <NavigationMenu>
