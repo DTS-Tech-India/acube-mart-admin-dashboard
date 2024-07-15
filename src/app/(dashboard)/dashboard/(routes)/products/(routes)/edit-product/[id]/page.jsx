@@ -195,9 +195,9 @@ export default function Page({ params }) {
     const handleDeleteVarient = (id) => {
         setVarients(Varients.filter((Varient) => Varient.id !== id));
     }
-    const handleAddProduct = () => {
+    const handleUpdateProduct = () => {
         // Add product to database
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/add`, {
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/update`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -680,7 +680,7 @@ export default function Page({ params }) {
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline"><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button /* onClick={handleAddProduct} */>Add Product</Button> 
+                    <Button /* onClick={handleUpdateProduct} */>Add Product</Button> 
                 </div>
             </div>
             </>
