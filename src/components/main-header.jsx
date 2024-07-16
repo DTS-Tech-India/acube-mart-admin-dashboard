@@ -1,4 +1,5 @@
 "use client"
+
 import { 
     Avatar, 
     AvatarFallback, 
@@ -23,7 +24,6 @@ import {
     NavigationMenuTrigger,
     NavigationMenuViewport,
   } from "@/components/ui/navigation-menu"
-import { Separator } from "@radix-ui/react-dropdown-menu"
 import { 
     ChevronDown, 
     Menu,
@@ -35,25 +35,19 @@ import {
 import { Button } from "./ui/button"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import axios from "axios"
 
 const MainHeader = () => {
     const router = useRouter()
     const handleLogout = () => {
-        fetch('/api/signout', {
-            method: 'POST',
-            body: JSON.stringify({
-                'message': 'Logout successful'
-            })
-        })
+        axios.post('/api/signout')
         .then((res) => {
-            console.log(res)
-            //toast.success(res)
-            if (res.status === 200) {
-                router.push('/signin')
-            }
+            //console.log(res)
+            toast.success(res.data)
+            router.push('/signin')
         })
         .catch((err) => {
-            console.log(err)
+            //console.log(err)
             toast.error(err.message)
         })
     }

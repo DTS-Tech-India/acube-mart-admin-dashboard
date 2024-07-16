@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
+import axios from "axios"
 
 
 export default function SignIn() {
@@ -30,7 +31,7 @@ export default function SignIn() {
     }
     
     const handleSubmit = () => {
-        console.log(formData);
+        //console.log(formData);
         //Authenticate Admin
         
         fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/login`, {
@@ -42,33 +43,21 @@ export default function SignIn() {
         })
         .then((res) => res.json())
         .then((data) => {
-            console.log(data);
-            if (data.success) {
-                fetch("/api/signin", {
-                    method: "POST",
-                    body: JSON.stringify(data),
-                })
-                //.then((res) => res.json())
-                .then((res) => {
-                    console.log(res);
-                    //toast.success(data);
-                    //redirect to dashboard
-                    router.push("/dashboard")
-                })
-                .catch((err) => {
-                    console.log(err);
-                    toast.error(err.message);
-                })
-                toast.success(data.message);
+            //console.log(data);
+            axios.post('/api/signin', data)
+            .then((res) => {
+                //console.log(res);
+                toast.success(res.data);
                 //redirect to dashboard
                 router.push("/dashboard")
-            }
-            else {
-                toast.error(data.message);
-            }
+            })
+            .catch((err) => {
+                //console.log(err);
+                toast.error(err.message);
+            })
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             toast.error(err.message);
         })
     }

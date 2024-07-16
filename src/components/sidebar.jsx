@@ -74,11 +74,6 @@ const Sidebar = () => {
             icon: Settings,
             href: "/settings",
         },
-        {
-            label: "Logout",
-            icon: LogOut,
-            href: "/logout",
-        }
     ]
     return (
         <>
@@ -93,8 +88,8 @@ const Sidebar = () => {
                             <Link 
                                 key={routes.href} 
                                 href={routes.href} 
-                                className={cn("text-sm group flex p-3 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-600 hover:text-white transition",
-                                    pathname === routes.href ? "bg-violet-600 text-white" : ""
+                                className={cn("text-sm group flex p-3 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-500 hover:text-white transition",
+                                    pathname === routes.href ? "bg-violet-500 text-white" : ""
                                     
                                 )}
                             >
@@ -108,8 +103,8 @@ const Sidebar = () => {
                             <Link 
                                 key={routes.href} 
                                 href={routes.href} 
-                                className={cn("text-sm group flex p-3 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-600 hover:text-white transition",
-                                    pathname === routes.href ? "bg-violet-600 text-white" : ""
+                                className={cn("text-sm group flex p-3 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-500 hover:text-white transition",
+                                    pathname === routes.href ? "bg-violet-500 text-white" : ""
                                     
                                 )}
                             >
@@ -133,8 +128,8 @@ const Sidebar = () => {
                                             <Link 
                                                 
                                                 href={routes.href} 
-                                                className={cn("text-sm group flex p-1 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-600 hover:text-white transition",
-                                                    pathname === routes.href ? "bg-violet-600 text-white" : ""
+                                                className={cn("text-sm group flex p-1 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-500 hover:text-white transition",
+                                                    pathname === routes.href ? "bg-violet-500 text-white" : ""
                                                     
                                                 )}
                                             >
@@ -158,8 +153,8 @@ const Sidebar = () => {
                                     <TooltipTrigger>
                                         <Link 
                                             href={routes.href} 
-                                            className={cn("text-sm group flex p-1 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-600 hover:text-white transition",
-                                                pathname === routes.href ? "bg-violet-600 text-white" : ""
+                                            className={cn("text-sm group flex p-1 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-500 hover:text-white transition",
+                                                pathname === routes.href ? "bg-violet-500 text-white" : ""
                                                 
                                             )}
                                         >
