@@ -31,30 +31,28 @@ export default function SignIn() {
     }
     
     const handleSubmit = () => {
-        //console.log(formData);
-        //Authenticate Admin
-        
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            //console.log(data);
-            axios.post('/api/signin', data)
-            .then((res) => {
-                //console.log(res);
-                toast.success(res.data);
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/login`, formData)
+        .then((res) => {
+            //console.log(res.data);
+            if (res.data.success) {
+                axios.post('/api/signin', res.data)
+                .then((res) => {
+                    //console.log(res)
+                    if(res.status === 200) {
+                        toast.success(res.data);
+                        router.push('/dashboard')
+                    }
+                })
+                .catch((err) => {
+                    //console.log(err)
+                    toast.error(err.message)
+                })
+                toast.success(res.data.message);
                 //redirect to dashboard
-                router.push("/dashboard")
-            })
-            .catch((err) => {
-                //console.log(err);
-                toast.error(err.message);
-            })
+                //router.push('/dashboard')
+            } else {
+                toast.error(res.data.message);
+            }
         })
         .catch((err) => {
             //console.log(err);
