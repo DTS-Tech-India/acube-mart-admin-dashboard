@@ -33,12 +33,14 @@ import { getApiData } from "@/lib/get-api-data";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function AddProduct() {
     const router = useRouter();
     const setValue = useForm();
     const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
     const [images, setImages] = useState([]);
+    const [featuredImage, setFeaturedImage] = useState("");
     const [productData, setProductData] = useState({
         name: "",
         category: "",
@@ -54,6 +56,7 @@ export default function AddProduct() {
         model: "",
         barcode: "",
         sku: "",
+        image: "",
         additionalInfo: {
             isPhysicalProduct: isPhysicalProduct,
             shortDescription: "",
@@ -103,6 +106,15 @@ export default function AddProduct() {
             Array.from(e.target.files).map((file) => {
                 return URL.createObjectURL(file);
             })
+        )
+    }
+
+    const handleChangeFeaturedImage = (e) => {
+        setProductData({ ...productData, image: e.target.files[0] });
+        console.log(productData.image);
+        //Set Image url
+        setFeaturedImage(
+            URL.createObjectURL(e.target.files[0])
         )
     }
 
@@ -252,6 +264,25 @@ export default function AddProduct() {
                         toast.error(err.message);
                     });
                 }
+
+                //send featured image to db
+                const imageData = new FormData();
+                imageData.append("image", productData.image, productData.image.name);
+                imageData.append("productId", data.data._id)
+                imageData.append("isFeatured", true)
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add`, {
+                    method: "POST",
+                    body: imageData,
+                })
+                .then((res) => res.json())
+                .then((data) => {
+                    //console.log(data);
+                    toast.success(data.message);
+                })
+                .catch((err) => {
+                    //console.log(err);
+                    toast.error(err.message);
+                });
 
                 // send multipart formdata for images upload with productId
                 const formData = new FormData();
@@ -657,6 +688,33 @@ export default function AddProduct() {
                                     </SelectContent>
                                 </Select>
                             </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Featured Image
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                            <div>
+                                <Label htmlFor="featuredImage">Image</Label>
+                                <Input type="file" name="featuredImage" onChange={handleChangeFeaturedImage} />
+                            </div>
+                            {featuredImage ? (
+                                <Image
+                                    src={featuredImage}
+                                    alt="product image"
+                                    width={400}
+                                    height={400}
+                                    className="w-full h-full object-cover rounded-md"
+                                />
+                            ):(
+                                <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
+                                    <span className="p-4 rounded-full hover:bg-muted">
+                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                    </span>
+                            </button>
+                            )}
+                            
                         </CardContent>
                     </Card>
                 </div>

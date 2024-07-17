@@ -42,6 +42,7 @@ export default function Page({ params }) {
     const setValue = useForm();
     const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
     const [images, setImages] = useState([]);
+    const [featuredImage, setFeaturedImage] = useState("");
     const [productData, setProductData] = useState({
         name: "",
         category: "",
@@ -57,6 +58,7 @@ export default function Page({ params }) {
         model: "",
         barcode: "",
         sku: "",
+        featuredImage: "",
         additionalInfo: {
             isPhysicalProduct: isPhysicalProduct,
             shortDescription: "",
@@ -112,6 +114,15 @@ export default function Page({ params }) {
             Array.from(e.target.files).map((file) => {
                 return URL.createObjectURL(file);
             })
+        )
+    }
+
+    const handleChangeFeaturedImage = (e) => {
+        setProductData({ ...productData, featuredImage: e.target.files[0] });
+        //console.log(productData.featuredImage);
+        //Set Image url
+        setFeaturedImage(
+            URL.createObjectURL(e.target.files[0])
         )
     }
 
@@ -423,6 +434,21 @@ export default function Page({ params }) {
                                     <Input id="name" placeholder="Type VAT amount..." />
                                 </div>
                             </div>
+                            {/* 
+                            <div className="w-full flex gap-4">
+                               <div className="w-full">
+                                    <Label htmlFor="name">Payment Method</Label>
+                                    <Input name="name" placeholder="Attribute name" value={attribute.name} onChange={handleAttributeChange} />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Charge percentage</Label>
+                                    <Input name="value" placeholder="Attribute value" value={attribute.value} onChange={handleAttributeChange} />
+                                </div>
+                                <Button className="mt-auto" onClick={addNewAttribute}>+ Add</Button>
+                            </div>
+                            <div>
+                                <Label htmlFor="finalPrice">Final Price</Label>
+                            </div> */}
                         </CardContent>
                     </Card>
                     <Card className="w-full h-full">
@@ -669,6 +695,33 @@ export default function Page({ params }) {
                                     </SelectContent>
                                 </Select>
                             </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Featured Image
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                            <div>
+                                <Label htmlFor="price">Image</Label>
+                                <Input type="file" name="featuredImage" onChange={handleChangeFeaturedImage} />
+                            </div>
+                            {product?.featuredImage?.url ? (
+                                <Image
+                                    src={product.featuredImage?.url}
+                                    alt="product featured image"
+                                    width={400}
+                                    height={400}
+                                    className="w-full h-full object-cover rounded-md"
+                                />
+                            ):(
+                                <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
+                                    <span className="p-4 rounded-full hover:bg-muted">
+                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                    </span>
+                            </button>
+                            )}
+                            
                         </CardContent>
                     </Card>
                 </div>
