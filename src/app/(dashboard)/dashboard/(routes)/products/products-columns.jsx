@@ -87,6 +87,7 @@ export const columns = [
                     "font-medium p-1 px-3 flex items-center justify-center rounded-full",
                      status === "published" && "text-green-600 bg-green-100",
                      status === "draft" &&  "text-gray-600 bg-gray-100",
+                     status === "archived" && "text-sky-600 bg-sky-100",
                      status === "out of stock" && "text-red-600 bg-red-100",
                      status === "low stock" && "text-yellow-600 bg-yellow-100",
                      )}>

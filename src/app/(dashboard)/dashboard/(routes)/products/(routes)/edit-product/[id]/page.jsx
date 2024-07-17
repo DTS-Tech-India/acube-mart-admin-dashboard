@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button"; 
 import { toast } from "sonner"
@@ -37,7 +37,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 
 export default function Page({ params }) {
-  
+    
     const router = useRouter();
     const setValue = useForm();
     const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
@@ -69,6 +69,7 @@ export default function Page({ params }) {
 
         },
     });
+    const [updateData, setUpdateData] = useState({});
     const [tags, setTags] = useState([]);
     const [attribute, setAttribute] = useState({
         name: "",
@@ -87,6 +88,11 @@ export default function Page({ params }) {
        queryFn: async() => await getApiDataByQuery(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/${params.id}`),
    })
 
+   useEffect(() => {
+    setProductData(product)
+    console.log(product)
+    }, [product])
+
     const { data: apiData, isLoading: isApiDataLoading, isError: isApiDataError } = useQuery({
         queryKey: ["apiData"],
         queryFn: async() => await getApiData(),
@@ -94,16 +100,20 @@ export default function Page({ params }) {
     
     if (isProductError) return <div>Error while fetching the product</div>
     if (isApiDataError) return <div>Error while fetching the api</div>
+    
+    
     //console.log(product, apiData);
 
     const handleChange = (e) => {
         setProductData({ ...productData, [e.target.name]: e.target.value });
         //console.log(productData);
+        setUpdateData({ ...updateData, [e.target.name]: e.target.value })
     }
 
     const handleChangeAdditionalInfo = (e) => {
         setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, [e.target.name]: e.target.value } });
         //console.log(productData.additionalInfo);
+        setUpdateData({ ...updateData, additionalInfo: { ...productData.additionalInfo, [e.target.name]: e.target.value } })
     }
 
     const handleImagesChange = (e) => {
@@ -115,6 +125,7 @@ export default function Page({ params }) {
                 return URL.createObjectURL(file);
             })
         )
+        setUpdateData({ ...updateData, images: e.target.files })
     }
 
     const handleChangeFeaturedImage = (e) => {
@@ -124,42 +135,49 @@ export default function Page({ params }) {
         setFeaturedImage(
             URL.createObjectURL(e.target.files[0])
         )
+        setUpdateData({ ...updateData, featuredImage: e.target.files[0] })
     }
 
     const handleTypeChange = (value) => {
         setProductData({ ...productData, type: value });
         //console.log(value);
-
+        setUpdateData({ ...updateData, type: value })
     }
 
     const handleStatusChange = (value) => {
         setProductData({ ...productData, status: value });
         //console.log(value);
+        setUpdateData({ ...updateData, status: value })
     }
 
     const handleCategoryChange = (value) => {
         setProductData({ ...productData, category: value });
         //console.log(value);
+        setUpdateData({ ...updateData, category: value })
     }
 
     const handleElementChange = (value) => {
         setProductData({ ...productData, element: value });
         //console.log(value);
+        setUpdateData({ ...updateData, element: value })
     }
 
     const handleBrandChange = (value) => {
         setProductData({ ...productData, brand: value });
         //console.log(value);
+        setUpdateData({ ...updateData, brand: value })
     }
 
     const handleModelChange = (value) => {
         setProductData({ ...productData, model: value });
         //console.log(value);
+        setUpdateData({ ...updateData, model: value })
     }
     const handleChangePhysicalProduct = () => {
         setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, isPhysicalProduct: !isPhysicalProduct } });
         setIsPhysicalProduct(!isPhysicalProduct);
         //console.log(isPhysicalProduct);
+        setUpdateData({ ...updateData, additionalInfo: { ...productData.additionalInfo, isPhysicalProduct: !isPhysicalProduct } })
     }
     const handleAttributeChange = (e) => {
         setAttribute({ ...attribute, [e.target.name]: e.target.value });
@@ -208,19 +226,19 @@ export default function Page({ params }) {
     }
     const handleUpdateProduct = () => {
         // Add product to database
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/update`, {
-            method: "POST",
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/edit/${params.id}`, {
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(productData),
+            body: JSON.stringify(updateData),
         })
         .then((res) => res.json())
         .then((data) => {
-            //console.log(data);
+            console.log(data);
             if (data.success) {
                 toast.success(data.message);
-
+/* 
                 //Add attributes to db
                 for (let i = 0; i < attributes.length; i++) {
                     const attributeData = {
@@ -293,7 +311,7 @@ export default function Page({ params }) {
                 .catch((err) => {
                     //console.log(err);
                     toast.error(err.message);
-                });
+                }); */
             } 
         })
         .catch((err) => {
@@ -325,8 +343,8 @@ export default function Page({ params }) {
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline"><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button onClick={() => {}}>Save Product</Button> 
+                    <Button variant="outline" onClick={() => {console.log(updateData)}}><X className="w-8 h-8 p-2" /> cancel</Button>
+                    <Button onClick={() => {console.log(productData)}}>Save Product</Button> 
                 </div>
             </div>
             {(isApiDataLoading || isProductLoading) ? (
@@ -342,11 +360,11 @@ export default function Page({ params }) {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="name">Name</Label>
-                                <Input name="name" value={product.name} onChange={handleChange} placeholder="Type product name here..." />
+                                <Input name="name" value={productData.name} onChange={handleChange} placeholder="Type product name here..." />
                             </div>
                             <div>
                                 <Label htmlFor="description">Description</Label>
-                                <Textarea name="description" value={product.description} onChange={handleChange} placeholder="Type product description here..." />
+                                <Textarea name="description" value={productData.description} onChange={handleChange} placeholder="Type product description here..." />
                             </div>
                         </CardContent>
                     </Card>
@@ -360,14 +378,25 @@ export default function Page({ params }) {
                                 <Input name="images" type="file" multiple onChange={handleImagesChange} placeholder="Type product name here..." />
                             </div>
                             {/* preview image before upload */}
-                            {product.image.length > 0 ? (
+                            {productData?.image?.length > 0 ? (
+                                <>
                                     <div className="flex gap-4">
-                                        {product.image.map((image) => (
+                                        {productData.image.map((image) => (
                                             <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image._id}>
                                                 <Image src={image.url} alt={image._id} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
                                             </div>
                                         ))}
                                     </div>
+                                    {images.length > 0 ? (
+                                        <div className="flex gap-4">
+                                            {images.map((image) => (
+                                                <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
+                                                    <Image src={image} alt={image} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : null}
+                                </>
                             ) : (
                             <div className="flex gap-4">
                                 <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
@@ -396,7 +425,7 @@ export default function Page({ params }) {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="price">Base Price</Label>
-                                <Input name="price" value={product.price} onChange={handleChange} type="number" min={0} placeholder="Type product base price here..." />
+                                <Input name="price" value={productData.price} onChange={handleChange} type="number" min={0} placeholder="Type product base price here..." />
                             </div>
                             <div className="flex gap-4 w-full">
                                 <div className="w-full">
@@ -458,15 +487,15 @@ export default function Page({ params }) {
                         <CardContent className="flex gap-4">
                             <div className="w-full">
                                 <Label htmlFor="name">SKU</Label>
-                                <Input name="sku" value={product?.sku} placeholder="Product SKU" onChange={handleChange} />
+                                <Input name="sku" value={productData?.sku} placeholder="Product SKU" onChange={handleChange} />
                             </div>
                             <div className="w-full">
                                 <Label htmlFor="description">Barcode</Label>
-                                <Input name="barcode" value={product?.barcode} placeholder="Product Barcode" onChange={handleChange} />
+                                <Input name="barcode" value={productData?.barcode} placeholder="Product Barcode" onChange={handleChange} />
                             </div>
                             <div className="w-full">
                                 <Label htmlFor="description">Quantity</Label>
-                                <Input name="stock" value={product?.stock} onChange={handleChange} type="number" min={1} placeholder="Type product Quantity here..." />
+                                <Input name="stock" value={productData?.stock} onChange={handleChange} type="number" min={1} placeholder="Type product Quantity here..." />
                             </div>
                         </CardContent>
                     </Card>
@@ -503,7 +532,20 @@ export default function Page({ params }) {
                                 
                             
                             </div> */}
-                            {product.attributes && product.attributes.map(attribute => (
+                            {attributes && attributes.map(attribute => (
+                                <div key={attribute.id} className="flex gap-4">
+                                    <div className="w-full">
+                                        <Label htmlFor="name">Attribute name</Label>
+                                        <Input id="name" defaultValue={attribute.name} placeholder="Attribute name" />
+                                    </div>
+                                    <div className="w-full">
+                                        <Label htmlFor="description">Attribute value</Label>
+                                        <Input id="value" defaultValue={attribute.value} placeholder="Attribute value" />
+                                    </div>
+                                    <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteAttribute(attribute.id)} ><X className="w-8 h-8 p-2" /></Button>
+                                </div>
+                            ))}
+                            {productData.attributes && productData.attributes.map(attribute => (
                                 <div key={attribute._id} className="flex gap-4">
                                     <div className="w-full">
                                         <Label htmlFor="name">Attribute name</Label>
@@ -535,7 +577,20 @@ export default function Page({ params }) {
                                 </div>
                                 <Button className="mt-auto" onClick={addNewVarient}>+ Add</Button>
                             </div>
-                            {product.variants && product.variants.map(variant => (
+                            {Varients && Varients.map(Varient => (
+                                <div key={Varient.id} className="flex gap-4">
+                                    <div className="w-full">
+                                        <Label htmlFor="name">Varient name</Label>
+                                        <Input name="name" defaultValue={Varient.name} placeholder="Varient name" />
+                                    </div>
+                                    <div className="w-full">
+                                        <Label htmlFor="description">Varient value</Label>
+                                        <Input name="value" defaultValue={Varient.value} placeholder="Varient value" />
+                                    </div>
+                                    <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
+                                </div>
+                            ))}
+                            {productData.variants && productData.variants.map(variant => (
                                 <div key={variant._id} className="flex gap-4">
                                     <div className="w-full">
                                         <Label htmlFor="name">Varient name</Label>
@@ -556,34 +611,34 @@ export default function Page({ params }) {
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                             <div className="flex gap-2">
-                                <Checkbox name="isPhysicalProduct" defaultChecked={product?.additionalInfo?.isPhysicalProduct} onCheckedChange={handleChangePhysicalProduct} />
+                                <Checkbox name="isPhysicalProduct" defaultChecked={productData?.additionalInfo?.isPhysicalProduct} onCheckedChange={handleChangePhysicalProduct} />
                                 <Label htmlFor="physical">This is a physical product</Label>
                             </div>
                             <div className="flex gap-4">
                                <div className="w-full">
                                     <Label htmlFor="dimension">Dimension</Label>
-                                    <Input name="dimension" value={product?.additionalInfo?.dimension} placeholder="12x12x12 cm" onChange={handleChangeAdditionalInfo} />
+                                    <Input name="dimension" value={productData?.additionalInfo?.dimension} placeholder="12x12x12 cm" onChange={handleChangeAdditionalInfo} />
                                 </div>
                                 <div className="w-full">
                                     <Label htmlFor="weight">Weight</Label>
-                                    <Input name="weight" value={product?.additionalInfo?.weight} placeholder="weight (kg)" onChange={handleChangeAdditionalInfo} />
+                                    <Input name="weight" value={productData?.additionalInfo?.weight} placeholder="weight (kg)" onChange={handleChangeAdditionalInfo} />
                                 </div>
                                 
                             </div>
                             <div className="flex gap-4">
                                 <div className="w-full">
                                     <Label htmlFor="material">Materials</Label>
-                                    <Input name="materials" value={product?.additionalInfo?.materials} placeholder="materials" onChange={handleChangeAdditionalInfo} />
+                                    <Input name="materials" value={productData?.additionalInfo?.materials} placeholder="materials" onChange={handleChangeAdditionalInfo} />
                                 </div>
                                 <div className="w-full">
                                     <Label htmlFor="lable">Lables</Label>
-                                    <Input name="labels" value={product?.additionalInfo?.labels} placeholder="lables" onChange={handleChangeAdditionalInfo} />
+                                    <Input name="labels" value={productData?.additionalInfo?.labels} placeholder="lables" onChange={handleChangeAdditionalInfo} />
                                 </div> 
                             </div>
                             <div className="flex gap-4">
                                 <div className="w-full">
                                     <Label htmlFor="shortDescription">Short Description</Label>
-                                    <Textarea name="shortDescription" value={product?.additionalInfo?.shortDescription} placeholder="Type short description here ..." onChange={handleChangeAdditionalInfo} />
+                                    <Textarea name="shortDescription" value={productData?.additionalInfo?.shortDescription} placeholder="Type short description here ..." onChange={handleChangeAdditionalInfo} />
                                 </div>
                             </div>
                             
@@ -595,17 +650,17 @@ export default function Page({ params }) {
                         <CardHeader className=" flex flex-row items-center justify-between">
                             <span className="font-semibold">Status</span>
                             <span className={cn("p-1 px-3 rounded-full  text-xs",
-                                product.status === "published" && "bg-green-100 text-green-600",
-                                product.status === "archived" && "bg-sky-200 text-sky-600",
-                                product.status === "draft" && "bg-gray-100 text-gray-600",
+                                productData.status === "published" && "bg-green-100 text-green-600",
+                                productData.status === "archived" && "bg-sky-200 text-sky-600",
+                                productData.status === "draft" && "bg-gray-100 text-gray-600",
                             )}>
-                                {product.status}
+                                {productData.status}
                             </span>
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Product Status</Label>
-                                <Select value={product.status} onValueChange={(value) => handleStatusChange(value)}>
+                                <Select value={productData.status} onValueChange={(value) => handleStatusChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select status" />
                                     </SelectTrigger>
@@ -625,7 +680,7 @@ export default function Page({ params }) {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Type</Label>
-                                <Select value={product.type._id} onValueChange={(value) => handleTypeChange(value)}>
+                                <Select value={productData.type._id} onValueChange={(value) => handleTypeChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select type" />
                                     </SelectTrigger>
@@ -638,7 +693,7 @@ export default function Page({ params }) {
                             </div>
                             <div>
                                 <Label htmlFor="status">Category</Label>
-                                <Select value={product.category._id} onValueChange={(value) => handleCategoryChange(value)}>
+                                <Select value={productData.category._id} onValueChange={(value) => handleCategoryChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a category" />
                                     </SelectTrigger>
@@ -651,7 +706,7 @@ export default function Page({ params }) {
                             </div>
                             <div>
                                 <Label htmlFor="status">Element</Label>
-                                <Select value={product.element._id} onValueChange={(value) => handleElementChange(value)}>
+                                <Select value={productData.element._id} onValueChange={(value) => handleElementChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select an element" />
                                     </SelectTrigger>
@@ -671,7 +726,7 @@ export default function Page({ params }) {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="price">Brand</Label>
-                                <Select value={product.brand._id} onValueChange={(value) => handleBrandChange(value)}>
+                                <Select value={productData.brand._id} onValueChange={(value) => handleBrandChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a brand" />
                                     </SelectTrigger>
@@ -684,7 +739,7 @@ export default function Page({ params }) {
                             </div>
                             <div>
                                 <Label htmlFor="price">Model</Label>
-                                <Select value={product.model._id} onValueChange={(value) => handleModelChange(value)}>
+                                <Select value={productData.model._id} onValueChange={(value) => handleModelChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a model" />
                                     </SelectTrigger>
@@ -708,7 +763,7 @@ export default function Page({ params }) {
                             </div>
                             {product?.featuredImage?.url ? (
                                 <Image
-                                    src={product.featuredImage?.url}
+                                    src={productData.featuredImage?.url}
                                     alt="product featured image"
                                     width={400}
                                     height={400}
@@ -733,7 +788,7 @@ export default function Page({ params }) {
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline"><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button /* onClick={handleUpdateProduct} */>Add Product</Button> 
+                    <Button onClick={handleUpdateProduct}>Add Product</Button> 
                 </div>
             </div>
             </>
