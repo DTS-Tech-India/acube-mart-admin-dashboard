@@ -625,11 +625,11 @@ export default function Page({ params }) {
                             </div>
                             <div className="flex gap-4">
                                <div className="w-full">
-                                    <Label htmlFor="dimension">Dimension</Label>
+                                    <Label htmlFor="dimension">Dimension(cm)</Label>
                                     <Input name="dimension" value={productData?.additionalInfo?.dimension} placeholder="12x12x12 cm" onChange={handleChangeAdditionalInfo} />
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="weight">Weight</Label>
+                                    <Label htmlFor="weight">Weight(kg)</Label>
                                     <Input name="weight" value={productData?.additionalInfo?.weight} placeholder="weight (kg)" onChange={handleChangeAdditionalInfo} />
                                 </div>
                                 
