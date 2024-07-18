@@ -41,6 +41,7 @@ export default function AddProduct() {
     const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
     const [images, setImages] = useState([]);
     const [featuredImage, setFeaturedImage] = useState("");
+    const [variantImage, setVariantImage] = useState("");
     const [productData, setProductData] = useState({
         name: "",
         category: "",
@@ -75,8 +76,14 @@ export default function AddProduct() {
     const [Varient, setVarient] = useState({
         name: "",
         value: "",
-    })
-    
+        productId: "",
+        price: "",
+        image: "",
+        variantAttributes: [{
+            name: "",
+            value: "",
+        }],
+    });
     const [attributes, setAttributes] = useState([]);
     const [Varients, setVarients] = useState([]);
     const { data, isLoading, isError } = useQuery({
@@ -182,8 +189,8 @@ export default function AddProduct() {
     }
 
     const addNewVarient = () => {
-        if (Varient.name === "" || Varient.value === "") {
-            toast.error("Please fill variant name and value");
+        if (Varient.name === "" || Varient.value ==="" /* || Varient.price === "" || Varient.image === "" || Varient.value === "" || Varient.variantAttributes[0].name === "" || Varient.variantAttributes[0].value === "" */) {
+            toast.error("Please fill all fields");
             return;
         }
         setVarients([...Varients, {
@@ -313,7 +320,9 @@ export default function AddProduct() {
         });
     }
 
-    
+    const handleCancelButton = () => {
+        router.push("/dashboard/products");
+    }
     
     return (
         <div className="w-full h-full flex flex-col gap-4">
@@ -337,7 +346,7 @@ export default function AddProduct() {
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline"><X className="w-8 h-8 p-2" /> cancel</Button>
+                    <Button variant="outline" onClick={handleCancelButton /* () => console.log(productData) */}><X className="w-8 h-8 p-2" /> cancel</Button>
                     <Button onClick={handleAddProduct}>Add Product</Button> 
                 </div>
             </div>
@@ -395,6 +404,10 @@ export default function AddProduct() {
                                 </button>
                             </div>
                             )}
+                            <div>
+                                <Label htmlFor="video">Video Link</Label>
+                                <Input name="video" type="text" onChange={handleChange} placeholder="Paste video link here..." />
+                            </div>
                         </CardContent>
                     </Card>
                     <Card className="w-full h-full">
@@ -402,45 +415,56 @@ export default function AddProduct() {
                             Pricing
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
-                            <div>
-                                <Label htmlFor="price">Base Price</Label>
-                                <Input name="price" onChange={handleChange} type="number" min={0} placeholder="Type product base price here..." />
-                            </div>
                             <div className="flex gap-4 w-full">
                                 <div className="w-full">
-                                    <Label htmlFor="description">Discount Type</Label>
-                                    <Select>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="draft">Draft</SelectItem>
-                                            <SelectItem value="published">Published</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <Label htmlFor="price">Maximum Retail Price(INR)</Label>
+                                    <Input name="price" onChange={handleChange} type="number" min={0} placeholder="Type MRP here..." />
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="description">Discount Percentage (%)</Label>
-                                    <Input id="name" placeholder="Type product base price..." />
+                                    <Label htmlFor="discount">Discount Percentage (%)</Label>
+                                    <Input name="discount" type="number" min={0} max={100} onChange={handleChange} placeholder="Type discount percentage..." />
+                                </div>
+                            </div>
+                            <div className="flex gap-4 w-full">
+                                {/* <div className="w-full">
+                                    <Label htmlFor="paymentMethods">Payment Methods</Label>
+                                    <Select>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select payment methods" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="online">Online(UPI, Debit Card, Credit Card, Net Banking)</SelectItem>
+                                            <SelectItem value="cod">Cash On Delivery(COD)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div> */}
+                                <div className="w-full">
+                                    <Label htmlFor="price">Selling Price(INR)</Label>
+                                    <Input name="sp" onChange={handleChange} type="number" min={0} placeholder="Type SP here..." />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Delivery Charges(INR)</Label>
+                                    <Input name="deliveryCharges" type="number" min={0} max={100} onChange={handleChange} placeholder="Type COD charges..." />
                                 </div>
                             </div>
                             <div className="w-full flex gap-4">
                                 <div className="w-full">
                                     <Label htmlFor="description">Tax Class</Label>
-                                    <Select>
+                                    <Select defaultValue="0">
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select status" />
+                                            <SelectValue placeholder="Select tax class" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="draft">Draft</SelectItem>
-                                            <SelectItem value="published">Published</SelectItem>
+                                            <SelectItem value="0">0</SelectItem>
+                                            <SelectItem value="other">Other</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="description">VAT Amount (%)</Label>
-                                    <Input id="name" placeholder="Type VAT amount..." />
+                                    <Label htmlFor="codCharges">COD Charges(INR)</Label>
+                                    <Input name="codCharges" type="number" min={0} onChange={handleChange} placeholder="Type COD charges..." />
                                 </div>
+                                
                             </div>
                         </CardContent>
                     </Card>
@@ -517,30 +541,66 @@ export default function AddProduct() {
                             Varients
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
+                            
                             <div className="flex gap-4">
                                <div className="w-full">
                                     <Label htmlFor="name">Varient name</Label>
                                     <Input name="name" placeholder="Varient name" value={Varient.name} onChange={handleVarientChange} />
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="description">Varient value</Label>
+                                    <Label htmlFor="price">Varient value</Label>
                                     <Input name="value" placeholder="Varient value" value={Varient.value} onChange={handleVarientChange} />
                                 </div>
                                 <Button className="mt-auto" onClick={addNewVarient}>+ Add</Button>
                             </div>
+                            <div className="grid grid-cols-2 gap-4">
+                              {attributes && attributes.map(attribute => (
+                                    <div key={attribute.id} className="w-full">
+                                        <div>
+                                            <Label htmlFor="name">{attribute.name}</Label>
+                                            <Input name={attribute.name} placeholder="Varient name" />
+                                        </div>
+                                        <div className="w-full">
+                                            <Label htmlFor="description">Attribute value</Label>
+                                            <Input id="value" defaultValue={attribute.value} placeholder="Varient value" />
+                                        </div>
+                                        <Button className="mt-auto" onClick={addNewVarient}>+ Add</Button>
+                                 </div>
+                                
+                            ))}  
+                               
+                            </div>
+                             {/* <div className="flex gap-4 w-full">
+                                    <Input 
+                                        name="varientImage"
+                                        type="file"
+
+                                        />
+                                    {variantImage ? (
+                                        <Image src={"https://picsum.photos/400"} alt="varientImage" width={400} height={400} />
+                                        ) : (
+                                            <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
+                                                <span className="p-4 rounded-full hover:bg-muted">
+                                                    <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                                </span>
+                                            </button>
+                                        )}
+                            </div> */}
+                            
                             {Varients && Varients.map(Varient => (
-                                <div key={Varient.id} className="flex gap-4">
-                                    <div className="w-full">
-                                        <Label htmlFor="name">Varient name</Label>
-                                        <Input name="name" defaultValue={Varient.name} placeholder="Varient name" />
+                                    <div key={Varient.id} className="flex gap-4">
+                                        <div className="w-full">
+                                            <Label htmlFor="name">Varient name</Label>
+                                            <Input name="name" defaultValue={Varient.name} placeholder="Varient name" />
+                                        </div>
+                                        <div className="w-full">
+                                            <Label htmlFor="description">Varient value</Label>
+                                            <Input name="value" defaultValue={Varient.value} placeholder="Varient value" />
+                                        </div>
+                                        <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
                                     </div>
-                                    <div className="w-full">
-                                        <Label htmlFor="description">Varient value</Label>
-                                        <Input name="value" defaultValue={Varient.value} placeholder="Varient value" />
-                                    </div>
-                                    <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
-                                </div>
                             ))}
+                            
                         </CardContent>
                     </Card>
                     <Card className="w-full h-full">
@@ -554,11 +614,11 @@ export default function AddProduct() {
                             </div>
                             <div className="flex gap-4">
                                <div className="w-full">
-                                    <Label htmlFor="dimension">Dimension</Label>
+                                    <Label htmlFor="dimension">Dimension(cm)</Label>
                                     <Input name="dimension" placeholder="12x12x12 cm" onChange={handleChangeAdditionalInfo} />
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="weight">Weight</Label>
+                                    <Label htmlFor="weight">Weight(kg)</Label>
                                     <Input name="weight" placeholder="weight (kg)" onChange={handleChangeAdditionalInfo} />
                                 </div>
                                 
@@ -725,7 +785,7 @@ export default function AddProduct() {
                     <p className="px-4 p-1 bg-green-50 text-green-500 rounded-full">0%</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline"><X className="w-8 h-8 p-2" /> cancel</Button>
+                    <Button variant="outline" onClick={handleCancelButton}><X className="w-8 h-8 p-2" /> cancel</Button>
                     <Button onClick={handleAddProduct}>Add Product</Button> 
                 </div>
             </div>

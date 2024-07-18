@@ -83,15 +83,17 @@ export default function Page({ params }) {
     const [attributes, setAttributes] = useState([]);
     const [Varients, setVarients] = useState([]);
 
-   const {data: product, isLoading: isProductLoading, isError: isProductError} = useQuery({
+   const {data: product, isLoading: isProductLoading, isError: isProductError, isSuccess} = useQuery({
        queryKey: ["product"],
        queryFn: async() => await getApiDataByQuery(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/${params.id}`),
    })
 
    useEffect(() => {
-    setProductData(product)
-    console.log(product)
-    }, [product])
+    if(isSuccess){
+        setProductData(product)
+    }
+    //console.log(product)
+    }, [isSuccess, product])
 
     const { data: apiData, isLoading: isApiDataLoading, isError: isApiDataError } = useQuery({
         queryKey: ["apiData"],
@@ -320,6 +322,9 @@ export default function Page({ params }) {
         });
     }
 
+    const handleCancelButton = () => {
+        router.push("/dashboard/products");
+    }
  
     return (
       <div className="w-full h-full flex flex-col gap-4">
@@ -343,8 +348,8 @@ export default function Page({ params }) {
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={() => {console.log(updateData)}}><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button onClick={() => {console.log(productData)}}>Save Product</Button> 
+                    <Button variant="outline" onClick={handleCancelButton}><X className="w-8 h-8 p-2" /> cancel</Button>
+                    <Button onClick={handleUpdateProduct}>Save Product</Button> 
                 </div>
             </div>
             {(isApiDataLoading || isProductLoading) ? (
@@ -416,6 +421,10 @@ export default function Page({ params }) {
                                 </button>
                             </div>
                             )}
+                            <div>
+                                <Label htmlFor="video">Video Link</Label>
+                                <Input name="video" type="text" onChange={handleChange} value={productData?.video} placeholder="Paste video link here..." />
+                            </div>
                         </CardContent>
                     </Card>
                     <Card className="w-full h-full">
@@ -423,44 +432,44 @@ export default function Page({ params }) {
                             Pricing
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
-                            <div>
-                                <Label htmlFor="price">Base Price</Label>
-                                <Input name="price" value={productData.price} onChange={handleChange} type="number" min={0} placeholder="Type product base price here..." />
-                            </div>
                             <div className="flex gap-4 w-full">
                                 <div className="w-full">
-                                    <Label htmlFor="description">Discount Type</Label>
-                                    <Select>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="draft">Draft</SelectItem>
-                                            <SelectItem value="published">Published</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <Label htmlFor="price">Maximum Retail Price(INR)</Label>
+                                    <Input name="price" value={productData.price} onChange={handleChange} type="number" min={0} placeholder="Type product base price here..." />
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="description">Discount Percentage (%)</Label>
-                                    <Input id="name" placeholder="Type product base price..." />
+                                    <Label htmlFor="discount">Discount Percentage (%)</Label>
+                                    <Input name="discount" value={productData?.discount} type="number" min={0} max={100} onChange={handleChange} placeholder="Type discount percentage..." />
+                                </div>
+                            </div>
+                            
+                            
+                            <div className="flex gap-4 w-full">
+                            <div className="w-full">
+                                    <Label htmlFor="price">Selling Price(INR)</Label>
+                                    <Input name="sp" value={productData?.sp} onChange={handleChange} type="number" min={0} placeholder="Type SP here..." />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Delivery Charges(INR)</Label>
+                                    <Input name="deliveryCharges" value={productData?.deliveryCharges} type="number" min={0} max={100} onChange={handleChange} placeholder="Type COD charges..." />
                                 </div>
                             </div>
                             <div className="w-full flex gap-4">
-                                <div className="w-full">
+                            <div className="w-full">
                                     <Label htmlFor="description">Tax Class</Label>
-                                    <Select>
+                                    <Select defaultValue="0">
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select status" />
+                                            <SelectValue placeholder="Select tax class" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="draft">Draft</SelectItem>
-                                            <SelectItem value="published">Published</SelectItem>
+                                            <SelectItem value="0">0</SelectItem>
+                                            <SelectItem value="other">Other</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="description">VAT Amount (%)</Label>
-                                    <Input id="name" placeholder="Type VAT amount..." />
+                                    <Label htmlFor="codCharges">COD Charges(INR)</Label>
+                                    <Input name="codCharges" value={productData?.codCharges} type="number" min={0} onChange={handleChange} placeholder="Type COD charges..." />
                                 </div>
                             </div>
                             {/* 
@@ -761,7 +770,7 @@ export default function Page({ params }) {
                                 <Label htmlFor="price">Image</Label>
                                 <Input type="file" name="featuredImage" onChange={handleChangeFeaturedImage} />
                             </div>
-                            {product?.featuredImage?.url ? (
+                            {productData?.featuredImage?.url ? (
                                 <Image
                                     src={productData.featuredImage?.url}
                                     alt="product featured image"
@@ -787,7 +796,7 @@ export default function Page({ params }) {
                     <p className="px-4 p-1 bg-green-50 text-green-500 rounded-full">0%</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline"><X className="w-8 h-8 p-2" /> cancel</Button>
+                    <Button variant="outline" onClick={handleCancelButton}><X className="w-8 h-8 p-2" /> cancel</Button>
                     <Button onClick={handleUpdateProduct}>Add Product</Button> 
                 </div>
             </div>
