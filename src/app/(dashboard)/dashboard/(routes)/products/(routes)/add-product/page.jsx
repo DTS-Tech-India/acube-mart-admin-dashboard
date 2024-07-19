@@ -116,7 +116,7 @@ export default function AddProduct() {
 
     const handleChangeFeaturedImage = (e) => {
         setProductData({ ...productData, image: e.target.files[0] });
-        console.log(productData.image);
+        //console.log(productData.image);
         //Set Image url
         setFeaturedImage(
             URL.createObjectURL(e.target.files[0])
@@ -195,14 +195,14 @@ export default function AddProduct() {
     const handleOnVarientAttributeSelect = () => {
         setVarient({ ...Varient, variantAttributes: [...Varient.variantAttributes, { id: Varient.variantAttributes.length, name: tempVarientAttributes.name, value: tempVarientAttributes.value }] });
         setVarientAttributes([...varientAttributes, {id: varientAttributes.length, name: tempVarientAttributes.name, value: tempVarientAttributes.value}]);
-        console.log(Varient);
-        console.log(tempVarientAttributes);
+        //console.log(Varient);
+        //console.log(tempVarientAttributes);
         setTempVarientAttributes({ ...tempVarientAttributes, value: "" });
     }
 
     const handleVarientImageChange = (e) => {
         setVarient({ ...Varient, image: e.target.files[0]});
-        console.log(Varient);
+        //console.log(Varient);
         //Set Image url
         if(e.target.files[0] === undefined) return setVariantImage("");
         setVariantImage(
@@ -225,7 +225,7 @@ export default function AddProduct() {
         }]);
         setVarient({ name: "", value: "", price: "", image: "" , variantAttributes: []});
         setVariantImage("");
-        console.log(Varients);
+        //console.log(Varients);
     }
     const handleDeleteVarient = (id) => {
         setVarients(Varients.filter((Varient) => Varient.id !== id));
@@ -279,7 +279,7 @@ export default function AddProduct() {
                         variantAttributes: Varients[i].variantAttributes,
                         productId: data.data._id,
                     };
-                    console.log(varientsData);
+                    //console.log(varientsData);
                     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/add`, {
                         method: "POST",
                         headers: {
@@ -289,7 +289,7 @@ export default function AddProduct() {
                     })
                     .then((res) => res.json())
                     .then((data) => {
-                        console.log(data);
+                        //console.log(data);
                         //Add variant image to db
                         const imageData = new FormData();
                         imageData.append("image", Varients[i].image, Varients[i].image.name);
@@ -301,17 +301,17 @@ export default function AddProduct() {
                         })
                         .then((res) => res.json())
                         .then((data) => {
-                            console.log(data);
+                            //console.log(data);
                             toast.success(data.message);
                         })
                         .catch((err) => {
-                            console.log(err);
+                            //console.log(err);
                             toast.error(err.message);
                         });
                         toast.success(data.message);
                     })
                     .catch((err) => {
-                        console.log(err);
+                        //console.log(err);
                         toast.error(err.message);
                     });
                 }

@@ -223,14 +223,14 @@ export default function Page({ params }) {
     const handleOnVarientAttributeSelect = () => {
         setVarient({ ...Varient, variantAttributes: [...Varient.variantAttributes, { id: Varient.variantAttributes.length, name: tempVarientAttributes.name, value: tempVarientAttributes.value }] });
         setVarientAttributes([...varientAttributes, {id: varientAttributes.length, name: tempVarientAttributes.name, value: tempVarientAttributes.value}]);
-        console.log(Varient);
-        console.log(tempVarientAttributes);
+        //console.log(Varient);
+        //console.log(tempVarientAttributes);
         setTempVarientAttributes({ ...tempVarientAttributes, value: "" });
     }
 
     const handleVarientImageChange = (e) => {
         setVarient({ ...Varient, image: e.target.files[0]});
-        console.log(Varient);
+        //console.log(Varient);
         //Set Image url
         if(e.target.files[0] === undefined) return setVariantImage("");
         setVariantImage(
