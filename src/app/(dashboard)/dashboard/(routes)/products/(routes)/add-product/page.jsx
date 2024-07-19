@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button"; 
 import { toast } from "sonner"
-import { TagInput } from 'emblor';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -30,14 +29,12 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { getApiData } from "@/lib/get-api-data";
-import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
 export default function AddProduct() {
     const router = useRouter();
-    const setValue = useForm();
     const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
     const [images, setImages] = useState([]);
     const [featuredImage, setFeaturedImage] = useState("");
@@ -71,21 +68,22 @@ export default function AddProduct() {
     const [tags, setTags] = useState([]);
     const [attribute, setAttribute] = useState({
         name: "",
-        value: "",
+        value: [],
     });
     const [Varient, setVarient] = useState({
         name: "",
-        value: "",
-        productId: "",
         price: "",
         image: "",
-        variantAttributes: [{
-            name: "",
-            value: "",
-        }],
+        imageUrl: "",
+        variantAttributes: [],
     });
     const [attributes, setAttributes] = useState([]);
     const [Varients, setVarients] = useState([]);
+    const [tempVarientAttributes, setTempVarientAttributes] = useState({
+        name: "",
+        value: "",
+    });
+    const [varientAttributes, setVarientAttributes] = useState([]);
     const { data, isLoading, isError } = useQuery({
         queryKey: ["apiData"],
         queryFn: async() => await getApiData(),
@@ -173,7 +171,7 @@ export default function AddProduct() {
         setAttributes([...attributes, {
             id: attributes.length,
             name: attribute.name,
-            value: attribute.value,
+            value: attribute.value.split(",").map((value) => value.trim()),
         }]);
         setAttribute({ name: "", value: "" });
         //console.log(attributes);
@@ -188,20 +186,47 @@ export default function AddProduct() {
         //console.log(attribute);
     }
 
+    const addTepmoraryAttributeName = (value) => {
+        setTempVarientAttributes({ ...tempVarientAttributes, name: value });
+    }
+    const addTepmoraryAttributeValue = (value) => {
+        setTempVarientAttributes({...tempVarientAttributes, value: value});
+    }
+    const handleOnVarientAttributeSelect = () => {
+        setVarient({ ...Varient, variantAttributes: [...Varient.variantAttributes, { id: Varient.variantAttributes.length, name: tempVarientAttributes.name, value: tempVarientAttributes.value }] });
+        setVarientAttributes([...varientAttributes, {id: varientAttributes.length, name: tempVarientAttributes.name, value: tempVarientAttributes.value}]);
+        console.log(Varient);
+        console.log(tempVarientAttributes);
+        setTempVarientAttributes({ ...tempVarientAttributes, value: "" });
+    }
+
+    const handleVarientImageChange = (e) => {
+        setVarient({ ...Varient, image: e.target.files[0]});
+        console.log(Varient);
+        //Set Image url
+        if(e.target.files[0] === undefined) return setVariantImage("");
+        setVariantImage(
+            URL.createObjectURL(e.target.files[0])
+        )
+    }
+
     const addNewVarient = () => {
-        if (Varient.name === "" || Varient.value ==="" /* || Varient.price === "" || Varient.image === "" || Varient.value === "" || Varient.variantAttributes[0].name === "" || Varient.variantAttributes[0].value === "" */) {
+        if (Varient.name === "" || Varient.price === "" || Varient.image === "") {
             toast.error("Please fill all fields");
             return;
         }
+        console.log(Varient);
         setVarients([...Varients, {
             id: Varients.length,
             name: Varient.name,
-            value: Varient.value,
+            price: Varient.price,
+            image: Varient.image,
+            variantAttributes: Varient.variantAttributes
         }]);
-        setVarient({ name: "", value: "" });
-        //console.log(attributes);
+        setVarient({ name: "", value: "", price: "", image: "" , variantAttributes: []});
+        setVariantImage("");
+        console.log(Varients);
     }
-
     const handleDeleteVarient = (id) => {
         setVarients(Varients.filter((Varient) => Varient.id !== id));
     }
@@ -219,12 +244,12 @@ export default function AddProduct() {
             //console.log(data);
             if (data.success) {
                 toast.success(data.message);
-
+                const productId = data.data._id;
                 //Add attributes to db
                 for (let i = 0; i < attributes.length; i++) {
                     const attributeData = {
                         name: attributes[i].name,
-                        value: [attributes[i].value],
+                        value: attributes[i].value,
                         productId: data.data._id,
                     };
                     //console.log(attributeData);
@@ -250,10 +275,11 @@ export default function AddProduct() {
                 for (let i = 0; i < Varients.length; i++) {
                     const varientsData = {
                         name: Varients[i].name,
-                        value: Varients[i].value,
+                        price: Varients[i].price,
+                        variantAttributes: Varients[i].variantAttributes,
                         productId: data.data._id,
                     };
-                    //console.log(varientsData);
+                    console.log(varientsData);
                     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/add`, {
                         method: "POST",
                         headers: {
@@ -263,11 +289,29 @@ export default function AddProduct() {
                     })
                     .then((res) => res.json())
                     .then((data) => {
-                        //console.log(data);
+                        console.log(data);
+                        //Add variant image to db
+                        const imageData = new FormData();
+                        imageData.append("image", Varients[i].image, Varients[i].image.name);
+                        imageData.append("variantId", data.data._id)
+                        imageData.append("productId", productId)
+                        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add`, {
+                            method: "POST",
+                            body: imageData,
+                        })
+                        .then((res) => res.json())
+                        .then((data) => {
+                            console.log(data);
+                            toast.success(data.message);
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            toast.error(err.message);
+                        });
                         toast.success(data.message);
                     })
                     .catch((err) => {
-                        //console.log(err);
+                        console.log(err);
                         toast.error(err.message);
                     });
                 }
@@ -504,22 +548,14 @@ export default function AddProduct() {
                                 </div>
                                 <Button className="mt-auto" onClick={addNewAttribute}>+ Add</Button>
                             </div>
-                           {/*  <div className="flex gap-4">
+                            <div className="flex gap-4">
                                 <div className="w-full">
                                   <Label htmlFor="description">Attribute values</Label>
-                                    <TagInput
-                                        //placeholder="Enter a attribute"
-                                        tags={tags}
-                                        className=""
-                                        setTags={(newTags) => {
-                                            setTags(newTags);
-                                            //setValue('value', newTags);
-                                        }}
-                                    />  
+                                    
                                 </div>
                                 
                             
-                            </div> */}
+                            </div>
                             {attributes && attributes.map(attribute => (
                                 <div key={attribute.id} className="flex gap-4">
                                     <div className="w-full">
@@ -548,36 +584,62 @@ export default function AddProduct() {
                                     <Input name="name" placeholder="Varient name" value={Varient.name} onChange={handleVarientChange} />
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="price">Varient value</Label>
-                                    <Input name="value" placeholder="Varient value" value={Varient.value} onChange={handleVarientChange} />
+                                    <Label htmlFor="price">Varient price</Label>
+                                    <Input name="price" type="number" placeholder="Varient price" min={0} value={Varient.price} onChange={handleVarientChange} />
                                 </div>
-                                <Button className="mt-auto" onClick={addNewVarient}>+ Add</Button>
+                                
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
-                              {attributes && attributes.map(attribute => (
-                                    <div key={attribute.id} className="w-full">
-                                        <div>
-                                            <Label htmlFor="name">{attribute.name}</Label>
-                                            <Input name={attribute.name} placeholder="Varient name" />
+                            {attributes.length > 0 &&
+                                    <div className="w-full flex gap-4">
+                                        <Select name="name" onValueChange={(value) => addTepmoraryAttributeName(value)}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select Varient attributes type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {attributes.map(attribute => (
+                                                    <SelectItem key={attribute.id} value={attribute.name}>{attribute.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <Select name="value" onValueChange={(value) => addTepmoraryAttributeValue(value)}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select Varient attributes type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {attributes.map(attribute => (
+                                                    <div key={attribute.id}>
+                                                        {attribute.value.length > 0 && attribute.name === tempVarientAttributes.name && attribute.value.map((value) => (
+                                                            <SelectItem key={value} value={value}>{value}</SelectItem>
+                                                        ))}
+                                                        
+                                                    </div>
+                                                    
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <Button onClick={handleOnVarientAttributeSelect}>+ Add</Button>
+                                    </div>
+                                }
+                                {Varient.variantAttributes.length > 0 && Varient.variantAttributes.map(attribute => (
+                                    <div key={attribute.id} className="flex gap-4">
+                                        <div className="w-full">
+                                            <Label htmlFor="name">Varient name</Label>
+                                            <Input id="name" defaultValue={attribute.name} placeholder="Varient name" />
                                         </div>
                                         <div className="w-full">
-                                            <Label htmlFor="description">Attribute value</Label>
+                                            <Label htmlFor="value">Varient value</Label>
                                             <Input id="value" defaultValue={attribute.value} placeholder="Varient value" />
                                         </div>
-                                        <Button className="mt-auto" onClick={addNewVarient}>+ Add</Button>
-                                 </div>
-                                
-                            ))}  
-                               
-                            </div>
-                             {/* <div className="flex gap-4 w-full">
+                                    </div>
+                                ))}
+                             <div className="flex gap-4 w-full">
                                     <Input 
                                         name="varientImage"
                                         type="file"
-
+                                        onChange={handleVarientImageChange}
                                         />
                                     {variantImage ? (
-                                        <Image src={"https://picsum.photos/400"} alt="varientImage" width={400} height={400} />
+                                        <Image src={variantImage} alt="varientImage" width={400} height={400} className="w-full h-full object-cover rounded-md aspect-square max-w-sm" />
                                         ) : (
                                             <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
                                                 <span className="p-4 rounded-full hover:bg-muted">
@@ -585,20 +647,37 @@ export default function AddProduct() {
                                                 </span>
                                             </button>
                                         )}
-                            </div> */}
+                            </div>
+                            <div>
+                                <Button className="mt-auto" onClick={addNewVarient}>+ Add Varient</Button>
+                            </div>
                             
                             {Varients && Varients.map(Varient => (
-                                    <div key={Varient.id} className="flex gap-4">
+                                <div className="rounded-md bg-muted border border-dotted p-4 flex flex-col gap-4" key={Varient.id}>
+                                    <div  className="flex gap-4">
                                         <div className="w-full">
                                             <Label htmlFor="name">Varient name</Label>
                                             <Input name="name" defaultValue={Varient.name} placeholder="Varient name" />
                                         </div>
                                         <div className="w-full">
-                                            <Label htmlFor="description">Varient value</Label>
-                                            <Input name="value" defaultValue={Varient.value} placeholder="Varient value" />
+                                            <Label htmlFor="description">Varient price</Label>
+                                            <Input name="price" defaultValue={Varient.price} placeholder="Varient value" />
                                         </div>
                                         <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
                                     </div>
+                                        {Varient.variantAttributes && Varient.variantAttributes.map(attribute => (
+                                            <div key={attribute.id} className="flex flex-col gap-4">
+                                                <div className="w-full">
+                                                    <Label htmlFor="name">{attribute.name}</Label>
+                                                    <Input id="value" defaultValue={attribute.value} placeholder="Attribute value" />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    <div className="w-full flex gap-4">
+                                        <Image src={URL.createObjectURL(Varient.image)} alt="varientImage" width={400} height={400} className="w-full h-full max-w-sm aspect-square object-cover rounded-md" />
+                                    </div>
+                                    
+                                </div>
                             ))}
                             
                         </CardContent>
