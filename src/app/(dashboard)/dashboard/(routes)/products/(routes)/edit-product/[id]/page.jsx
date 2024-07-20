@@ -587,16 +587,16 @@ export default function Page({ params }) {
                     </Card>
                     <Card className="w-full h-full">
                         <CardHeader className="font-semibold">
-                            Varients
+                            Variants
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                             <div className="flex gap-4">
                                <div className="w-full">
-                                    <Label htmlFor="name">Varient name</Label>
+                                    <Label htmlFor="name">Variant name</Label>
                                     <Input name="name" placeholder="Varient name" value={Varient.name} onChange={handleVarientChange} />
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="price">Varient price</Label>
+                                    <Label htmlFor="price">Variant price</Label>
                                     <Input name="price" type="number" placeholder="Varient price" min={0} value={Varient.price} onChange={handleVarientChange} />
                                 </div>
                                 
@@ -605,7 +605,7 @@ export default function Page({ params }) {
                                     <div className="w-full flex gap-4">
                                         <Select name="name" onValueChange={(value) => addTepmoraryAttributeName(value)}>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select Varient attributes type" />
+                                                <SelectValue placeholder="Select Variant attributes type" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {attributes.map(attribute => (
@@ -615,7 +615,7 @@ export default function Page({ params }) {
                                         </Select>
                                         <Select name="value" onValueChange={(value) => addTepmoraryAttributeValue(value)}>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select Varient attributes type" />
+                                                <SelectValue placeholder="Select Variant attributes type" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {attributes.map(attribute => (
@@ -635,11 +635,11 @@ export default function Page({ params }) {
                             {Varient.variantAttributes.length > 0 && Varient.variantAttributes.map(attribute => (
                                     <div key={attribute.id} className="flex gap-4">
                                         <div className="w-full">
-                                            <Label htmlFor="name">Varient name</Label>
+                                            <Label htmlFor="name">Attribute name</Label>
                                             <Input id="name" defaultValue={attribute.name} placeholder="Varient name" />
                                         </div>
                                         <div className="w-full">
-                                            <Label htmlFor="value">Varient value</Label>
+                                            <Label htmlFor="value">Attribute value</Label>
                                             <Input id="value" defaultValue={attribute.value} placeholder="Varient value" />
                                         </div>
                                     </div>
@@ -661,19 +661,19 @@ export default function Page({ params }) {
                                         )}
                             </div>
                             <div>
-                                <Button className="mt-auto" onClick={addNewVarient}>+ Add Varient</Button>
+                                <Button className="mt-auto" onClick={addNewVarient}>+ Add Variant</Button>
                             </div>
                             
                             {Varients && Varients.map(Varient => (
                                 <div className="rounded-md bg-muted border border-dotted p-4 flex flex-col gap-4" key={Varient.id}>
                                     <div  className="flex gap-4">
                                         <div className="w-full">
-                                            <Label htmlFor="name">Varient name</Label>
-                                            <Input name="name" defaultValue={Varient.name} placeholder="Varient name" />
+                                            <Label htmlFor="name">Variant name</Label>
+                                            <Input name="name" defaultValue={Varient.name} placeholder="Variant name" />
                                         </div>
                                         <div className="w-full">
-                                            <Label htmlFor="description">Varient price</Label>
-                                            <Input name="price" defaultValue={Varient.price} placeholder="Varient value" />
+                                            <Label htmlFor="description">Variant price</Label>
+                                            <Input name="price" defaultValue={Varient.price} placeholder="Variant value" />
                                         </div>
                                         <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
                                     </div>
@@ -686,7 +686,7 @@ export default function Page({ params }) {
                                             </div>
                                         ))}
                                     <div className="w-full flex gap-4">
-                                        <Image src={URL.createObjectURL(Varient.image)} alt="varientImage" width={400} height={400} className="w-full h-full max-w-sm aspect-square object-cover rounded-md" />
+                                        <Image src={URL.createObjectURL(Varient.image)} alt="variantImage" width={400} height={400} className="w-full h-full max-w-sm aspect-square object-cover rounded-md" />
                                     </div>
                                     
                                 </div>
@@ -695,12 +695,12 @@ export default function Page({ params }) {
                                 <div className="rounded-md bg-muted border border-dotted p-4 flex flex-col gap-4" key={variant.id}>
                                     <div  className="flex gap-4">
                                         <div className="w-full">
-                                            <Label htmlFor="name">Varient name</Label>
-                                            <Input name="name" defaultValue={variant.name} placeholder="Varient name" />
+                                            <Label htmlFor="name">Variant name</Label>
+                                            <Input name="name" defaultValue={variant.name} placeholder="Variant name" />
                                         </div>
                                         <div className="w-full">
-                                            <Label htmlFor="description">Varient price</Label>
-                                            <Input name="price" defaultValue={variant.price} placeholder="Varient value" />
+                                            <Label htmlFor="description">Variant price</Label>
+                                            <Input name="price" defaultValue={variant.price} placeholder="Variant value" />
                                         </div>
                                         <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
                                     </div>

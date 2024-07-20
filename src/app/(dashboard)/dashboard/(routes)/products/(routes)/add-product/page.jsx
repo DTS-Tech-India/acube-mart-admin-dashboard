@@ -38,7 +38,7 @@ export default function AddProduct() {
     const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
     const [images, setImages] = useState([]);
     const [featuredImage, setFeaturedImage] = useState("");
-    const [variantImage, setVariantImage] = useState("");
+    const [variantImage, setVariantImage] = useState([]);
     const [productData, setProductData] = useState({
         name: "",
         category: "",
@@ -65,7 +65,6 @@ export default function AddProduct() {
 
         },
     });
-    const [tags, setTags] = useState([]);
     const [attribute, setAttribute] = useState({
         name: "",
         value: [],
@@ -73,8 +72,7 @@ export default function AddProduct() {
     const [Varient, setVarient] = useState({
         name: "",
         price: "",
-        image: "",
-        imageUrl: "",
+        image: [],
         variantAttributes: [],
     });
     const [attributes, setAttributes] = useState([]);
@@ -201,30 +199,32 @@ export default function AddProduct() {
     }
 
     const handleVarientImageChange = (e) => {
-        setVarient({ ...Varient, image: e.target.files[0]});
+        setVarient({ ...Varient, image: e.target.files});
         //console.log(Varient);
         //Set Image url
-        if(e.target.files[0] === undefined) return setVariantImage("");
+        /* if(e.target.files[0] === undefined) return setVariantImage([]); */
         setVariantImage(
-            URL.createObjectURL(e.target.files[0])
+            Array.from(e.target.files).map((file) => {
+                return URL.createObjectURL(file);
+            })
         )
     }
 
     const addNewVarient = () => {
-        if (Varient.name === "" || Varient.price === "" || Varient.image === "") {
+        if (Varient.name === "" || Varient.price === "" || Varient.image.length === 0) {
             toast.error("Please fill all fields");
             return;
         }
-        console.log(Varient);
+        //console.log(Varient);
         setVarients([...Varients, {
             id: Varients.length,
             name: Varient.name,
             price: Varient.price,
-            image: Varient.image,
+            image: Array.from(Varient.image),
             variantAttributes: Varient.variantAttributes
         }]);
-        setVarient({ name: "", value: "", price: "", image: "" , variantAttributes: []});
-        setVariantImage("");
+        setVarient({ name: "", value: "", price: "", image: [] , variantAttributes: []});
+        setVariantImage([]);
         //console.log(Varients);
     }
     const handleDeleteVarient = (id) => {
@@ -292,22 +292,25 @@ export default function AddProduct() {
                         //console.log(data);
                         //Add variant image to db
                         const imageData = new FormData();
-                        imageData.append("image", Varients[i].image, Varients[i].image.name);
-                        imageData.append("variantId", data.data._id)
-                        imageData.append("productId", productId)
-                        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add`, {
-                            method: "POST",
-                            body: imageData,
-                        })
-                        .then((res) => res.json())
-                        .then((data) => {
-                            //console.log(data);
-                            toast.success(data.message);
-                        })
-                        .catch((err) => {
-                            //console.log(err);
-                            toast.error(err.message);
-                        });
+                        for (let j = 0; j < Varients[i].image.length; j++) {
+                            imageData.append("image", Varients[i].image[j], Varients[i].image[j].name);
+                            imageData.append("variantId", data.data._id)
+                            imageData.append("productId", productId)
+                            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add/variant`, {
+                                method: "POST",
+                                body: imageData,
+                            })
+                            .then((res) => res.json())
+                            .then((data) => {
+                                //console.log(data);
+                                toast.success(data.message);
+                            })
+                            .catch((err) => {
+                                //console.log(err);
+                                toast.error(err.message);
+                            });
+                        }
+
                         toast.success(data.message);
                     })
                     .catch((err) => {
@@ -367,7 +370,6 @@ export default function AddProduct() {
     const handleCancelButton = () => {
         router.push("/dashboard/products");
     }
-    
     return (
         <div className="w-full h-full flex flex-col gap-4">
             <h1 className="text-2xl font-semi">Add Products</h1>
@@ -574,18 +576,18 @@ export default function AddProduct() {
                     </Card>
                     <Card className="w-full h-full">
                         <CardHeader className="font-semibold">
-                            Varients
+                            Variants
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                             
                             <div className="flex gap-4">
                                <div className="w-full">
-                                    <Label htmlFor="name">Varient name</Label>
+                                    <Label htmlFor="name">Variant name</Label>
                                     <Input name="name" placeholder="Varient name" value={Varient.name} onChange={handleVarientChange} />
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="price">Varient price</Label>
-                                    <Input name="price" type="number" placeholder="Varient price" min={0} value={Varient.price} onChange={handleVarientChange} />
+                                    <Label htmlFor="price">Variant price</Label>
+                                    <Input name="price" type="number" placeholder="Variant price" min={0} value={Varient.price} onChange={handleVarientChange} />
                                 </div>
                                 
                             </div>
@@ -593,7 +595,7 @@ export default function AddProduct() {
                                     <div className="w-full flex gap-4">
                                         <Select name="name" onValueChange={(value) => addTepmoraryAttributeName(value)}>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select Varient attributes type" />
+                                                <SelectValue placeholder="Select Variant attributes type" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {attributes.map(attribute => (
@@ -603,7 +605,7 @@ export default function AddProduct() {
                                         </Select>
                                         <Select name="value" onValueChange={(value) => addTepmoraryAttributeValue(value)}>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select Varient attributes type" />
+                                                <SelectValue placeholder="Select Variant attributes type" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {attributes.map(attribute => (
@@ -623,33 +625,54 @@ export default function AddProduct() {
                                 {Varient.variantAttributes.length > 0 && Varient.variantAttributes.map(attribute => (
                                     <div key={attribute.id} className="flex gap-4">
                                         <div className="w-full">
-                                            <Label htmlFor="name">Varient name</Label>
-                                            <Input id="name" defaultValue={attribute.name} placeholder="Varient name" />
+                                            <Label htmlFor="name">Attribute name</Label>
+                                            <Input id="name" defaultValue={attribute.name} placeholder="Variant name" />
                                         </div>
                                         <div className="w-full">
-                                            <Label htmlFor="value">Varient value</Label>
-                                            <Input id="value" defaultValue={attribute.value} placeholder="Varient value" />
+                                            <Label htmlFor="value">Attribute value</Label>
+                                            <Input id="value" defaultValue={attribute.value} placeholder="Variant value" />
                                         </div>
                                     </div>
                                 ))}
-                             <div className="flex gap-4 w-full">
+                             <div className="flex flex-col gap-4">
                                     <Input 
-                                        name="varientImage"
+                                        name="variantImage"
                                         type="file"
+                                        multiple
                                         onChange={handleVarientImageChange}
+                                        className="w-full"
                                         />
-                                    {variantImage ? (
-                                        <Image src={variantImage} alt="varientImage" width={400} height={400} className="w-full h-full object-cover rounded-md aspect-square max-w-sm" />
-                                        ) : (
+                                        
+                                    {variantImage.length > 0 ? ( 
+                                        <div className="flex gap-4">
+                                            {variantImage.map((image) => (
+                                                <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
+                                                    <Image src={image} alt={image} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="flex gap-4">
                                             <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
                                                 <span className="p-4 rounded-full hover:bg-muted">
                                                     <ImageIcon className="h-6 w-6 text-muted-foreground" />
                                                 </span>
                                             </button>
-                                        )}
+                                            <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
+                                                <span className="p-4 rounded-full hover:bg-muted">
+                                                    <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                                </span>
+                                            </button>
+                                            <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
+                                                <span className="p-4 rounded-full hover:bg-muted">
+                                                    <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                                </span>
+                                            </button>
+                                        </div>
+                                    )}
                             </div>
                             <div>
-                                <Button className="mt-auto" onClick={addNewVarient}>+ Add Varient</Button>
+                                <Button className="mt-auto" onClick={addNewVarient}>+ Add Variant</Button>
                             </div>
                             
                             {Varients && Varients.map(Varient => (
@@ -674,12 +697,16 @@ export default function AddProduct() {
                                             </div>
                                         ))}
                                     <div className="w-full flex gap-4">
-                                        <Image src={URL.createObjectURL(Varient.image)} alt="varientImage" width={400} height={400} className="w-full h-full max-w-sm aspect-square object-cover rounded-md" />
+                                        {Varient.image.length > 0 && Varient.image.map(image => (
+                                            <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image.name}>
+                                                <Image src={URL.createObjectURL(image)} alt="varientImage" width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                            </div>
+                                            
+                                        ))}
+                                        
                                     </div>
-                                    
                                 </div>
                             ))}
-                            
                         </CardContent>
                     </Card>
                     <Card className="w-full h-full">
