@@ -68,17 +68,21 @@ export default function Page({ params }) {
         },
     });
     const [updateData, setUpdateData] = useState({});
-    const [tags, setTags] = useState([]);
     const [attribute, setAttribute] = useState({
         name: "",
         value: [],
     });
     const [Varient, setVarient] = useState({
         name: "",
-        price: "",
+        mrp: "",
         image: "",
         imageUrl: "",
         variantAttributes: [],
+        sp: "",
+        deliveryCharges: "",
+        codCharges: "",
+        discount: "",
+        video: "",
     })
     
     const [attributes, setAttributes] = useState([]);
@@ -239,19 +243,24 @@ export default function Page({ params }) {
     }
 
     const addNewVarient = () => {
-        if (Varient.name === "" || Varient.price === "" || Varient.image === "") {
+        if (Varient.name === "" || Varient.image === "" || Varient.mrp === "" || Varient.sp === "" || Varient.deliveryCharges === "" || Varient.codCharges === "" || Varient.discount === "" || Varient.video === "" || Varient.variantAttributes.length === 0) {
             toast.error("Please fill variant name and value");
             return;
         }
         setVarients([...Varients, {
             id: Varients.length,
             name: Varient.name,
-            price: Varient.price,
-            image: Varient.image,
+            mrp: Varient.mrp,
+            sp: Varient.sp,
+            deliveryCharges: Varient.deliveryCharges,
+            codCharges: Varient.codCharges,
+            discount: Varient.discount,
+            image: Array.from(Varient.image),
+            video: Varient.video,
             variantAttributes: Varient.variantAttributes
         }]);
-        setVarient({ name: "", value: "", price: "", image: "" , variantAttributes: []});
-        setVariantImage("");
+        setVarient({ name: "", value: "", mrp: "", sp: "", deliveryCharges: "", codCharges: "", discount: "", video: "", image: [] , variantAttributes: []});
+        setVariantImage([]);
     }
 
     const handleDeleteVarient = (id) => {
@@ -596,10 +605,29 @@ export default function Page({ params }) {
                                     <Input name="name" placeholder="Varient name" value={Varient.name} onChange={handleVarientChange} />
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="price">Variant price</Label>
-                                    <Input name="price" type="number" placeholder="Varient price" min={0} value={Varient.price} onChange={handleVarientChange} />
+                                    <Label htmlFor="price">Maximum Retail Price(INR)</Label>
+                                    <Input name="mrp" type="number" min={0} placeholder="Type MRP here..." value={Varient.mrp} onChange={handleVarientChange} />
                                 </div>
-                                
+                            </div>
+                            <div className="flex gap-4 w-full">
+                                <div className="w-full">
+                                    <Label htmlFor="price">Selling Price(INR)</Label>
+                                    <Input name="sp" onChange={handleVarientChange} type="number" min={0} value={Varient.sp} placeholder="Type SP here..." />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="discount">Discount Percentage (%)</Label>
+                                    <Input name="discount" type="number" min={0} max={100} onChange={handleVarientChange} value={Varient.discount} placeholder="Type Discount percentage..." />
+                                </div>
+                            </div>
+                            <div className="flex gap-4 w-full">
+                                <div className="w-full">
+                                    <Label htmlFor="description">Delivery Charges(INR)</Label>
+                                    <Input name="deliveryCharges" type="number" min={0} max={100} onChange={handleVarientChange} value={Varient.deliveryCharges} placeholder="Type COD charges..." />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="codCharges">COD Charges(INR)</Label>
+                                    <Input name="codCharges" type="number" min={0} onChange={handleVarientChange} value={Varient.codCharges} placeholder="Type COD charges..." />
+                                </div>
                             </div>
                             {attributes.length > 0 &&
                                     <div className="w-full flex gap-4">
@@ -660,6 +688,12 @@ export default function Page({ params }) {
                                             </button>
                                         )}
                             </div>
+                            <div className="flex gap-4">
+                                <div className="w-full">
+                                    <Label htmlFor="description">Video</Label>
+                                    <Input name="video" placeholder="Type video link here..." value={Varient.video} onChange={handleVarientChange} />
+                                </div>
+                            </div>
                             <div>
                                 <Button className="mt-auto" onClick={addNewVarient}>+ Add Variant</Button>
                             </div>
@@ -672,10 +706,30 @@ export default function Page({ params }) {
                                             <Input name="name" defaultValue={Varient.name} placeholder="Variant name" />
                                         </div>
                                         <div className="w-full">
-                                            <Label htmlFor="description">Variant price</Label>
-                                            <Input name="price" defaultValue={Varient.price} placeholder="Variant value" />
+                                            <Label htmlFor="price">Maximum Retail Price(INR)</Label>
+                                            <Input name="mrp" defaultValue={Varient?.mrp} placeholder="Variant value" />
                                         </div>
                                         <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
+                                    </div>
+                                    <div className="flex gap-4 w-full">
+                                        <div className="w-full">
+                                            <Label htmlFor="price">Selling Price(INR)</Label>
+                                            <Input name="sp" onChange={handleVarientChange} type="number" min={0} defaultValue={Varient?.sp} placeholder="Type SP here..." />
+                                        </div>
+                                        <div className="w-full">
+                                            <Label htmlFor="discount">Discount Percentage (%)</Label>
+                                            <Input name="discount" type="number" min={0} max={100} onChange={handleVarientChange} defaultValue={Varient?.discount} placeholder="Type Discount percentage..." />
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-4 w-full">
+                                        <div className="w-full">
+                                            <Label htmlFor="description">Delivery Charges(INR)</Label>
+                                            <Input name="deliveryCharges" type="number" min={0} max={100} onChange={handleVarientChange} value={Varient.deliveryCharges} placeholder="Type COD charges..." />
+                                        </div>
+                                        <div className="w-full">
+                                            <Label htmlFor="codCharges">COD Charges(INR)</Label>
+                                            <Input name="codCharges" type="number" min={0} onChange={handleVarientChange} value={Varient.codCharges} placeholder="Type COD charges..." />
+                                        </div>
                                     </div>
                                         {Varient.variantAttributes && Varient.variantAttributes.map(attribute => (
                                             <div key={attribute.id} className="flex flex-col gap-4">
@@ -693,16 +747,38 @@ export default function Page({ params }) {
                             ))}
                             {productData.variants && productData.variants.map(variant => (
                                 <div className="rounded-md bg-muted border border-dotted p-4 flex flex-col gap-4" key={variant.id}>
+                                    <div className="flex gap-4 w-full">
+                                        <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100 ml-auto" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
+                                    </div>
                                     <div  className="flex gap-4">
                                         <div className="w-full">
                                             <Label htmlFor="name">Variant name</Label>
                                             <Input name="name" defaultValue={variant.name} placeholder="Variant name" />
                                         </div>
                                         <div className="w-full">
-                                            <Label htmlFor="description">Variant price</Label>
-                                            <Input name="price" defaultValue={variant.price} placeholder="Variant value" />
+                                            <Label htmlFor="price">Maximum Retail Price(INR)</Label>
+                                            <Input name="price" defaultValue={variant.mrp} placeholder="Variant value" />
                                         </div>
-                                        <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
+                                    </div>
+                                    <div className="flex gap-4 w-full">
+                                        <div className="w-full">
+                                            <Label htmlFor="price">Selling Price(INR)</Label>
+                                            <Input name="sp" onChange={handleVarientChange} type="number" min={0} defaultValue={variant?.sp} placeholder="Type SP here..." />
+                                        </div>
+                                        <div className="w-full">
+                                            <Label htmlFor="discount">Discount Percentage (%)</Label>   
+                                            <Input name="discount" type="number" min={0} max={100} onChange={handleVarientChange} defaultValue={variant?.discount} placeholder="Type Discount percentage..." />
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-4 w-full">
+                                        <div className="w-full">
+                                            <Label htmlFor="description">Delivery Charges(INR)</Label>
+                                            <Input name="deliveryCharges" type="number" min={0} max={100} onChange={handleVarientChange} value={variant.deliveryCharges} placeholder="Type COD charges..." />
+                                        </div>
+                                        <div className="w-full">
+                                            <Label htmlFor="codCharges">COD Charges(INR)</Label>
+                                            <Input name="codCharges" type="number" min={0} onChange={handleVarientChange} value={variant.codCharges} placeholder="Type COD charges..." />
+                                        </div>
                                     </div>
                                         {variant.variantAttributes && variant.variantAttributes.map(attribute => (
                                             <div key={attribute.id} className="flex flex-col gap-4">
@@ -715,7 +791,12 @@ export default function Page({ params }) {
                                    {/*  <div className="w-full flex gap-4">
                                         <Image src={variant?.image?.url} alt="varientImage" width={400} height={400} className="w-full h-full max-w-sm aspect-square object-cover rounded-md" />
                                     </div> */}
-                                
+                                    <div className="flex gap-4">
+                                        <div className="w-full">
+                                            <Label htmlFor="description">Video</Label>
+                                            <Input name="video" placeholder="Type video link here..." defaultValue={variant.video} onChange={handleVarientChange} />
+                                        </div>
+                                    </div>
                                 </div>
                             ))}
                         </CardContent>
