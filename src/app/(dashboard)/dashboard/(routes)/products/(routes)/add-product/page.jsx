@@ -71,9 +71,14 @@ export default function AddProduct() {
     });
     const [Varient, setVarient] = useState({
         name: "",
-        price: "",
         image: [],
         variantAttributes: [],
+        mrp: "",
+        sp: "",
+        discount: "",
+        codCharges: "",
+        deliveryCharges: "",
+        video: "",
     });
     const [attributes, setAttributes] = useState([]);
     const [Varients, setVarients] = useState([]);
@@ -211,7 +216,7 @@ export default function AddProduct() {
     }
 
     const addNewVarient = () => {
-        if (Varient.name === "" || Varient.price === "" || Varient.image.length === 0) {
+        if (Varient.name === "" || Varient.mrp === "" || Varient.sp === "" || Varient.deliveryCharges === "" || Varient.codCharges === "" || Varient.discount === "" || Varient.image.length === 0) {
             toast.error("Please fill all fields");
             return;
         }
@@ -219,14 +224,21 @@ export default function AddProduct() {
         setVarients([...Varients, {
             id: Varients.length,
             name: Varient.name,
-            price: Varient.price,
+            mrp: Varient.mrp,
+            sp: Varient.sp,
+            deliveryCharges: Varient.deliveryCharges,
+            codCharges: Varient.codCharges,
+            discount: Varient.discount,
             image: Array.from(Varient.image),
+            video: Varient.video,
             variantAttributes: Varient.variantAttributes
         }]);
-        setVarient({ name: "", value: "", price: "", image: [] , variantAttributes: []});
+        setVarient({ name: "", value: "", mrp: "", sp: "", deliveryCharges: "", codCharges: "", discount: "", video: "", image: [] , variantAttributes: []});
         setVariantImage([]);
         //console.log(Varients);
     }
+    //console.log(Varient);
+    //console.log(Varients);
     const handleDeleteVarient = (id) => {
         setVarients(Varients.filter((Varient) => Varient.id !== id));
     }
@@ -275,7 +287,11 @@ export default function AddProduct() {
                 for (let i = 0; i < Varients.length; i++) {
                     const varientsData = {
                         name: Varients[i].name,
-                        price: Varients[i].price,
+                        mrp: Varients[i].mrp,
+                        sp: Varients[i].sp,
+                        deliveryCharges: Varients[i].deliveryCharges,
+                        codCharges: Varients[i].codCharges,
+                        discount: Varients[i].discount,
                         variantAttributes: Varients[i].variantAttributes,
                         productId: data.data._id,
                     };
@@ -586,10 +602,29 @@ export default function AddProduct() {
                                     <Input name="name" placeholder="Varient name" value={Varient.name} onChange={handleVarientChange} />
                                 </div>
                                 <div className="w-full">
-                                    <Label htmlFor="price">Variant price</Label>
-                                    <Input name="price" type="number" placeholder="Variant price" min={0} value={Varient.price} onChange={handleVarientChange} />
+                                    <Label htmlFor="price">Maximum Retail Price(INR)</Label>
+                                    <Input name="mrp" type="number" min={0} placeholder="Type MRP here..." value={Varient.mrp} onChange={handleVarientChange} />
                                 </div>
-                                
+                            </div>
+                            <div className="flex gap-4 w-full">
+                                <div className="w-full">
+                                    <Label htmlFor="price">Selling Price(INR)</Label>
+                                    <Input name="sp" onChange={handleVarientChange} type="number" min={0} value={Varient.sp} placeholder="Type SP here..." />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="discount">Discount Percentage (%)</Label>
+                                    <Input name="discount" type="number" min={0} max={100} onChange={handleVarientChange} value={Varient.discount} placeholder="Type Discount percentage..." />
+                                </div>
+                            </div>
+                            <div className="flex gap-4 w-full">
+                                <div className="w-full">
+                                    <Label htmlFor="description">Delivery Charges(INR)</Label>
+                                    <Input name="deliveryCharges" type="number" min={0} max={100} onChange={handleVarientChange} value={Varient.deliveryCharges} placeholder="Type COD charges..." />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="codCharges">COD Charges(INR)</Label>
+                                    <Input name="codCharges" type="number" min={0} onChange={handleVarientChange} value={Varient.codCharges} placeholder="Type COD charges..." />
+                                </div>
                             </div>
                             {attributes.length > 0 &&
                                     <div className="w-full flex gap-4">
@@ -620,7 +655,7 @@ export default function AddProduct() {
                                             </SelectContent>
                                         </Select>
                                         <Button onClick={handleOnVarientAttributeSelect}>+ Add</Button>
-                                    </div>
+                                    </div> 
                                 }
                                 {Varient.variantAttributes.length > 0 && Varient.variantAttributes.map(attribute => (
                                     <div key={attribute.id} className="flex gap-4">
@@ -671,23 +706,51 @@ export default function AddProduct() {
                                         </div>
                                     )}
                             </div>
+                            <div className="flex gap-4">
+                                <div className="w-full">
+                                    <Label htmlFor="description">Video</Label>
+                                    <Input name="video" placeholder="Type video link here..." value={Varient.video} onChange={handleVarientChange} />
+                                </div>
+                            </div>
                             <div>
                                 <Button className="mt-auto" onClick={addNewVarient}>+ Add Variant</Button>
                             </div>
                             
                             {Varients && Varients.map(Varient => (
                                 <div className="rounded-md bg-muted border border-dotted p-4 flex flex-col gap-4" key={Varient.id}>
+                                    <div className="flex gap-4 w-full">
+                                        <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100 ml-auto" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
+                                    </div>
                                     <div  className="flex gap-4">
                                         <div className="w-full">
                                             <Label htmlFor="name">Varient name</Label>
                                             <Input name="name" defaultValue={Varient.name} placeholder="Varient name" />
                                         </div>
                                         <div className="w-full">
-                                            <Label htmlFor="description">Varient price</Label>
-                                            <Input name="price" defaultValue={Varient.price} placeholder="Varient value" />
+                                            <Label htmlFor="price">Maximum Retail Price(INR)</Label>
+                                            <Input name="mrp" defaultValue={Varient.mrp} type="number" min={0} placeholder="Type MRP here..." />
                                         </div>
-                                        <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
                                     </div>
+                                    <div className="flex gap-4 w-full">
+                                    <div className="w-full">
+                                        <Label htmlFor="price">Selling Price(INR)</Label>
+                                        <Input name="sp" defaultValue={Varient.sp} type="number" min={0} placeholder="Type SP here..." />
+                                    </div>
+                                    <div className="w-full">
+                                        <Label htmlFor="discount">Discount Percentage (%)</Label>
+                                        <Input name="discount" type="number" min={0} max={100} defaultValue={Varient.discount} placeholder="Type discount percentage..." />
+                                    </div>
+                                </div>
+                                <div className="flex gap-4 w-full">
+                                    <div className="w-full">
+                                        <Label htmlFor="description">Delivery Charges(INR)</Label>
+                                        <Input name="deliveryCharges" type="number" min={0} max={100} defaultValue={Varient.deliveryCharges} placeholder="Type COD charges..." />
+                                    </div>
+                                    <div className="w-full">
+                                        <Label htmlFor="codCharges">COD Charges(INR)</Label>
+                                        <Input name="codCharges" type="number" min={0} defaultValue={Varient.codCharges} placeholder="Type COD charges..." />
+                                    </div>
+                                </div>
                                         {Varient.variantAttributes && Varient.variantAttributes.map(attribute => (
                                             <div key={attribute.id} className="flex flex-col gap-4">
                                                 <div className="w-full">
@@ -703,7 +766,12 @@ export default function AddProduct() {
                                             </div>
                                             
                                         ))}
-                                        
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <div className="w-full">
+                                            <Label htmlFor="description">Video</Label>
+                                            <Input name="video" placeholder="Type video link here..." value={Varient.video} onChange={handleVarientChange} />
+                                        </div>
                                     </div>
                                 </div>
                             ))}
