@@ -292,6 +292,7 @@ export default function AddProduct() {
                         deliveryCharges: Varients[i].deliveryCharges,
                         codCharges: Varients[i].codCharges,
                         discount: Varients[i].discount,
+                        video: Varients[i].video,
                         variantAttributes: Varients[i].variantAttributes,
                         productId: data.data._id,
                     };
@@ -318,11 +319,11 @@ export default function AddProduct() {
                             })
                             .then((res) => res.json())
                             .then((data) => {
-                                //console.log(data);
+                                console.log(data);
                                 toast.success(data.message);
                             })
                             .catch((err) => {
-                                //console.log(err);
+                                console.log(err);
                                 toast.error(err.message);
                             });
                         }

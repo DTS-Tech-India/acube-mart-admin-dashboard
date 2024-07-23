@@ -672,20 +672,39 @@ export default function Page({ params }) {
                                         </div>
                                     </div>
                                 ))}
-                                <div className="flex gap-4 w-full">
+                                <div className="flex flex-col gap-4 w-full">
                                     <Input 
                                         name="varientImage"
                                         type="file"
+                                        multiple
                                         onChange={handleVarientImageChange}
                                         />
-                                    {variantImage ? (
-                                        <Image src={variantImage} alt="varientImage" width={400} height={400} className="w-full h-full object-cover rounded-md aspect-square max-w-sm" />
+                                    {variantImage.length > 0 ? (
+                                        <div className="flex gap-4">
+                                            {variantImage.map((image) => (
+                                                <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
+                                                    <Image src={image} alt={image} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                </div>
+                                            ))}
+                                        </div>
                                         ) : (
-                                            <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
-                                                <span className="p-4 rounded-full hover:bg-muted">
-                                                    <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                                                </span>
-                                            </button>
+                                            <div className="flex gap-4">
+                                                <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
+                                                    <span className="p-4 rounded-full hover:bg-muted">
+                                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                                    </span>
+                                                </button>
+                                                <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
+                                                    <span className="p-4 rounded-full hover:bg-muted">
+                                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                                    </span>
+                                                </button>
+                                                <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
+                                                    <span className="p-4 rounded-full hover:bg-muted">
+                                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                                    </span>
+                                                </button>
+                                            </div>
                                         )}
                             </div>
                             <div className="flex gap-4">
@@ -788,9 +807,15 @@ export default function Page({ params }) {
                                                 </div>
                                             </div>
                                         ))}
-                                   {/*  <div className="w-full flex gap-4">
-                                        <Image src={variant?.image?.url} alt="varientImage" width={400} height={400} className="w-full h-full max-w-sm aspect-square object-cover rounded-md" />
-                                    </div> */}
+                                        {variant.image.length > 0 &&
+                                            <div className="w-full flex gap-4">
+                                                {variant.image.map((image, index) => (
+                                                    <div key={index} className="w-full max-w-xs aspect-square rounded-sm bg-slate-200">
+                                                        <Image src={image.url} alt="varientImage" width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        }
                                     <div className="flex gap-4">
                                         <div className="w-full">
                                             <Label htmlFor="description">Video</Label>
