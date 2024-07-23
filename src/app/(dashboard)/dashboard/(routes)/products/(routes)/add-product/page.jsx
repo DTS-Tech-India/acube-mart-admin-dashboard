@@ -32,6 +32,8 @@ import { getApiData } from "@/lib/get-api-data";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export default function AddProduct() {
     const router = useRouter();
@@ -213,6 +215,16 @@ export default function AddProduct() {
                 return URL.createObjectURL(file);
             })
         )
+    }
+
+    const handleDescriptionChange = (value) => {
+        setProductData({ ...productData, description: value });
+        //console.log(productData.description);
+    }
+
+    const handleShortDescriptionChange = (value) => {
+        setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, shortDescription: value } });
+        //console.log(productData.additionalInfo);
     }
 
     const addNewVarient = () => {
@@ -427,7 +439,8 @@ export default function AddProduct() {
                             </div>
                             <div>
                                 <Label htmlFor="description">Description</Label>
-                                <Textarea name="description" onChange={handleChange} placeholder="Type product description here..." />
+                                <ReactQuill value={productData.description} onChange={(value) => handleDescriptionChange(value)} placeholder="Type product description here..." />
+                                {/* <Textarea name="description" onChange={handleChange} placeholder="Type product description here..." /> */}
                             </div>
                         </CardContent>
                     </Card>
@@ -809,13 +822,17 @@ export default function AddProduct() {
                                     <Input name="labels" placeholder="lables" onChange={handleChangeAdditionalInfo} />
                                 </div> 
                             </div>
-                            <div className="flex gap-4">
+                            {/* <div className="flex gap-4">
                                 <div className="w-full">
                                     <Label htmlFor="shortDescription">Short Description</Label>
                                     <Textarea name="shortDescription" placeholder="Type short description here ..." onChange={handleChangeAdditionalInfo} />
                                 </div>
+                            </div> */}
+                            <div className="flex flex-col gap-4">
+                                <Label htmlFor="description">Description</Label>
+                                {/* <Editor /> */} 
+                                <ReactQuill value={productData.additionalInfo.shortDescription} onChange={(value) => handleShortDescriptionChange(value)} placeholder="Type short description here..." />
                             </div>
-                            
                         </CardContent>
                     </Card>
                 </div>

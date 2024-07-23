@@ -32,6 +32,8 @@ import { getApiData, getApiDataByQuery } from "@/lib/get-api-data";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 
 export default function Page({ params }) {
@@ -242,6 +244,16 @@ export default function Page({ params }) {
         )
     }
 
+    const handleDescriptionChange = (value) => {
+        setProductData({ ...productData, description: value });
+        //console.log(productData.description);
+    }
+
+    const handleShortDescriptionChange = (value) => {
+        setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, shortDescription: value } });
+        //console.log(productData.additionalInfo);
+    }
+
     const addNewVarient = () => {
         if (Varient.name === "" || Varient.image === "" || Varient.mrp === "" || Varient.sp === "" || Varient.deliveryCharges === "" || Varient.codCharges === "" || Varient.discount === "" || Varient.video === "" || Varient.variantAttributes.length === 0) {
             toast.error("Please fill variant name and value");
@@ -409,7 +421,8 @@ export default function Page({ params }) {
                             </div>
                             <div>
                                 <Label htmlFor="description">Description</Label>
-                                <Textarea name="description" value={productData.description} onChange={handleChange} placeholder="Type product description here..." />
+                                {/* <Textarea name="description" value={productData.description} onChange={handleChange} placeholder="Type product description here..." /> */}
+                                <ReactQuill value={productData.description} onChange={(value) => handleDescriptionChange(value)} placeholder="Type productdescription here..." />
                             </div>
                         </CardContent>
                     </Card>
@@ -859,7 +872,8 @@ export default function Page({ params }) {
                             <div className="flex gap-4">
                                 <div className="w-full">
                                     <Label htmlFor="shortDescription">Short Description</Label>
-                                    <Textarea name="shortDescription" value={productData?.additionalInfo?.shortDescription} placeholder="Type short description here ..." onChange={handleChangeAdditionalInfo} />
+                                    {/* <Textarea name="shortDescription" value={productData?.additionalInfo?.shortDescription} placeholder="Type short description here ..." onChange={handleChangeAdditionalInfo} /> */}
+                                    <ReactQuill value={productData?.additionalInfo.shortDescription} onChange={(value) => handleShortDescriptionChange(value)} placeholder="Type short description here..." />
                                 </div>
                             </div>
                             
@@ -1009,7 +1023,7 @@ export default function Page({ params }) {
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={handleCancelButton}><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button onClick={handleUpdateProduct}>Add Product</Button> 
+                    <Button onClick={handleUpdateProduct}>Save Product</Button> 
                 </div>
             </div>
             </>
