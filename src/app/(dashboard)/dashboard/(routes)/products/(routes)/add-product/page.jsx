@@ -308,8 +308,9 @@ export default function AddProduct() {
                     .then((data) => {
                         //console.log(data);
                         //Add variant image to db
-                        const imageData = new FormData();
+                        
                         for (let j = 0; j < Varients[i].image.length; j++) {
+                            const imageData = new FormData();
                             imageData.append("image", Varients[i].image[j], Varients[i].image[j].name);
                             imageData.append("variantId", data.data._id)
                             imageData.append("productId", productId)
@@ -319,11 +320,11 @@ export default function AddProduct() {
                             })
                             .then((res) => res.json())
                             .then((data) => {
-                                console.log(data);
+                                //console.log(data);
                                 toast.success(data.message);
                             })
                             .catch((err) => {
-                                console.log(err);
+                                //console.log(err);
                                 toast.error(err.message);
                             });
                         }
