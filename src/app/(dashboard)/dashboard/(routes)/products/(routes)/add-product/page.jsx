@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button"; 
 import { toast } from "sonner"
@@ -32,10 +32,13 @@ import { getApiData } from "@/lib/get-api-data";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import ReactQuill from 'react-quill';
+import dynamic from "next/dynamic";
+/* import ReactQuill from 'react-quill';
+ */
 import 'react-quill/dist/quill.snow.css';
 
 export default function AddProduct() {
+    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
     const router = useRouter();
     const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
     const [images, setImages] = useState([]);
@@ -439,7 +442,7 @@ export default function AddProduct() {
                             </div>
                             <div>
                                 <Label htmlFor="description">Description</Label>
-                                <ReactQuill value={productData.description} onChange={(value) => handleDescriptionChange(value)} placeholder="Type product description here..." />
+                                <ReactQuill theme="snow" value={productData.description} onChange={(value) => handleDescriptionChange(value)} placeholder="Type product description here..." />
                                 {/* <Textarea name="description" onChange={handleChange} placeholder="Type product description here..." /> */}
                             </div>
                         </CardContent>
@@ -831,7 +834,7 @@ export default function AddProduct() {
                             <div className="flex flex-col gap-4">
                                 <Label htmlFor="description">Description</Label>
                                 {/* <Editor /> */} 
-                                <ReactQuill value={productData.additionalInfo.shortDescription} onChange={(value) => handleShortDescriptionChange(value)} placeholder="Type short description here..." />
+                                <ReactQuill theme="snow" value={productData.additionalInfo.shortDescription} onChange={(value) => handleShortDescriptionChange(value)} placeholder="Type short description here..." />
                             </div>
                         </CardContent>
                     </Card>
