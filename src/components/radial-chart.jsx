@@ -36,7 +36,7 @@ export function RadialChartComponent() {
   return (
     <Card className="flex flex-col w-full max-w-sm">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Radial Chart - Stacked</CardTitle>
+        <CardTitle>Trending visitors</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-1 items-center pb-0">

@@ -16,14 +16,14 @@ import { Checkbox } from "./ui/checkbox"
 import { Label } from "./ui/label"
  
  
-export function DropdownMultiSelect({value, setValue}) {
+export function DropdownMultiSelect({/* value, setValue, */ data}) {
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="p-6 text-md rounded-xl">Select</Button>
+        <Button variant="outline" className=" ">Select</Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="w-72">
         <DropdownMenuLabel>Categories</DropdownMenuLabel>
         <DropdownMenuSeparator />
             <div className="flex items-center gap-2">
@@ -34,6 +34,15 @@ export function DropdownMultiSelect({value, setValue}) {
             <Label>Aadhar</Label> 
             </div>
         <DropdownMenuSeparator />
+        {data && data.map((item) => (
+            <>
+            <div key={item._id}>
+                <Checkbox />
+                <Label>{item.name}</Label>
+            </div>
+            <DropdownMenuSeparator />
+            </>
+        ))}
         <div className="flex items-center gap-2">
           <Checkbox
            /*  checked={selectAyushman}
@@ -50,7 +59,15 @@ export function DropdownMultiSelect({value, setValue}) {
             />
           <Label>EPIC</Label>
         </div>
-        
+        {data && data.map((item) => (
+          <DropdownMenuCheckboxItem
+            key={item._id}
+            className="w-full flex gap-4"
+            >
+            <Checkbox />
+            {item.name}
+          </DropdownMenuCheckboxItem>
+        ))} 
         
       </DropdownMenuContent>
     </DropdownMenu>

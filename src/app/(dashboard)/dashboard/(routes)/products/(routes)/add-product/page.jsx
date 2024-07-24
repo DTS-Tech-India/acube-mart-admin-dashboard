@@ -84,6 +84,7 @@ export default function AddProduct() {
         codCharges: "",
         deliveryCharges: "",
         video: "",
+        description: "",
     });
     const [attributes, setAttributes] = useState([]);
     const [Varients, setVarients] = useState([]);
@@ -230,6 +231,11 @@ export default function AddProduct() {
         //console.log(productData.additionalInfo);
     }
 
+    const handleVarientDescriptionChange = (value) => {
+        setVarient({ ...Varient, description: value });
+        //console.log(Varient.description);
+    }
+
     const addNewVarient = () => {
         if (Varient.name === "" || Varient.mrp === "" || Varient.sp === "" || Varient.deliveryCharges === "" || Varient.codCharges === "" || Varient.discount === "" || Varient.image.length === 0 || Varient.video === "" || Varient.variantAttributes.length === 0) {
             toast.error("Please fill all fields");
@@ -246,7 +252,8 @@ export default function AddProduct() {
             discount: Varient.discount,
             image: Array.from(Varient.image),
             video: Varient.video,
-            variantAttributes: Varient.variantAttributes
+            variantAttributes: Varient.variantAttributes,
+            description: Varient.description
         }]);
         setVarient({ name: "", value: "", mrp: "", sp: "", deliveryCharges: "", codCharges: "", discount: "", video: "", image: [] , variantAttributes: []});
         setVariantImage([]);
@@ -310,8 +317,9 @@ export default function AddProduct() {
                         video: Varients[i].video,
                         variantAttributes: Varients[i].variantAttributes,
                         productId: data.data._id,
+                        description: Varients[i].description
                     };
-                    //console.log(varientsData);
+                    console.log(varientsData);
                     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/add`, {
                         method: "POST",
                         headers: {
@@ -562,7 +570,7 @@ export default function AddProduct() {
                                 <Input name="barcode" placeholder="Product Barcode" onChange={handleChange} />
                             </div>
                             <div className="w-full">
-                                <Label htmlFor="description">Quantity</Label>
+                                <Label htmlFor="description">Stock</Label>
                                 <Input name="stock" onChange={handleChange} type="number" min={1} placeholder="Type product Quantity here..." />
                             </div>
                         </CardContent>
@@ -730,6 +738,11 @@ export default function AddProduct() {
                                     <Input name="video" placeholder="Type video link here..." value={Varient.video} onChange={handleVarientChange} />
                                 </div>
                             </div>
+                            <div className="flex flex-col gap-4 w-full">
+                                <Label htmlFor="description">Description</Label>
+                                <ReactQuill theme="snow" value={Varient.description} onChange={(value) => handleVarientDescriptionChange(value)} placeholder="Type product description here..." />
+                                
+                            </div>
                             <div>
                                 <Button className="mt-auto" onClick={addNewVarient}>+ Add Variant</Button>
                             </div>
@@ -788,8 +801,13 @@ export default function AddProduct() {
                                     <div className="flex gap-4">
                                         <div className="w-full">
                                             <Label htmlFor="description">Video</Label>
-                                            <Input name="video" placeholder="Type video link here..." value={Varient.video} onChange={handleVarientChange} />
+                                            <Input name="video" placeholder="Type video link here..." defaultValue={Varient.video} />
                                         </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2 w-full">
+                                        <Label htmlFor="description">Description</Label>
+                                        <ReactQuill theme="snow" defaultValue={Varient.description} placeholder="Type variant description here..." />
+                                        
                                     </div>
                                 </div>
                             ))}

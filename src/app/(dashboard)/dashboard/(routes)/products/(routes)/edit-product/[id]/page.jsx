@@ -103,6 +103,8 @@ export default function Page({ params }) {
    useEffect(() => {
     if(isSuccess){
         setProductData(product)
+        setAttributes(product.attributes)
+        setVarients(product.varients)
     }
     //console.log(product)
     }, [isSuccess, product])
@@ -248,11 +250,13 @@ export default function Page({ params }) {
     const handleDescriptionChange = (value) => {
         setProductData({ ...productData, description: value });
         //console.log(productData.description);
+        setUpdateData({ ...updateData, description: value })
     }
 
     const handleShortDescriptionChange = (value) => {
         setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, shortDescription: value } });
         //console.log(productData.additionalInfo);
+        setUpdateData({ ...updateData, additionalInfo: { ...productData.additionalInfo, shortDescription: value } })
     }
 
     const addNewVarient = () => {
@@ -279,6 +283,7 @@ export default function Page({ params }) {
     const handleDeleteVarient = (id) => {
         setVarients(Varients.filter((Varient) => Varient.id !== id));
     }
+    console.log(updateData);
     const handleUpdateProduct = () => {
         // Add product to database
         fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/edit/${params.id}`, {
@@ -557,7 +562,7 @@ export default function Page({ params }) {
                                 <Input name="barcode" value={productData?.barcode} placeholder="Product Barcode" onChange={handleChange} />
                             </div>
                             <div className="w-full">
-                                <Label htmlFor="description">Quantity</Label>
+                                <Label htmlFor="description">Stock</Label>
                                 <Input name="stock" value={productData?.stock} onChange={handleChange} type="number" min={1} placeholder="Type product Quantity here..." />
                             </div>
                         </CardContent>
