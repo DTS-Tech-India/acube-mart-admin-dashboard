@@ -35,6 +35,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
 /* import ReactQuill from 'react-quill'; */
 import 'react-quill/dist/quill.snow.css';
+import Multiselect from "multiselect-react-dropdown";
 
 
 export default function Page({ params }) {
@@ -46,17 +47,16 @@ export default function Page({ params }) {
     const [variantImage, setVariantImage] = useState("");
     const [productData, setProductData] = useState({
         name: "",
-        category: "",
         description: "",
         stock: "",
         price: "",
         images: [],
         status: "draft",
         type: "",
-        category: "",
-        element: "",
-        brand: "",
-        model: "",
+        category: [],
+        element: [],
+        brand: [],
+        model: [],
         barcode: "",
         sku: "",
         featuredImage: "",
@@ -86,6 +86,7 @@ export default function Page({ params }) {
         codCharges: "",
         discount: "",
         video: "",
+        description: "",
     })
     
     const [attributes, setAttributes] = useState([]);
@@ -154,18 +155,67 @@ export default function Page({ params }) {
         setUpdateData({ ...updateData, featuredImage: e.target.files[0] })
     }
 
-    const handleTypeChange = (value) => {
-        setProductData({ ...productData, type: value });
-        //console.log(value);
-        setUpdateData({ ...updateData, type: value })
-    }
-
     const handleStatusChange = (value) => {
         setProductData({ ...productData, status: value });
         //console.log(value);
         setUpdateData({ ...updateData, status: value })
     }
 
+    const handleAddType = (value) => {
+        setProductData({ ...productData, type: [...productData.type, value._id] });
+        setUpdateData({ ...updateData, type: [...productData.type, value._id] });
+    }
+
+    const handleRemoveType = (value) => {
+        setProductData({ ...productData, type: productData.type.filter((item) => item !== value._id) });
+        setUpdateData({ ...updateData, type: productData.type.filter((item) => item !== value._id) });
+    }
+
+    const handleAddCategory = (value) => {
+        setProductData({ ...productData, category: [...productData.category, value._id] });
+        setUpdateData({ ...updateData, category: [...productData.category, value._id] });
+    }
+
+    const handleRemoveCategory = (value) => {
+        setProductData({ ...productData, category: productData.category.filter((item) => item !== value._id) });
+        setUpdateData({ ...updateData, category: productData.category.filter((item) => item !== value._id) });
+    }
+
+    const handleAddElement = (value) => {
+        setProductData({ ...productData, element: [...productData.element, value._id] });
+        setUpdateData({ ...updateData, element: [...productData.element, value._id] });
+    }
+
+    const handleRemoveElement = (value) => {
+        setProductData({ ...productData, element: productData.element.filter((item) => item !== value._id) });
+        setUpdateData({ ...updateData, element: productData.element.filter((item) => item !== value._id) });
+    }
+
+    const handleAddBrand = (value) => {
+        setProductData({ ...productData, brand: [...productData.brand, value._id] });
+        setUpdateData({ ...updateData, brand: [...productData.brand, value._id] });
+    }
+
+    const handleRemoveBrand = (value) => {
+        setProductData({ ...productData, brand: productData.brand.filter((item) => item !== value._id) });
+        setUpdateData({ ...updateData, brand: productData.brand.filter((item) => item !== value._id) });
+    }
+
+    const handleAddModel = (value) => {
+        setProductData({ ...productData, model: [...productData.model, value._id] });
+        setUpdateData({ ...updateData, model: [...productData.model, value._id] });
+    }
+
+    const handleRemoveModel = (value) => {
+        setProductData({ ...productData, model: productData.model.filter((item) => item !== value._id) });
+        setUpdateData({ ...updateData, model: productData.model.filter((item) => item !== value._id) });
+    }
+
+/* const handleTypeChange = (value) => {
+        setProductData({ ...productData, type: value });
+        //console.log(value);
+        setUpdateData({ ...updateData, type: value })
+    }
     const handleCategoryChange = (value) => {
         setProductData({ ...productData, category: value });
         //console.log(value);
@@ -188,7 +238,7 @@ export default function Page({ params }) {
         setProductData({ ...productData, model: value });
         //console.log(value);
         setUpdateData({ ...updateData, model: value })
-    }
+    } */
     const handleChangePhysicalProduct = () => {
         setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, isPhysicalProduct: !isPhysicalProduct } });
         setIsPhysicalProduct(!isPhysicalProduct);
@@ -259,6 +309,11 @@ export default function Page({ params }) {
         setUpdateData({ ...updateData, additionalInfo: { ...productData.additionalInfo, shortDescription: value } })
     }
 
+    const handleVarientDescriptionChange = (value) => {
+        setVarient({ ...Varient, description: value });
+        //console.log(Varient.description);
+    }
+
     const addNewVarient = () => {
         if (Varient.name === "" || Varient.image === "" || Varient.mrp === "" || Varient.sp === "" || Varient.deliveryCharges === "" || Varient.codCharges === "" || Varient.discount === "" || Varient.video === "" || Varient.variantAttributes.length === 0) {
             toast.error("Please fill variant name and value");
@@ -274,7 +329,8 @@ export default function Page({ params }) {
             discount: Varient.discount,
             image: Array.from(Varient.image),
             video: Varient.video,
-            variantAttributes: Varient.variantAttributes
+            variantAttributes: Varient.variantAttributes,
+            description: Varient.description
         }]);
         setVarient({ name: "", value: "", mrp: "", sp: "", deliveryCharges: "", codCharges: "", discount: "", video: "", image: [] , variantAttributes: []});
         setVariantImage([]);
@@ -283,7 +339,7 @@ export default function Page({ params }) {
     const handleDeleteVarient = (id) => {
         setVarients(Varients.filter((Varient) => Varient.id !== id));
     }
-    console.log(updateData);
+    //console.log(updateData);
     const handleUpdateProduct = () => {
         // Add product to database
         fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/edit/${params.id}`, {
@@ -298,6 +354,8 @@ export default function Page({ params }) {
             console.log(data);
             if (data.success) {
                 toast.success(data.message);
+
+                //Variant By _id 
 /* 
                 //Add attributes to db
                 for (let i = 0; i < attributes.length; i++) {
@@ -597,7 +655,7 @@ export default function Page({ params }) {
                                     <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteAttribute(attribute.id)} ><X className="w-8 h-8 p-2" /></Button>
                                 </div>
                             ))}
-                            {productData.attributes && productData.attributes.map(attribute => (
+                            {/* {productData.attributes && productData.attributes.map(attribute => (
                                 <div key={attribute._id} className="flex gap-4">
                                     <div className="w-full">
                                         <Label htmlFor="name">Attribute name</Label>
@@ -609,7 +667,7 @@ export default function Page({ params }) {
                                     </div>
                                     <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteAttribute(attribute.id)} ><X className="w-8 h-8 p-2" /></Button>
                                 </div>
-                            ))}
+                            ))} */}
                             
                         </CardContent>
                     </Card>
@@ -732,6 +790,11 @@ export default function Page({ params }) {
                                     <Input name="video" placeholder="Type video link here..." value={Varient.video} onChange={handleVarientChange} />
                                 </div>
                             </div>
+                            <div className="flex flex-col gap-4 w-full">
+                                <Label htmlFor="description">Description</Label>
+                                <ReactQuill theme="snow" value={Varient.description} onChange={(value) => handleVarientDescriptionChange(value)} placeholder="Type product description here..." />
+                                
+                            </div>
                             <div>
                                 <Button className="mt-auto" onClick={addNewVarient}>+ Add Variant</Button>
                             </div>
@@ -780,7 +843,16 @@ export default function Page({ params }) {
                                     <div className="w-full flex gap-4">
                                         <Image src={URL.createObjectURL(Varient.image)} alt="variantImage" width={400} height={400} className="w-full h-full max-w-sm aspect-square object-cover rounded-md" />
                                     </div>
-                                    
+                                    <div className="flex gap-4">
+                                        <div className="w-full">
+                                            <Label htmlFor="description">Video</Label>
+                                            <Input name="video" placeholder="Type video link here..." value={Varient.video} onChange={handleVarientChange} />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2 w-full">
+                                        <Label htmlFor="description">Description</Label>
+                                        <ReactQuill theme="snow" value={Varient.description} placeholder="Type variant description here..." onChange={(value) => handleVarientDescriptionChange(value)} />
+                                    </div>
                                 </div>
                             ))}
                             {productData.variants && productData.variants.map(variant => (
@@ -840,6 +912,10 @@ export default function Page({ params }) {
                                             <Label htmlFor="description">Video</Label>
                                             <Input name="video" placeholder="Type video link here..." defaultValue={variant.video} onChange={handleVarientChange} />
                                         </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2 w-full">
+                                        <Label htmlFor="description">Description</Label>
+                                        <ReactQuill theme="snow" defaultValue={variant?.description} placeholder="Type variant description here..." />
                                     </div>
                                 </div>
                             ))}
@@ -921,7 +997,7 @@ export default function Page({ params }) {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Type</Label>
-                                <Select value={productData.type._id} onValueChange={(value) => handleTypeChange(value)}>
+                                {/* <Select value={productData.type._id} onValueChange={(value) => handleTypeChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select type" />
                                     </SelectTrigger>
@@ -930,11 +1006,22 @@ export default function Page({ params }) {
                                             <SelectItem key={type._id} value={type._id}>{type.name}</SelectItem>
                                         ))}
                                     </SelectContent>
-                                </Select>
+                                </Select> */}
+                                <Multiselect 
+                                    options={apiData.types}
+                                    selectedValues={productData.type}
+                                    displayValue="name"
+                                    onSelect={(_, item) => handleAddType(item)}
+                                    onRemove={(_, item) => handleRemoveType(item)}
+                                    //selectedValues={(value) => console.log(value)}
+                                    placeholder="Select types"
+                                    showCheckbox
+                                    
+                                />
                             </div>
                             <div>
                                 <Label htmlFor="status">Category</Label>
-                                <Select value={productData.category._id} onValueChange={(value) => handleCategoryChange(value)}>
+                                {/* <Select value={productData.category._id} onValueChange={(value) => handleCategoryChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a category" />
                                     </SelectTrigger>
@@ -943,11 +1030,22 @@ export default function Page({ params }) {
                                             <SelectItem key={category._id} value={category._id}>{category.name}</SelectItem>
                                         ))}
                                     </SelectContent>
-                                </Select>
+                                </Select> */}
+                                <Multiselect 
+                                    options={apiData.categories}
+                                    selectedValues={productData.category}
+                                    displayValue="name"
+                                    onSelect={(_, item) => handleAddCategory(item)}
+                                    onRemove={(_, item) => handleRemoveCategory(item)}
+                                    //selectedValues={(value) => console.log(value)}
+                                    placeholder="Select categories"
+                                    showCheckbox
+                                    
+                                />
                             </div>
                             <div>
                                 <Label htmlFor="status">Element</Label>
-                                <Select value={productData.element._id} onValueChange={(value) => handleElementChange(value)}>
+                                {/* <Select value={productData.element._id} onValueChange={(value) => handleElementChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select an element" />
                                     </SelectTrigger>
@@ -956,7 +1054,18 @@ export default function Page({ params }) {
                                             <SelectItem key={element._id} value={element._id}>{element.name}</SelectItem>
                                         ))}
                                     </SelectContent>
-                                </Select>
+                                </Select> */}
+                                <Multiselect 
+                                    options={apiData.elements}
+                                    selectedValues={productData.element}
+                                    displayValue="name"
+                                    onSelect={(_, item) => handleAddElement(item)}
+                                    onRemove={(_, item) => handleRemoveElement(item)}
+                                    //selectedValues={(value) => console.log(value)}
+                                    placeholder="Select elements"
+                                    showCheckbox
+                                    
+                                />
                             </div>
                         </CardContent>
                     </Card>
@@ -967,7 +1076,7 @@ export default function Page({ params }) {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="price">Brand</Label>
-                                <Select value={productData.brand._id} onValueChange={(value) => handleBrandChange(value)}>
+                                {/* <Select value={productData.brand._id} onValueChange={(value) => handleBrandChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a brand" />
                                     </SelectTrigger>
@@ -976,11 +1085,22 @@ export default function Page({ params }) {
                                             <SelectItem key={brand._id} value={brand._id}>{brand.name}</SelectItem>
                                         ))}
                                     </SelectContent>
-                                </Select>
+                                </Select> */}
+                                <Multiselect 
+                                    options={apiData.brands}
+                                    selectedValues={productData.brand}
+                                    displayValue="name"
+                                    onSelect={(_, item) => handleAddBrand(item)}
+                                    onRemove={(_, item) => handleRemoveBrand(item)}
+                                    //selectedValues={(value) => console.log(value)}
+                                    placeholder="Select brands"
+                                    showCheckbox
+                                    
+                                />
                             </div>
                             <div>
                                 <Label htmlFor="price">Model</Label>
-                                <Select value={productData.model._id} onValueChange={(value) => handleModelChange(value)}>
+                                {/* <Select value={productData.model._id} onValueChange={(value) => handleModelChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a model" />
                                     </SelectTrigger>
@@ -989,7 +1109,18 @@ export default function Page({ params }) {
                                             <SelectItem key={model._id} value={model._id}>{model.name}</SelectItem>
                                         ))}
                                     </SelectContent>
-                                </Select>
+                                </Select> */}
+                                <Multiselect 
+                                    options={apiData.models}
+                                    selectedValues={productData.model}
+                                    displayValue="name"
+                                    onSelect={(_, item) => handleAddModel(item)}
+                                    onRemove={(_, item) => handleRemoveModel(item)}
+                                    //selectedValues={(value) => console.log(value)}
+                                    placeholder="Select models"
+                                    showCheckbox
+                                    
+                                />
                             </div>
                         </CardContent>
                     </Card>

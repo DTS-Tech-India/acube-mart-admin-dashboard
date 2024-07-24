@@ -7,7 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getApiData, orders } from "@/lib/get-api-data";
 import { useQuery } from "@tanstack/react-query";
 
-
 export default function Coupons() {
     const { data, isLoading, isError } = useQuery({
         queryKey: ["apiData"],
@@ -27,7 +26,7 @@ export default function Coupons() {
     console.log(data);
     
   return (
-    <div>
+    <div className="w-full h-full flex flex-col gap-4">
         <Card className="w-full h-full">
                         <CardHeader className="font-semibold">
                             Caegory

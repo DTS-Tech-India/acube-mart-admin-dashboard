@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button"; 
 import { toast } from "sonner"
@@ -36,6 +36,7 @@ import dynamic from "next/dynamic";
 /* import ReactQuill from 'react-quill';
  */
 import 'react-quill/dist/quill.snow.css';
+import Multiselect from 'multiselect-react-dropdown';
 
 export default function AddProduct() {
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
@@ -46,17 +47,16 @@ export default function AddProduct() {
     const [variantImage, setVariantImage] = useState([]);
     const [productData, setProductData] = useState({
         name: "",
-        category: "",
         description: "",
         stock: "",
         price: "",
         images: [],
         status: "draft",
-        type: "",
-        category: "",
-        element: "",
-        brand: "",
-        model: "",
+        type: [],
+        category: [],
+        element: [],
+        brand: [],
+        model: [],
         barcode: "",
         sku: "",
         image: "",
@@ -93,14 +93,14 @@ export default function AddProduct() {
         value: "",
     });
     const [varientAttributes, setVarientAttributes] = useState([]);
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading, isError, isSuccess } = useQuery({
         queryKey: ["apiData"],
         queryFn: async() => await getApiData(),
     });
 
     if (isLoading) return "Loading...";
     if (isError) return "An error has occurred.";
-    //console.log(data);
+    //console.log(data); 
 
     const handleChange = (e) => {
         setProductData({ ...productData, [e.target.name]: e.target.value });
@@ -132,18 +132,52 @@ export default function AddProduct() {
         )
     }
 
-    const handleTypeChange = (value) => {
-        setProductData({ ...productData, type: value });
-        //console.log(value);
+    const handleAddType = (value) => {
+        setProductData({ ...productData, type: [...productData.type, value._id] });
+    }
 
+    const handleRemoveType = (value) => {
+        setProductData({ ...productData, type: productData.type.filter((item) => item !== value._id) });
+    }
+
+    const handleAddCategory = (value) => {
+        setProductData({ ...productData, category: [...productData.category, value._id] });
+    }
+
+    const handleRemoveCategory = (value) => {
+        setProductData({ ...productData, category: productData.category.filter((item) => item !== value._id) });
+    }
+
+    const handleAddElement = (value) => {
+        setProductData({ ...productData, element: [...productData.element, value._id] });
+    }
+
+    const handleRemoveElement = (value) => {
+        setProductData({ ...productData, element: productData.element.filter((item) => item !== value._id) });
+    }
+
+    const handleAddBrand = (value) => {
+        setProductData({ ...productData, brand: [...productData.brand, value._id] });
+    }
+
+    const handleRemoveBrand = (value) => {
+        setProductData({ ...productData, brand: productData.brand.filter((item) => item !== value._id) });
+    }
+
+    const handleAddModel = (value) => {
+        setProductData({ ...productData, model: [...productData.model, value._id] });
+    }
+
+    const handleRemoveModel = (value) => {
+        setProductData({ ...productData, model: productData.model.filter((item) => item !== value._id) });
     }
 
     const handleStatusChange = (value) => {
         setProductData({ ...productData, status: value });
         //console.log(value);
     }
-
-    const handleCategoryChange = (value) => {
+    //console.log(productData);
+  /*   const handleCategoryChange = (value) => {
         setProductData({ ...productData, category: value });
         //console.log(value);
     }
@@ -161,7 +195,7 @@ export default function AddProduct() {
     const handleModelChange = (value) => {
         setProductData({ ...productData, model: value });
         //console.log(value);
-    }
+    } */
     const handleChangePhysicalProduct = () => {
         setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, isPhysicalProduct: !isPhysicalProduct } });
         setIsPhysicalProduct(!isPhysicalProduct);
@@ -892,7 +926,7 @@ export default function AddProduct() {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Type</Label>
-                                <Select onValueChange={(value) => handleTypeChange(value)}>
+                                {/* <Select onValueChange={(value) => handleTypeChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select type" />
                                     </SelectTrigger>
@@ -901,11 +935,21 @@ export default function AddProduct() {
                                             <SelectItem key={type._id} value={type._id}>{type.name}</SelectItem>
                                         ))}
                                     </SelectContent>
-                                </Select>
+                                </Select> */}
+                                <Multiselect 
+                                    options={data.types}
+                                    displayValue="name"
+                                    onSelect={(_, item) => handleAddType(item)}
+                                    onRemove={(_, item) => handleRemoveType(item)}
+                                    //selectedValues={(value) => console.log(value)}
+                                    placeholder="Select types"
+                                    showCheckbox
+                                    
+                                />
                             </div>
                             <div>
                                 <Label htmlFor="status">Category</Label>
-                                <Select onValueChange={(value) => handleCategoryChange(value)}>
+                                {/* <Select onValueChange={(value) => handleCategoryChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a category" />
                                     </SelectTrigger>
@@ -914,11 +958,21 @@ export default function AddProduct() {
                                             <SelectItem key={category._id} value={category._id}>{category.name}</SelectItem>
                                         ))}
                                     </SelectContent>
-                                </Select>
+                                </Select> */}
+                                <Multiselect 
+                                    options={data.categories}
+                                    displayValue="name"
+                                    onSelect={(_, item) => handleAddCategory(item)}
+                                    onRemove={(_, item) => handleRemoveCategory(item)}
+                                    //selectedValues={(value) => console.log(value)}
+                                    placeholder="Select categories"
+                                    showCheckbox
+                                    
+                                />
                             </div>
                             <div>
                                 <Label htmlFor="status">Element</Label>
-                                <Select onValueChange={(value) => handleElementChange(value)}>
+                                {/* <Select onValueChange={(value) => handleElementChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select an element" />
                                     </SelectTrigger>
@@ -927,7 +981,17 @@ export default function AddProduct() {
                                             <SelectItem key={element._id} value={element._id}>{element.name}</SelectItem>
                                         ))}
                                     </SelectContent>
-                                </Select>
+                                </Select> */}
+                                <Multiselect 
+                                    options={data.elements}
+                                    displayValue="name"
+                                    onSelect={(_, item) => handleAddElement(item)}
+                                    onRemove={(_, item) => handleRemoveElement(item)}
+                                    //selectedValues={(value) => console.log(value)}
+                                    placeholder="Select elements"
+                                    showCheckbox
+                                    
+                                />
                             </div>
                         </CardContent>
                     </Card>
@@ -938,7 +1002,7 @@ export default function AddProduct() {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="price">Brand</Label>
-                                <Select onValueChange={(value) => handleBrandChange(value)}>
+                                {/* <Select onValueChange={(value) => handleBrandChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a brand" />
                                     </SelectTrigger>
@@ -947,11 +1011,21 @@ export default function AddProduct() {
                                             <SelectItem key={brand._id} value={brand._id}>{brand.name}</SelectItem>
                                         ))}
                                     </SelectContent>
-                                </Select>
+                                </Select> */}
+                                <Multiselect 
+                                    options={data.brands}
+                                    displayValue="name"
+                                    onSelect={(_, item) => handleAddBrand(item)}
+                                    onRemove={(_, item) => handleRemoveBrand(item)}
+                                    //selectedValues={(value) => console.log(value)}
+                                    placeholder="Select brands"
+                                    showCheckbox
+                                    
+                                />
                             </div>
                             <div>
                                 <Label htmlFor="price">Model</Label>
-                                <Select onValueChange={(value) => handleModelChange(value)}>
+                                {/* <Select onValueChange={(value) => handleModelChange(value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a model" />
                                     </SelectTrigger>
@@ -960,7 +1034,17 @@ export default function AddProduct() {
                                             <SelectItem key={model._id} value={model._id}>{model.name}</SelectItem>
                                         ))}
                                     </SelectContent>
-                                </Select>
+                                </Select> */}
+                                <Multiselect 
+                                    options={data.models}
+                                    displayValue="name"
+                                    onSelect={(_, item) => handleAddModel(item)}
+                                    onRemove={(_, item) => handleRemoveModel(item)}
+                                    //selectedValues={(value) => console.log(value)}
+                                    placeholder="Select models"
+                                    showCheckbox
+                                    
+                                />
                             </div>
                         </CardContent>
                     </Card>
