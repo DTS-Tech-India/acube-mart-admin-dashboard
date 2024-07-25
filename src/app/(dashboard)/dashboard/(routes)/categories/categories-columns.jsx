@@ -127,7 +127,7 @@ export const columns = [
                         <Eye className="w-6 h-6 p-0.5" />
                 </Link> */}
                 <Link 
-                    href={`/dashboard/categories/edit-category/${category.id}`} 
+                    href={`/dashboard/categories/edit-sub-category/${category.id}`} 
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
                 >
                     <Pen className="w-6 h-6 p-0.5" />

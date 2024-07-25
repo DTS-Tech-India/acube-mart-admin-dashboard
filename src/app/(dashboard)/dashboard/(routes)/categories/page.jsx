@@ -14,6 +14,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+  } from "@/components/ui/dropdown-menu"
 import { Phone, Upload } from "lucide-react";
 
 import { DataTable } from "@/components/ui/data-table";
@@ -72,7 +80,18 @@ export default function Categories() {
             </Breadcrumb>
             <div className="flex items-center gap-2">
                 <Button variant="outline"><Upload className="w-8 h-8 p-2" /> Export</Button>
-                <Button onClick={() => {router.push("/dashboard/categories/add-category")}}>Add Category</Button> 
+                {/* <Button onClick={() => {router.push("/dashboard/categories/add-category")}}>Add Category</Button> */} 
+                <DropdownMenu>
+                    <DropdownMenuTrigger className=" bg-violet-600 text-white hover:bg-violet-500 p-2 px-6 rounded-md border">Add</DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>Select Action</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => {router.push("/dashboard/categories/add-category")}}>Add Category</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {router.push("/dashboard/categories/add-sub-category")}}>Add Sub Category</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {router.push("/dashboard/categories/add-brand")}}>Add Brand</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {router.push("/dashboard/categories/add-model")}}>Add Model</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </header>
         {isLoading ? (

@@ -30,15 +30,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { useRouter } from "next/navigation";
-import { getApiData, types } from "@/lib/get-api-data";
+import { getApiData } from "@/lib/get-api-data";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
-export default function AddCategory() {
+export default function AddSubCategory() {
     const router = useRouter();
     const [categoryData, setCategoryData] = useState({
         name: "",
         description: "",
         typeId: "",
+        categoryId: "",
+        stock: 0,
     });
 
     
@@ -49,7 +51,7 @@ export default function AddCategory() {
 
     
     if (isError) return "An error has occurred.";
-    console.log(data);
+    //console.log(data);
 
     const handleChange = (e) => {
         setCategoryData({ ...categoryData, [e.target.name]: e.target.value });
@@ -60,13 +62,17 @@ export default function AddCategory() {
         setCategoryData({ ...categoryData, typeId: value });
     }
 
+    const handleChangeCategory = (value) => {
+        setCategoryData({ ...categoryData, categoryId: value });
+    }
+
     const handleAddCategory = (e) => {
         e.preventDefault();
-        if (!categoryData.name || !categoryData.typeId) {
+        if (!categoryData.name || !categoryData.typeId || !categoryData.categoryId) {
             toast.error("All fields are required");
             return;
         }
-        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category/add`, categoryData)
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/add`, categoryData)
         .then((res) => {
             //console.log(res);
             if (res.data.success) {
@@ -100,14 +106,14 @@ export default function AddCategory() {
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
                             <BreadcrumbPage>
-                                Add Category
+                                Add Sub Category
                             </BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={() => handleCancel()}><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button onClick={handleAddCategory}>Add Category</Button> 
+                    <Button onClick={handleAddCategory}>Add Sub Category</Button> 
                 </div>
             </div>
             {isLoading ? (
@@ -136,18 +142,36 @@ export default function AddCategory() {
                                     </SelectContent>
                                 </Select>
                             </div>
+                            <div>
+                                <Label htmlFor="status">Category</Label>
+                                <Select onValueChange={(value) => handleChangeCategory(value)} required>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {data.categories.map((category) => (
+                                            <SelectItem key={category._id} value={category._id}>{category.name}</SelectItem>
+                                        ))}
+                
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>
                 <div className="w-full h-full flex flex-col gap-4">
                     <Card className="w-full h-full">
                         <CardHeader className="font-semibold">
-                            Category Information
+                            Sub Category Information
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                                 <div>
                                     <Label htmlFor="name">Name</Label>
                                     <Input name="name" onChange={handleChange} placeholder="Type product name here..." required />
+                                </div>
+                                <div>
+                                    <Label htmlFor="name">Stock</Label>
+                                    <Input name="stock" onChange={handleChange} type="number" placeholder="Type product stock here..." />
                                 </div>
                                 <div>
                                     <Label htmlFor="description">Description</Label>

@@ -33,7 +33,7 @@ import { useRouter } from "next/navigation";
 import { getApiData } from "@/lib/get-api-data";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
-export default function AddCategory({ params }) {
+export default function EditSubCategory({ params }) {
     const router = useRouter();
     const [categoryData, setCategoryData] = useState({});
 
@@ -68,14 +68,14 @@ export default function AddCategory({ params }) {
         e.preventDefault();
         axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/update/${params.id}`, categoryData)
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             if (res.data.success) {
                 toast.success(res.data.message);
                 router.push("/dashboard/categories");
             }
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             toast.error(err.message);
         })
     }
@@ -107,7 +107,7 @@ export default function AddCategory({ params }) {
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={() => handleCancel()}><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button onClick={handleEditCategory}>Save Category</Button> 
+                    <Button onClick={handleEditCategory}>Save Sub Category</Button> 
                 </div>
             </div>
             {isElementLoading || isApiLoading ? (
