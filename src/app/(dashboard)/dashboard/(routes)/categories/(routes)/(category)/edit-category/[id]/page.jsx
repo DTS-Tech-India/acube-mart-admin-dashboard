@@ -31,25 +31,25 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { useRouter } from "next/navigation";
 import { getApiData } from "@/lib/get-api-data";
-export default function AddCategory() {
+import axios from "axios";
+import { Skeleton } from "@/components/ui/skeleton";
+export default function AddCategory({ params }) {
     const router = useRouter();
-    const [categoryData, setCategoryData] = useState({
-        name: "",
-        description: "",
-        typeId: "",
-        categoryId: "",
-        stock: 0,
-    });
+    const [categoryData, setCategoryData] = useState({});
 
     
-    const { data, isLoading, isError } = useQuery({
+    const { data: apiData, isLoading: isApiLoading, isError: isApiError } = useQuery({
         queryKey: ["apiData"],
         queryFn: async() => await getApiData(),
     });
 
-    if (isLoading) return "Loading...";
-    if (isError) return "An error has occurred.";
-    //console.log(data);
+    const { data: element, isLoading: isElementLoading, isError: isElementError } = useQuery({
+        queryKey: ["element"],
+        queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/${params.id}`),
+    });
+    
+    if (isElementError || isApiError) return "An error has occurred.";
+    //console.log(console.log(element));
 
     const handleChange = (e) => {
         setCategoryData({ ...categoryData, [e.target.name]: e.target.value });
@@ -64,22 +64,13 @@ export default function AddCategory() {
         setCategoryData({ ...categoryData, categoryId: value });
     }
 
-    const handleAddCategory = () => {
-        console.log(categoryData);
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/add`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-            body: JSON.stringify(categoryData),
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            
-            console.log(data);
-            if (data.success) {
-                toast.success(data.message);
+    const handleEditCategory = (e) => {
+        e.preventDefault();
+        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/update/${params.id}`, categoryData)
+        .then((res) => {
+            console.log(res);
+            if (res.data.success) {
+                toast.success(res.data.message);
                 router.push("/dashboard/categories");
             }
         })
@@ -87,6 +78,10 @@ export default function AddCategory() {
             console.log(err);
             toast.error(err.message);
         })
+    }
+
+    const handleCancel = () => {
+        router.push("/dashboard/categories");
     }
     
     return (
@@ -111,11 +106,14 @@ export default function AddCategory() {
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline"><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button onClick={handleAddCategory}>Add Category</Button> 
+                    <Button variant="outline" onClick={() => handleCancel()}><X className="w-8 h-8 p-2" /> cancel</Button>
+                    <Button onClick={handleEditCategory}>Save Category</Button> 
                 </div>
             </div>
-            <div className="w-full h-full flex gap-4">
+            {isElementLoading || isApiLoading ? (
+                <Skeleton className="h-96 w-full aspect-auto" />
+                ) : (
+            <form className="w-full h-full flex gap-4" onSubmit={handleEditCategory}>
                 
                 <div className="w-full h-full max-w-xs flex flex-col gap-4">
                     <Card className="w-full h-full">
@@ -125,13 +123,13 @@ export default function AddCategory() {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Type</Label>
-                                <Select onValueChange={(value) => handleChangeType(value)}>
+                                <Select value={element.data.data.typeId._id} onValueChange={(value) => handleChangeType(value)} required>
                                     <SelectTrigger>
                                     
                                         <SelectValue placeholder="Select type" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {data.types.map((type) => (
+                                        {apiData.types.map((type) => (
                                             <SelectItem key={type._id} value={type._id}>{type.name}</SelectItem>
                                         ))}
                                         
@@ -140,12 +138,12 @@ export default function AddCategory() {
                             </div>
                             <div>
                                 <Label htmlFor="status">Category</Label>
-                                <Select onValueChange={(value) => handleChangeCategory(value)}>
+                                <Select value={element.data.data.categoryId._id} onValueChange={(value) => handleChangeCategory(value)} required>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a category" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {data.categories.map((category) => (
+                                        {apiData.categories.map((category) => (
                                             <SelectItem key={category._id} value={category._id}>{category.name}</SelectItem>
                                         ))}
                 
@@ -161,23 +159,24 @@ export default function AddCategory() {
                             Element Information
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
-                            <div>
-                                <Label htmlFor="name">Name</Label>
-                                <Input name="name" onChange={handleChange} placeholder="Type product name here..." />
-                            </div>
-                            <div>
-                                <Label htmlFor="name">Name</Label>
-                                <Input name="stock" onChange={handleChange} type="number" placeholder="Type product stock here..." />
-                            </div>
-                            <div>
-                                <Label htmlFor="description">Description</Label>
-                                <Textarea name="description" onChange={handleChange} placeholder="Type product description here..." />
-                            </div>
+                                <div>
+                                    <Label htmlFor="name">Name</Label>
+                                    <Input name="name" defaultValue={element.data.data?.name} onChange={handleChange} placeholder="Type product name here..." required />
+                                </div>
+                                <div>
+                                    <Label htmlFor="name">Stock</Label>
+                                    <Input name="stock" defaultValue={element.data.data?.stock} onChange={handleChange} type="number" placeholder="Type product stock here..." />
+                                </div>
+                                <div>
+                                    <Label htmlFor="description">Description</Label>
+                                    <Textarea name="description" defaultValue={element.data.data?.description} onChange={handleChange} placeholder="Type product description here..." />
+                                </div>
                         </CardContent>
                     </Card>
                     
                 </div>
-            </div>
+            </form>
+        )}
         </div>
     );
 }

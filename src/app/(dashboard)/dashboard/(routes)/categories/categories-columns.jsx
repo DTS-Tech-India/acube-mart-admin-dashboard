@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 
 
 
@@ -103,25 +104,30 @@ export const columns = [
                 console.log(category.id);
 
                 // Delete category from database
-                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category/delete/${category.id}`, {
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/delete/${category.id}`, {
                     method: "DELETE",
                 })
                 .then((res) => res.json())
                 .then((data) => {
+                    toast.success(data.message);
                     console.log(data);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    toast.error(err.message);
                 })
             }
             return (
               <div className="flex gap-0.5">
-                <Link 
+                {/* <Link 
                     href={`#`} 
                     variant="ghost" 
                     className="p-2 hover:text-green-500 hover:bg-muted rounded-md"
                     >
                         <Eye className="w-6 h-6 p-0.5" />
-                </Link>
+                </Link> */}
                 <Link 
-                    href={`/dashboard/customers/edit-category`} 
+                    href={`/dashboard/categories/edit-category/${category.id}`} 
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
                 >
                     <Pen className="w-6 h-6 p-0.5" />
