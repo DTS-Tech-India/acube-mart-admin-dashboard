@@ -106,6 +106,14 @@ export default function Page({ params }) {
         setProductData(product)
         setAttributes(product.attributes)
         setVarients(product.varients)
+        setUpdateData({
+            ...updateData,
+            type: product.type.map((item) => item._id),
+            category: product.category.map((item) => item._id),
+            element: product.element.map((item) => item._id),
+            brand: product.brand.map((item) => item._id),
+            model: product.model.map((item) => item._id),
+        })
     }
     //console.log(product)
     }, [isSuccess, product])
@@ -163,52 +171,52 @@ export default function Page({ params }) {
 
     const handleAddType = (value) => {
         setProductData({ ...productData, type: [...productData.type, value._id] });
-        setUpdateData({ ...updateData, type: [...productData.type, value._id] });
+        setUpdateData({ ...updateData, type: [...updateData.type, value._id] });
     }
 
     const handleRemoveType = (value) => {
         setProductData({ ...productData, type: productData.type.filter((item) => item !== value._id) });
-        setUpdateData({ ...updateData, type: productData.type.filter((item) => item !== value._id) });
+        setUpdateData({ ...updateData, type: updateData.type.filter((item) => item !== value._id) });
     }
 
     const handleAddCategory = (value) => {
         setProductData({ ...productData, category: [...productData.category, value._id] });
-        setUpdateData({ ...updateData, category: [...productData.category, value._id] });
+        setUpdateData({ ...updateData, category: [...updateData.category, value._id] });
     }
 
     const handleRemoveCategory = (value) => {
         setProductData({ ...productData, category: productData.category.filter((item) => item !== value._id) });
-        setUpdateData({ ...updateData, category: productData.category.filter((item) => item !== value._id) });
+        setUpdateData({ ...updateData, category: updateData.category.filter((item) => item !== value._id) });
     }
 
     const handleAddElement = (value) => {
         setProductData({ ...productData, element: [...productData.element, value._id] });
-        setUpdateData({ ...updateData, element: [...productData.element, value._id] });
+        setUpdateData({ ...updateData, element: [...updateData.element, value._id] });
     }
 
     const handleRemoveElement = (value) => {
         setProductData({ ...productData, element: productData.element.filter((item) => item !== value._id) });
-        setUpdateData({ ...updateData, element: productData.element.filter((item) => item !== value._id) });
+        setUpdateData({ ...updateData, element: updateData.element.filter((item) => item !== value._id) });
     }
 
     const handleAddBrand = (value) => {
         setProductData({ ...productData, brand: [...productData.brand, value._id] });
-        setUpdateData({ ...updateData, brand: [...productData.brand, value._id] });
+        setUpdateData({ ...updateData, brand: [...updateData.brand, value._id] });
     }
 
     const handleRemoveBrand = (value) => {
         setProductData({ ...productData, brand: productData.brand.filter((item) => item !== value._id) });
-        setUpdateData({ ...updateData, brand: productData.brand.filter((item) => item !== value._id) });
+        setUpdateData({ ...updateData, brand: updateData.brand.filter((item) => item !== value._id) });
     }
 
     const handleAddModel = (value) => {
         setProductData({ ...productData, model: [...productData.model, value._id] });
-        setUpdateData({ ...updateData, model: [...productData.model, value._id] });
+        setUpdateData({ ...updateData, model: [...updateData.model, value._id] });
     }
 
     const handleRemoveModel = (value) => {
         setProductData({ ...productData, model: productData.model.filter((item) => item !== value._id) });
-        setUpdateData({ ...updateData, model: productData.model.filter((item) => item !== value._id) });
+        setUpdateData({ ...updateData, model: updateData.model.filter((item) => item !== value._id) });
     }
 
 /* const handleTypeChange = (value) => {
@@ -437,7 +445,7 @@ export default function Page({ params }) {
             toast.error(err.message);
         });
     }
-
+/* console.log(updateData, productData) */
     const handleCancelButton = () => {
         router.push("/dashboard/products");
     }
@@ -589,21 +597,6 @@ export default function Page({ params }) {
                                     <Input name="codCharges" value={productData?.codCharges} type="number" min={0} onChange={handleChange} placeholder="Type COD charges..." />
                                 </div>
                             </div>
-                            {/* 
-                            <div className="w-full flex gap-4">
-                               <div className="w-full">
-                                    <Label htmlFor="name">Payment Method</Label>
-                                    <Input name="name" placeholder="Attribute name" value={attribute.name} onChange={handleAttributeChange} />
-                                </div>
-                                <div className="w-full">
-                                    <Label htmlFor="description">Charge percentage</Label>
-                                    <Input name="value" placeholder="Attribute value" value={attribute.value} onChange={handleAttributeChange} />
-                                </div>
-                                <Button className="mt-auto" onClick={addNewAttribute}>+ Add</Button>
-                            </div>
-                            <div>
-                                <Label htmlFor="finalPrice">Final Price</Label>
-                            </div> */}
                         </CardContent>
                     </Card>
                     <Card className="w-full h-full">
@@ -655,19 +648,6 @@ export default function Page({ params }) {
                                     <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteAttribute(attribute.id)} ><X className="w-8 h-8 p-2" /></Button>
                                 </div>
                             ))}
-                            {/* {productData.attributes && productData.attributes.map(attribute => (
-                                <div key={attribute._id} className="flex gap-4">
-                                    <div className="w-full">
-                                        <Label htmlFor="name">Attribute name</Label>
-                                        <Input id="name" defaultValue={attribute.name} placeholder="Attribute name" />
-                                    </div>
-                                    <div className="w-full">
-                                        <Label htmlFor="description">Attribute value</Label>
-                                        <Input id="value" defaultValue={attribute.value} placeholder="Attribute value" />
-                                    </div>
-                                    <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteAttribute(attribute.id)} ><X className="w-8 h-8 p-2" /></Button>
-                                </div>
-                            ))} */}
                             
                         </CardContent>
                     </Card>
@@ -997,19 +977,9 @@ export default function Page({ params }) {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Type</Label>
-                                {/* <Select value={productData.type._id} onValueChange={(value) => handleTypeChange(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {apiData.types.map((type) => (
-                                            <SelectItem key={type._id} value={type._id}>{type.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <Multiselect 
                                     options={apiData.types}
-                                    selectedValues={productData.type}
+                                    selectedValues={product.type}
                                     displayValue="name"
                                     onSelect={(_, item) => handleAddType(item)}
                                     onRemove={(_, item) => handleRemoveType(item)}
@@ -1021,19 +991,9 @@ export default function Page({ params }) {
                             </div>
                             <div>
                                 <Label htmlFor="status">Category</Label>
-                                {/* <Select value={productData.category._id} onValueChange={(value) => handleCategoryChange(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {apiData.categories.map((category) => (
-                                            <SelectItem key={category._id} value={category._id}>{category.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <Multiselect 
                                     options={apiData.categories}
-                                    selectedValues={productData.category}
+                                    selectedValues={product.category}
                                     displayValue="name"
                                     onSelect={(_, item) => handleAddCategory(item)}
                                     onRemove={(_, item) => handleRemoveCategory(item)}
@@ -1045,19 +1005,9 @@ export default function Page({ params }) {
                             </div>
                             <div>
                                 <Label htmlFor="status">Element</Label>
-                                {/* <Select value={productData.element._id} onValueChange={(value) => handleElementChange(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select an element" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {apiData.elements.map((element) => (
-                                            <SelectItem key={element._id} value={element._id}>{element.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <Multiselect 
                                     options={apiData.elements}
-                                    selectedValues={productData.element}
+                                    selectedValues={product.element}
                                     displayValue="name"
                                     onSelect={(_, item) => handleAddElement(item)}
                                     onRemove={(_, item) => handleRemoveElement(item)}
@@ -1076,19 +1026,9 @@ export default function Page({ params }) {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="price">Brand</Label>
-                                {/* <Select value={productData.brand._id} onValueChange={(value) => handleBrandChange(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a brand" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {apiData.brands.map((brand) => (
-                                            <SelectItem key={brand._id} value={brand._id}>{brand.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <Multiselect 
                                     options={apiData.brands}
-                                    selectedValues={productData.brand}
+                                    selectedValues={product.brand}
                                     displayValue="name"
                                     onSelect={(_, item) => handleAddBrand(item)}
                                     onRemove={(_, item) => handleRemoveBrand(item)}
@@ -1100,19 +1040,9 @@ export default function Page({ params }) {
                             </div>
                             <div>
                                 <Label htmlFor="price">Model</Label>
-                                {/* <Select value={productData.model._id} onValueChange={(value) => handleModelChange(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a model" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {apiData.models.map((model) => (
-                                            <SelectItem key={model._id} value={model._id}>{model.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <Multiselect 
                                     options={apiData.models}
-                                    selectedValues={productData.model}
+                                    selectedValues={product.model}
                                     displayValue="name"
                                     onSelect={(_, item) => handleAddModel(item)}
                                     onRemove={(_, item) => handleRemoveModel(item)}

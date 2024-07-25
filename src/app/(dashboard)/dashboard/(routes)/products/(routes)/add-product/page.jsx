@@ -877,12 +877,6 @@ export default function AddProduct() {
                                     <Input name="labels" placeholder="lables" onChange={handleChangeAdditionalInfo} />
                                 </div> 
                             </div>
-                            {/* <div className="flex gap-4">
-                                <div className="w-full">
-                                    <Label htmlFor="shortDescription">Short Description</Label>
-                                    <Textarea name="shortDescription" placeholder="Type short description here ..." onChange={handleChangeAdditionalInfo} />
-                                </div>
-                            </div> */}
                             <div className="flex flex-col gap-4">
                                 <Label htmlFor="description">Description</Label>
                                 {/* <Editor /> */} 
@@ -924,18 +918,8 @@ export default function AddProduct() {
                             Category
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
-                            <div>
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="status">Type</Label>
-                                {/* <Select onValueChange={(value) => handleTypeChange(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {data.types.map((type) => (
-                                            <SelectItem key={type._id} value={type._id}>{type.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <Multiselect 
                                     options={data.types}
                                     displayValue="name"
@@ -949,16 +933,6 @@ export default function AddProduct() {
                             </div>
                             <div>
                                 <Label htmlFor="status">Category</Label>
-                                {/* <Select onValueChange={(value) => handleCategoryChange(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {data.categories.map((category) => (
-                                            <SelectItem key={category._id} value={category._id}>{category.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <Multiselect 
                                     options={data.categories}
                                     displayValue="name"
@@ -972,16 +946,6 @@ export default function AddProduct() {
                             </div>
                             <div>
                                 <Label htmlFor="status">Element</Label>
-                                {/* <Select onValueChange={(value) => handleElementChange(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select an element" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {data.elements.map((element) => (
-                                            <SelectItem key={element._id} value={element._id}>{element.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <Multiselect 
                                     options={data.elements}
                                     displayValue="name"
@@ -1002,16 +966,6 @@ export default function AddProduct() {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="price">Brand</Label>
-                                {/* <Select onValueChange={(value) => handleBrandChange(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a brand" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {data.brands.map((brand) => (
-                                            <SelectItem key={brand._id} value={brand._id}>{brand.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <Multiselect 
                                     options={data.brands}
                                     displayValue="name"
@@ -1025,16 +979,6 @@ export default function AddProduct() {
                             </div>
                             <div>
                                 <Label htmlFor="price">Model</Label>
-                                {/* <Select onValueChange={(value) => handleModelChange(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a model" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {data.models.map((model) => (
-                                            <SelectItem key={model._id} value={model._id}>{model.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select> */}
                                 <Multiselect 
                                     options={data.models}
                                     displayValue="name"
