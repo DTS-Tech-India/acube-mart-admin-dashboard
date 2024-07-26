@@ -10,7 +10,7 @@ import { toast } from "sonner";
 
 
 
-export const categoryColumns = [
+export const brandColumns = [
     {
         accessorKey: "id",
         header: ({ table }) => (
@@ -21,7 +21,7 @@ export const categoryColumns = [
             />
           ),
           cell: ({ row }) => {
-            const category = row.original;
+            const brand = row.original;
             return (
               <Checkbox
               checked={row.getIsSelected()}
@@ -31,16 +31,34 @@ export const categoryColumns = [
             )
           }
     },
+    /* {
+        accessorKey: "image",
+        header: "Image",
+        cell: ({ row }) => {
+            const image = row.getValue("image");
+            return (
+                <div className="w-10 h-10">
+                    <Image
+                        src={image}
+                        alt="brand image"
+                        width={200}
+                        height={200}
+                        className="w-full h-full object-cover rounded-md"
+                    />
+                </div>
+            )
+        }
+    }, */
     {
         accessorKey: "name",
-        header: "Category",
+        header: "Brand",
         cell: ({ row }) => {
-            const category = row.original;
+            const brand = row.original;
             return (
                 <div suppressHydrationWarning className="flex-col gap-1">
                     
-                    <p>{category.name}</p>
-                    <p className="text-xs text-muted-foreground">{category.type}</p>
+                    <p>{brand.name}</p>
+                    <p className="text-xs text-muted-foreground">{brand.type}</p>
                 </div>
             )
         }
@@ -71,13 +89,13 @@ export const categoryColumns = [
         accessorKey: "action",
         header: "Action",
         cell: ({ row }) => {
-            const category = row.original;
-            const handleDeleteCategory = () => {
-                // delete category by category id
-                //console.log(category.id);
+            const brand = row.original;
+            const handleDeleteBrand = () => {
+                // delete brand by brand id
+                //console.log(brand.id);
 
-                // Delete category from database
-                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category/delete/${category.id}`, {
+                // Delete brand from database
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/brand/delete/${brand.id}`, {
                     method: "DELETE",
                 })
                 .then((res) => res.json())
@@ -100,7 +118,7 @@ export const categoryColumns = [
                         <Eye className="w-6 h-6 p-0.5" />
                 </Link> */}
                 {/* <Link 
-                    href={`/dashboard/categories/edit-category/${category.id}`} 
+                    href={`/dashboard/categories/edit-brand/${brand.id}`} 
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
                 >
                     <Pen className="w-6 h-6 p-0.5" />
@@ -109,7 +127,7 @@ export const categoryColumns = [
                     href={`#`}
                     variant="ghost"
                     className="p-2 hover:text-red-500 hover:bg-muted rounded-md"
-                    onClick={handleDeleteCategory}
+                    onClick={handleDeleteBrand}
                     >
                         <Trash2 className="w-6 h-6 p-0.5" />
                 </Button>

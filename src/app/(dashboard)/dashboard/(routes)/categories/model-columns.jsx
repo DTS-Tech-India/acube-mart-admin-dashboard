@@ -10,7 +10,7 @@ import { toast } from "sonner";
 
 
 
-export const categoryColumns = [
+export const modelColumns = [
     {
         accessorKey: "id",
         header: ({ table }) => (
@@ -21,7 +21,7 @@ export const categoryColumns = [
             />
           ),
           cell: ({ row }) => {
-            const category = row.original;
+            const model = row.original;
             return (
               <Checkbox
               checked={row.getIsSelected()}
@@ -31,16 +31,35 @@ export const categoryColumns = [
             )
           }
     },
+    /* {
+        accessorKey: "image",
+        header: "Image",
+        cell: ({ row }) => {
+            const image = row.getValue("image");
+            return (
+                <div className="w-10 h-10">
+                    <Image
+                        src={image}
+                        alt="model image"
+                        width={200}
+                        height={200}
+                        className="w-full h-full object-cover rounded-md"
+                    />
+                </div>
+            )
+        }
+    }, */
     {
         accessorKey: "name",
-        header: "Category",
+        header: "Model",
         cell: ({ row }) => {
-            const category = row.original;
+            const model = row.original;
             return (
                 <div suppressHydrationWarning className="flex-col gap-1">
                     
-                    <p>{category.name}</p>
-                    <p className="text-xs text-muted-foreground">{category.type}</p>
+                    <p>{model.name}</p>
+                    <p className="text-xs text-muted-foreground">{model.type}</p>
+                    <p className="text-xs text-muted-foreground">{model.brand}</p>
                 </div>
             )
         }
@@ -71,13 +90,13 @@ export const categoryColumns = [
         accessorKey: "action",
         header: "Action",
         cell: ({ row }) => {
-            const category = row.original;
-            const handleDeleteCategory = () => {
-                // delete category by category id
-                //console.log(category.id);
+            const model = row.original;
+            const handleDeleteModel = () => {
+                // delete model by model id
+                //console.log(model.id);
 
-                // Delete category from database
-                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category/delete/${category.id}`, {
+                // Delete model from database
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/model/delete/${model.id}`, {
                     method: "DELETE",
                 })
                 .then((res) => res.json())
@@ -100,7 +119,7 @@ export const categoryColumns = [
                         <Eye className="w-6 h-6 p-0.5" />
                 </Link> */}
                 {/* <Link 
-                    href={`/dashboard/categories/edit-category/${category.id}`} 
+                    href={`/dashboard/categories/edit-model/${model.id}`} 
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
                 >
                     <Pen className="w-6 h-6 p-0.5" />
@@ -109,7 +128,7 @@ export const categoryColumns = [
                     href={`#`}
                     variant="ghost"
                     className="p-2 hover:text-red-500 hover:bg-muted rounded-md"
-                    onClick={handleDeleteCategory}
+                    onClick={handleDeleteModel}
                     >
                         <Trash2 className="w-6 h-6 p-0.5" />
                 </Button>

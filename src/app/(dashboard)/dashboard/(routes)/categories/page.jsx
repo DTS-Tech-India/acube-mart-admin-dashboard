@@ -25,17 +25,36 @@ import {
 import { Phone, Upload } from "lucide-react";
 
 import { DataTable } from "@/components/ui/data-table";
-import { columns } from "./categories-columns";
+import { elementColumns } from "./sub-categories-columns";
 
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { elements } from "@/lib/get-api-data";
-export default function Categories() {
+import { brands, categories, elements, models } from "@/lib/get-api-data";
+import { Label } from "@/components/ui/label";
+import { categoryColumns } from "./categories-columns";
+import { brandColumns } from "./brand-columns";
+import { modelColumns } from "./model-columns";
+export default function CategoriesPage() {
     const router = useRouter();
 
     const {data, isLoading, isError} = useQuery({
         queryKey: ["elements"],
         queryFn: async() => await elements(),
+    })
+
+    const {data: category, isLoading: isLoadingCategory, isError: isErrorCategory} = useQuery({
+        queryKey: ["categories"],
+        queryFn: async() => await categories(),
+    })
+
+    const { data: brand, isLoading: isLoadingBrand, isError: isErrorBrand } = useQuery({
+        queryKey: ["brands"],
+        queryFn: async() => await brands(),
+    })
+
+    const { data: model, isLoading: isLoadingModel, isError: isErrorModel } = useQuery({
+        queryKey: ["models"],
+        queryFn: async() => await models(),
     })
 
     const modifiedData = useMemo(() => {
@@ -46,16 +65,57 @@ export default function Categories() {
             id: element._id,
             name: element.name,
             image: `https://picsum.photos/${200 + Math.floor(Math.random() * 100)}`,
-            sales: Math.floor(Math.random() * 100),
-            stock: Math.floor(Math.random() * 100),
+            //sales: Math.floor(Math.random() * 100),
+            stock: element?.stock,
             added: element.createdAt,
             type: element.typeId?.name,
             category: element.categoryId?.name
           }
         })
       }, [data]);
+
+      const modifiedCategoryData = useMemo(() => {
+        
+        const sortedData = category?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return sortedData?.map((category) => {
+          return {
+            id: category._id,
+            name: category.name,
+            added: category.createdAt,
+            type: category.typeId?.name,
+          }
+        })
+      }, [category]);
+
+      const modifiedBrandData = useMemo(() => {
+        
+        const sortedData = brand?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return sortedData?.map((brand) => {
+          return {
+            id: brand._id,
+            name: brand.name,
+            type: brand.typeId?.name,
+            added: brand.createdAt,
+          }
+        })
+      }, [brand]);
+
+      const modifiedModelData = useMemo(() => {
+        
+        const sortedData = model?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return sortedData?.map((model) => {
+          return {
+            id: model._id,
+            name: model.name,
+            type: model.typeId?.name,
+            brand: model.brandId?.name,
+            added: model.createdAt,
+          }
+        })
+      }, [model]);
       
-    if (isError) return (
+      
+    if (isError || isErrorCategory || isErrorBrand || isErrorModel) return (
         <div>Error while fetching categories</div>
     );
 
@@ -94,15 +154,44 @@ export default function Categories() {
                 </DropdownMenu>
             </div>
         </header>
-        {isLoading ? (
+        {(isLoading || isLoadingCategory || isLoadingBrand || isLoadingModel ) ? (
              <Skeleton
                 className="h-96 w-full aspect-auto" 
             />
         ):(
-          <DataTable
-                data={modifiedData}
-                columns={columns}
-            />   
+            <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-2">
+                    <Label htmlFor="price" className="font-semibold text-xl">Categories</Label>
+                    <DataTable
+                        data={modifiedCategoryData}
+                        columns={categoryColumns}
+                    />  
+                </div>
+                <div className="flex flex-col gap-2">
+                    <Label htmlFor="price" className="font-semibold text-xl">Sub Category</Label>
+                    <DataTable
+                        data={modifiedData}
+                        columns={elementColumns}
+                    />  
+                </div>
+                   
+                <div className="flex flex-col gap-2">
+                    <Label htmlFor="price" className="font-semibold text-xl">Brands</Label>
+                    <DataTable
+                        data={modifiedBrandData}
+                        columns={brandColumns}
+                    />  
+                </div>
+                <div className="flex flex-col gap-2">
+                    <Label htmlFor="price" className="font-semibold text-xl">Models</Label>
+                    <DataTable
+                        data={modifiedModelData}
+                        columns={modelColumns}
+                    />  
+                </div>
+                
+            </div>
+         
         )}
         
     </div>
