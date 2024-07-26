@@ -21,7 +21,7 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-import { ImageIcon, Upload, X } from "lucide-react";
+import { ImageIcon, Trash2, Upload, X } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -143,8 +143,6 @@ export default function Page({ params }) {
     }
 
     const handleImagesChange = (e) => {
-        setProductData({ ...productData, images: e.target.files });
-        //console.log(productData.images);
         //Set Images url array
         setImages(
             Array.from(e.target.files).map((file) => {
@@ -219,35 +217,6 @@ export default function Page({ params }) {
         setProductData({ ...productData, model: productData.model.filter((item) => item !== value._id) });
         setUpdateData({ ...updateData, model: updateData.model.filter((item) => item !== value._id) });
     }
-
-/* const handleTypeChange = (value) => {
-        setProductData({ ...productData, type: value });
-        //console.log(value);
-        setUpdateData({ ...updateData, type: value })
-    }
-    const handleCategoryChange = (value) => {
-        setProductData({ ...productData, category: value });
-        //console.log(value);
-        setUpdateData({ ...updateData, category: value })
-    }
-
-    const handleElementChange = (value) => {
-        setProductData({ ...productData, element: value });
-        //console.log(value);
-        setUpdateData({ ...updateData, element: value })
-    }
-
-    const handleBrandChange = (value) => {
-        setProductData({ ...productData, brand: value });
-        //console.log(value);
-        setUpdateData({ ...updateData, brand: value })
-    }
-
-    const handleModelChange = (value) => {
-        setProductData({ ...productData, model: value });
-        //console.log(value);
-        setUpdateData({ ...updateData, model: value })
-    } */
     const handleChangePhysicalProduct = () => {
         setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, isPhysicalProduct: !isPhysicalProduct } });
         setIsPhysicalProduct(!isPhysicalProduct);
@@ -412,6 +381,49 @@ export default function Page({ params }) {
             toast.error(err.response.data.message);
         })
     }
+
+    const handleAddImages = () => {
+        const formData = new FormData();
+        for (let i = 0; i < updateData.images.length; i++) {
+            formData.append("images", updateData.images[i], updateData.images[i].name);
+            
+        }
+        formData.append("productId", params.id);
+
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add/multiple`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
+        .then((res) => {
+            if (res.data.success) {
+                //console.log(res);
+                toast.success(res.data.message);
+                setImages([]);
+            }
+        })
+        .catch((err) => {
+            //console.log(err);
+            toast.error(err.message);
+        })
+    }
+
+    const handleDeleteImage = (id) => {
+        axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/delete/${id}`)
+        .then((res) => {
+            //console.log(res);
+            if (res.data.success) {
+                //console.log(res);
+                toast.success(res.data.message);
+                //setAttributes(attributes.filter((attribute) => attribute.id !== id));
+            }
+        })
+        .catch((err) => {
+            //console.log(err);
+            toast.error(err.message);
+        })
+    }
+
     //console.log(updateData);
     const handleUpdateProduct = () => {
         // Add product to database
@@ -424,31 +436,9 @@ export default function Page({ params }) {
         })
         .then((res) => res.json())
         .then((data) => {
-            console.log(data);
+            //console.log(data);
             if (data.success) {
                 toast.success(data.message); 
-/* 
-                // send multipart formdata for images upload with productId
-                const formData = new FormData();
-                for (let i = 0; i < productData.images.length; i++) {
-                    formData.append("images", productData.images[i], productData.images[i].name);
-                }
-                formData.append("productId", data.data._id)
-
-                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add/multiple`, {
-                    method: "POST",
-                    body: formData,
-                })
-                .then((res) => res.json())
-                .then((data) => {
-                    //console.log(data);
-                    toast.success(data.message);
-                    router.push("/dashboard/products");
-                })
-                .catch((err) => {
-                    //console.log(err);
-                    toast.error(err.message);
-                }); */
             } 
         })
         .catch((err) => {
@@ -523,18 +513,22 @@ export default function Page({ params }) {
                                 <>
                                     <div className="flex gap-4">
                                         {productData.image.map((image) => (
-                                            <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image._id}>
+                                            <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200 relative" key={image._id}>
+                                                <Button variant="ghost" onClick={() => handleDeleteImage(image._id)} className="absolute top-2 right-2 text-red-600 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
                                                 <Image src={image.url} alt={image._id} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
                                             </div>
                                         ))}
                                     </div>
                                     {images.length > 0 ? (
-                                        <div className="flex gap-4">
-                                            {images.map((image) => (
-                                                <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
-                                                    <Image src={image} alt={image} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
-                                                </div>
-                                            ))}
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex gap-4">
+                                                {images.map((image) => (
+                                                    <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
+                                                        <Image src={image} alt={image} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <Button className="w-full max-w-xs" onClick={handleAddImages}>Add Images</Button>
                                         </div>
                                     ) : null}
                                 </>
