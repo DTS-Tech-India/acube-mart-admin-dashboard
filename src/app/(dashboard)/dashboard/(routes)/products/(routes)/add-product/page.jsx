@@ -353,7 +353,7 @@ export default function AddProduct() {
                         productId: data.data._id,
                         description: Varients[i].description
                     };
-                    console.log(varientsData);
+                    //console.log(varientsData);
                     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/add`, {
                         method: "POST",
                         headers: {

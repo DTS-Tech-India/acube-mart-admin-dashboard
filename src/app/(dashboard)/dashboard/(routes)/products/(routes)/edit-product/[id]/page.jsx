@@ -36,6 +36,7 @@ import dynamic from "next/dynamic";
 /* import ReactQuill from 'react-quill'; */
 import 'react-quill/dist/quill.snow.css';
 import Multiselect from "multiselect-react-dropdown";
+import axios from "axios";
 
 
 export default function Page({ params }) {
@@ -263,17 +264,39 @@ export default function Page({ params }) {
             toast.error("Please fill attribute name and value");
             return;
         }
-        setAttributes([...attributes, {
-            id: attributes.length,
+        const attributeData = {
             name: attribute.name,
             value: attribute.value.split(",").map((value) => value.trim()),
-        }]);
-        setAttribute({ name: "", value: "" });
-        //console.log(attributes);
+            productId: params.id
+        }
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/attribute/add`, attributeData)
+        .then((res) => {
+        //console.log(res);
+            if (res.data.success) {
+                toast.success(res.data.message);
+                 /* setAttributes([...attributes, {
+                    id: attributes.length,
+                    name: attribute.name,
+                    value: attribute.value.split(",").map((value) => value.trim()),
+                }]); */
+                setAttribute({ name: "", value: "" });
+                //console.log(attributes);
+            }
+        })
+       
     }
-
+//console.log(productData)
     const handleDeleteAttribute = (id) => {
-        setAttributes(attributes.filter((attribute) => attribute.id !== id));
+
+        axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/attribute/delete/${id}`)
+        .then((res) => {
+            console.log(res);
+            if (res.data.success) {
+                //console.log(res.data.message);
+                toast.success(res.data.message);
+                //setAttributes(attributes.filter((attribute) => attribute.id !== id));
+            }
+        })
     }
 
     const handleVarientChange = (e) => {
@@ -296,12 +319,14 @@ export default function Page({ params }) {
     }
 
     const handleVarientImageChange = (e) => {
-        setVarient({ ...Varient, image: e.target.files[0]});
+        setVarient({ ...Varient, image: e.target.files});
         //console.log(Varient);
         //Set Image url
-        if(e.target.files[0] === undefined) return setVariantImage("");
+        /* if(e.target.files[0] === undefined) return setVariantImage([]); */
         setVariantImage(
-            URL.createObjectURL(e.target.files[0])
+            Array.from(e.target.files).map((file) => {
+                return URL.createObjectURL(file);
+            })
         )
     }
 
@@ -327,25 +352,65 @@ export default function Page({ params }) {
             toast.error("Please fill variant name and value");
             return;
         }
-        setVarients([...Varients, {
-            id: Varients.length,
+        const variantData = {
             name: Varient.name,
             mrp: Varient.mrp,
             sp: Varient.sp,
             deliveryCharges: Varient.deliveryCharges,
             codCharges: Varient.codCharges,
             discount: Varient.discount,
-            image: Array.from(Varient.image),
             video: Varient.video,
             variantAttributes: Varient.variantAttributes,
+            productId: params.id,
             description: Varient.description
-        }]);
+        }
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/add`, variantData)
+        .then((res) => {
+            if (res.data.success) {
+                toast.success(res.data.message);
+                //add variant image to db
+                for (let i = 0; i < Varient.image.length; i++) {
+                    const formData = new FormData();
+                    formData.append("image", Varient.image[i], Varient.image[i].name);
+                    formData.append("variantId", res.data.data._id);
+                    formData.append("productId", params.id);
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add/variant`, formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    })
+                    .then((res) => {
+                        if (res.data.success) {
+                            //console.log(res);
+                            toast.success(res.data.message);
+                        }
+                    })
+                    .catch((err) => {
+                        //console.log(err);
+                        toast.error(err.response.data.message);
+                    })
+                }
+            }
+        })
         setVarient({ name: "", value: "", mrp: "", sp: "", deliveryCharges: "", codCharges: "", discount: "", video: "", image: [] , variantAttributes: []});
         setVariantImage([]);
     }
 
     const handleDeleteVarient = (id) => {
-        setVarients(Varients.filter((Varient) => Varient.id !== id));
+
+        axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/delete/${id}`)
+        .then((res) => {
+            //console.log(res);
+            if (res.data.success) {
+                //console.log(res.data.message);
+                toast.success(res.data.message);
+                //setAttributes(attributes.filter((attribute) => attribute.id !== id));
+            }
+        })
+        .catch((err) => {
+            //console.log(err);
+            toast.error(err.response.data.message);
+        })
     }
     //console.log(updateData);
     const handleUpdateProduct = () => {
@@ -361,62 +426,8 @@ export default function Page({ params }) {
         .then((data) => {
             console.log(data);
             if (data.success) {
-                toast.success(data.message);
-
-                //Variant By _id 
+                toast.success(data.message); 
 /* 
-                //Add attributes to db
-                for (let i = 0; i < attributes.length; i++) {
-                    const attributeData = {
-                        name: attributes[i].name,
-                        value: [attributes[i].value],
-                        productId: data.data._id,
-                    };
-                    //console.log(attributeData);
-                    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/attribute/add`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(attributeData),
-                    })
-                    .then((res) => res.json())
-                    .then((data) => {
-                        //console.log(data);
-                        toast.success(data.message);
-                    })
-                    .catch((err) => {
-                        //console.log(err);
-                        toast.error(err.message);
-                    });
-                }
-                
-                //Add Varients to db
-                for (let i = 0; i < Varients.length; i++) {
-                    const varientsData = {
-                        name: Varients[i].name,
-                        value: Varients[i].value,
-                        productId: data.data._id,
-                    };
-                    //console.log(varientsData);
-                    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/add`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(varientsData),
-                    })
-                    .then((res) => res.json())
-                    .then((data) => {
-                        //console.log(data);
-                        toast.success(data.message);
-                    })
-                    .catch((err) => {
-                        //console.log(err);
-                        toast.error(err.message);
-                    });
-                }
-
                 // send multipart formdata for images upload with productId
                 const formData = new FormData();
                 for (let i = 0; i < productData.images.length; i++) {
@@ -445,7 +456,7 @@ export default function Page({ params }) {
             toast.error(err.message);
         });
     }
-/* console.log(updateData, productData) */
+
     const handleCancelButton = () => {
         router.push("/dashboard/products");
     }
@@ -636,7 +647,7 @@ export default function Page({ params }) {
                                 <Button className="mt-auto" onClick={addNewAttribute}>+ Add</Button>
                             </div>
                             {attributes && attributes.map(attribute => (
-                                <div key={attribute.id} className="flex gap-4">
+                                <div key={attribute._id} className="flex gap-4">
                                     <div className="w-full">
                                         <Label htmlFor="name">Attribute name</Label>
                                         <Input id="name" defaultValue={attribute.name} placeholder="Attribute name" />
@@ -645,7 +656,7 @@ export default function Page({ params }) {
                                         <Label htmlFor="description">Attribute value</Label>
                                         <Input id="value" defaultValue={attribute.value} placeholder="Attribute value" />
                                     </div>
-                                    <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteAttribute(attribute.id)} ><X className="w-8 h-8 p-2" /></Button>
+                                    <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteAttribute(attribute._id)} ><X className="w-8 h-8 p-2" /></Button>
                                 </div>
                             ))}
                             
@@ -778,67 +789,10 @@ export default function Page({ params }) {
                             <div>
                                 <Button className="mt-auto" onClick={addNewVarient}>+ Add Variant</Button>
                             </div>
-                            
-                            {Varients && Varients.map(Varient => (
-                                <div className="rounded-md bg-muted border border-dotted p-4 flex flex-col gap-4" key={Varient.id}>
-                                    <div  className="flex gap-4">
-                                        <div className="w-full">
-                                            <Label htmlFor="name">Variant name</Label>
-                                            <Input name="name" defaultValue={Varient.name} placeholder="Variant name" />
-                                        </div>
-                                        <div className="w-full">
-                                            <Label htmlFor="price">Maximum Retail Price(INR)</Label>
-                                            <Input name="mrp" defaultValue={Varient?.mrp} placeholder="Variant value" />
-                                        </div>
-                                        <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
-                                    </div>
-                                    <div className="flex gap-4 w-full">
-                                        <div className="w-full">
-                                            <Label htmlFor="price">Selling Price(INR)</Label>
-                                            <Input name="sp" onChange={handleVarientChange} type="number" min={0} defaultValue={Varient?.sp} placeholder="Type SP here..." />
-                                        </div>
-                                        <div className="w-full">
-                                            <Label htmlFor="discount">Discount Percentage (%)</Label>
-                                            <Input name="discount" type="number" min={0} max={100} onChange={handleVarientChange} defaultValue={Varient?.discount} placeholder="Type Discount percentage..." />
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-4 w-full">
-                                        <div className="w-full">
-                                            <Label htmlFor="description">Delivery Charges(INR)</Label>
-                                            <Input name="deliveryCharges" type="number" min={0} max={100} onChange={handleVarientChange} value={Varient.deliveryCharges} placeholder="Type COD charges..." />
-                                        </div>
-                                        <div className="w-full">
-                                            <Label htmlFor="codCharges">COD Charges(INR)</Label>
-                                            <Input name="codCharges" type="number" min={0} onChange={handleVarientChange} value={Varient.codCharges} placeholder="Type COD charges..." />
-                                        </div>
-                                    </div>
-                                        {Varient.variantAttributes && Varient.variantAttributes.map(attribute => (
-                                            <div key={attribute.id} className="flex flex-col gap-4">
-                                                <div className="w-full">
-                                                    <Label htmlFor="name">{attribute.name}</Label>
-                                                    <Input id="value" defaultValue={attribute.value} placeholder="Attribute value" />
-                                                </div>
-                                            </div>
-                                        ))}
-                                    <div className="w-full flex gap-4">
-                                        <Image src={URL.createObjectURL(Varient.image)} alt="variantImage" width={400} height={400} className="w-full h-full max-w-sm aspect-square object-cover rounded-md" />
-                                    </div>
-                                    <div className="flex gap-4">
-                                        <div className="w-full">
-                                            <Label htmlFor="description">Video</Label>
-                                            <Input name="video" placeholder="Type video link here..." value={Varient.video} onChange={handleVarientChange} />
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-col gap-2 w-full">
-                                        <Label htmlFor="description">Description</Label>
-                                        <ReactQuill theme="snow" value={Varient.description} placeholder="Type variant description here..." onChange={(value) => handleVarientDescriptionChange(value)} />
-                                    </div>
-                                </div>
-                            ))}
                             {productData.variants && productData.variants.map(variant => (
-                                <div className="rounded-md bg-muted border border-dotted p-4 flex flex-col gap-4" key={variant.id}>
+                                <div className="rounded-md bg-muted border border-dotted p-4 flex flex-col gap-4" key={variant._id}>
                                     <div className="flex gap-4 w-full">
-                                        <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100 ml-auto" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
+                                        <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100 ml-auto" onClick={() => handleDeleteVarient(variant._id)} ><X className="w-8 h-8 p-2" /></Button>
                                     </div>
                                     <div  className="flex gap-4">
                                         <div className="w-full">
