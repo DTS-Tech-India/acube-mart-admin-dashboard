@@ -329,6 +329,24 @@ export default function AddProduct() {
         setVarients(Varients.filter((Varient) => Varient.id !== id));
     }
     const handleAddProduct = () => {
+        if(
+            productData.name === "" || 
+            productData.description === "" || 
+            productData.additionalInfo === "" || 
+            productData.type.length === 0 ||
+            productData.stock === "" ||
+            productData.category.length === 0 || 
+            productData.element.length === 0 || 
+            productData.brand.length === 0 || 
+            productData.model.length === 0 || 
+            productData.price === "" ||
+            productData.images.length === 0 || 
+            productData.attributes.length === 0 ||
+            productData.image === ""
+        ) {
+            toast.error("Please fill all fields");
+            return;
+        }
         // Add product to database
         fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/add`, {
             method: "POST",
