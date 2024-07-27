@@ -92,6 +92,13 @@ export default function Page({ params }) {
     
     const [attributes, setAttributes] = useState([]);
     const [Varients, setVarients] = useState([]);
+    const [multiselectAll, setMultiselectAll] = useState({
+        type: [],
+        category: [],
+        element: [],
+        brand: [],
+        model: [],
+    });
     const [tempVarientAttributes, setTempVarientAttributes] = useState({
         name: "",
         value: "",
@@ -115,6 +122,13 @@ export default function Page({ params }) {
             brand: product.brand.map((item) => item._id),
             model: product.model.map((item) => item._id),
         })
+        setMultiselectAll({
+            type: product.type,
+            category: product.category,
+            element: product.element,
+            brand: product.brand,
+            model: product.model,
+        })
     }
     //console.log(product)
     }, [isSuccess, product])
@@ -127,8 +141,63 @@ export default function Page({ params }) {
     if (isProductError) return <div>Error while fetching the product</div>
     if (isApiDataError) return <div>Error while fetching the api</div>
     
-    
-    //console.log(product, apiData);
+    //console.log(product);
+
+    const handleSelectAllTypes = () => {
+        setMultiselectAll({ ...multiselectAll, type: apiData.types }); 
+        setProductData({ ...productData, type: apiData.types.map((item) => item._id) });   
+        setUpdateData({ ...updateData, type: apiData.types.map((item) => item._id) });  
+}
+const handleDeselectAllTypes = () => {
+    setMultiselectAll({ ...multiselectAll, type: [] });
+    setProductData({ ...productData, type: [] });
+    setUpdateData({ ...updateData, type: [] });
+}
+
+const handleSelectAllCategories = () => {
+    setMultiselectAll({ ...multiselectAll, category: apiData.categories }); 
+    setProductData({ ...productData, category: apiData.categories.map((item) => item._id) }); 
+    setUpdateData({ ...updateData, category: apiData.categories.map((item) => item._id) });    
+}
+const handleDeselectAllCategories = () => {
+    setMultiselectAll({ ...multiselectAll, category: [] });
+    setProductData({ ...productData, category: [] });
+    setUpdateData({ ...updateData, category: [] });
+}
+
+const handleSelectAllElements = () => {
+    setMultiselectAll({ ...multiselectAll, element: apiData.elements }); 
+    setProductData({ ...productData, element: apiData.elements.map((item) => item._id) });     
+    setUpdateData({ ...updateData, element: apiData.elements.map((item) => item._id) });
+}
+const handleDeselectAllElements = () => {
+    setMultiselectAll({ ...multiselectAll, element: [] });
+    setProductData({ ...productData, element: [] });
+    setUpdateData({ ...updateData, element: [] });
+}
+
+const handleSelectAllBrands = () => {
+    setMultiselectAll({ ...multiselectAll, brand: apiData.brands });  
+    setProductData({ ...productData, brand: apiData.brands.map((item) => item._id) });    
+    setUpdateData({ ...updateData, brand: apiData.brands.map((item) => item._id) });
+}
+const handleDeselectAllBrands = () => {
+    setMultiselectAll({ ...multiselectAll, brand: [] });
+    setProductData({ ...productData, brand: [] });
+    setUpdateData({ ...updateData, brand: [] });
+}
+
+const handleSelectAllModels = () => {
+    setMultiselectAll({ ...multiselectAll, model: apiData.models });  
+    setProductData({ ...productData, model: apiData.models.map((item) => item._id) });  
+    setUpdateData({ ...updateData, model: apiData.models.map((item) => item._id) });  
+}
+const handleDeselectAllModels = () => {
+    setMultiselectAll({ ...multiselectAll, model: [] });
+    setProductData({ ...productData, model: [] });
+    setUpdateData({ ...updateData, model: [] });
+}
+
 
     const handleChange = (e) => {
         setProductData({ ...productData, [e.target.name]: e.target.value });
@@ -450,7 +519,6 @@ export default function Page({ params }) {
     const handleCancelButton = () => {
         router.push("/dashboard/products");
     }
- 
     return (
       <div className="w-full h-full flex flex-col gap-4">
             <h1 className="text-2xl font-semi">Edit Products</h1>
@@ -923,47 +991,64 @@ export default function Page({ params }) {
                             Category
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
-                            <div>
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="status">Type</Label>
                                 <Multiselect 
                                     options={apiData.types}
-                                    selectedValues={product.type}
+                                    selectedValues={multiselectAll.type}
                                     displayValue="name"
                                     onSelect={(_, item) => handleAddType(item)}
                                     onRemove={(_, item) => handleRemoveType(item)}
                                     //selectedValues={(value) => console.log(value)}
                                     placeholder="Select types"
                                     showCheckbox
+                                    showArrow
+                                    avoidHighlightFirstOption
                                     
                                 />
+                                <div className="flex items-center justify-between gap-4">
+                                    <Button variant="ghost" onClick={handleSelectAllTypes}>Select All</Button>
+                                    <Button variant="ghost" onClick={handleDeselectAllTypes}>Deselect All</Button>
+                                </div>
                             </div>
-                            <div>
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="status">Category</Label>
                                 <Multiselect 
                                     options={apiData.categories}
-                                    selectedValues={product.category}
+                                    selectedValues={multiselectAll.category}
                                     displayValue="name"
                                     onSelect={(_, item) => handleAddCategory(item)}
                                     onRemove={(_, item) => handleRemoveCategory(item)}
                                     //selectedValues={(value) => console.log(value)}
                                     placeholder="Select categories"
                                     showCheckbox
+                                    showArrow
+                                    avoidHighlightFirstOption
                                     
                                 />
+                                <div className="flex items-center justify-between gap-4">
+                                    <Button variant="ghost" onClick={handleSelectAllCategories}>Select All</Button>
+                                    <Button variant="ghost" onClick={handleDeselectAllCategories}>Deselect All</Button>
+                                </div>
                             </div>
-                            <div>
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="status">Element</Label>
                                 <Multiselect 
                                     options={apiData.elements}
-                                    selectedValues={product.element}
+                                    selectedValues={multiselectAll.element}
                                     displayValue="name"
                                     onSelect={(_, item) => handleAddElement(item)}
                                     onRemove={(_, item) => handleRemoveElement(item)}
                                     //selectedValues={(value) => console.log(value)}
                                     placeholder="Select elements"
                                     showCheckbox
-                                    
+                                    showArrow
+                                    avoidHighlightFirstOption
                                 />
+                                <div className="flex items-center justify-between gap-4">
+                                    <Button variant="ghost" onClick={handleSelectAllElements}>Select All</Button>
+                                    <Button variant="ghost" onClick={handleDeselectAllElements}>Deselect All</Button>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -972,33 +1057,43 @@ export default function Page({ params }) {
                             Brand
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
-                            <div>
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="price">Brand</Label>
                                 <Multiselect 
                                     options={apiData.brands}
-                                    selectedValues={product.brand}
+                                    selectedValues={multiselectAll.brand}
                                     displayValue="name"
                                     onSelect={(_, item) => handleAddBrand(item)}
                                     onRemove={(_, item) => handleRemoveBrand(item)}
                                     //selectedValues={(value) => console.log(value)}
                                     placeholder="Select brands"
                                     showCheckbox
-                                    
+                                    showArrow
+                                    avoidHighlightFirstOption
                                 />
+                                <div className="flex items-center justify-between gap-4">
+                                    <Button variant="ghost" onClick={handleSelectAllBrands}>Select All</Button>
+                                    <Button variant="ghost" onClick={handleDeselectAllBrands}>Deselect All</Button>
+                                </div>
                             </div>
-                            <div>
+                            <div className="flex flex-col gap-2">
                                 <Label htmlFor="price">Model</Label>
                                 <Multiselect 
                                     options={apiData.models}
-                                    selectedValues={product.model}
+                                    selectedValues={multiselectAll.model}
                                     displayValue="name"
                                     onSelect={(_, item) => handleAddModel(item)}
                                     onRemove={(_, item) => handleRemoveModel(item)}
                                     //selectedValues={(value) => console.log(value)}
                                     placeholder="Select models"
                                     showCheckbox
-                                    
+                                    showArrow
+                                    avoidHighlightFirstOption
                                 />
+                                <div className="flex items-center justify-between gap-4">
+                                    <Button variant="ghost" onClick={handleSelectAllModels}>Select All</Button>
+                                    <Button variant="ghost" onClick={handleDeselectAllModels}>Deselect All</Button>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
