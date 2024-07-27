@@ -33,7 +33,7 @@ import { useRouter } from "next/navigation";
 import { getApiData } from "@/lib/get-api-data";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
-export default function EditSubCategory({ params }) {
+export default function EditCategory({ params }) {
     const router = useRouter();
     const [categoryData, setCategoryData] = useState({});
 
@@ -43,13 +43,13 @@ export default function EditSubCategory({ params }) {
         queryFn: async() => await getApiData(),
     });
 
-    const { data: element, isLoading: isElementLoading, isError: isElementError } = useQuery({
-        queryKey: ["element"],
-        queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/${params.id}`),
+    const { data: category, isLoading: isCategoryLoading, isError: isCategoryError } = useQuery({
+        queryKey: ["cateegory"],
+        queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category/${params.id}`),
     });
     
-    if (isElementError || isApiError) return "An error has occurred.";
-    //console.log(element);
+    if (isCategoryError || isApiError) return "An error has occurred.";
+    //console.log(category);
 
     const handleChange = (e) => {
         setCategoryData({ ...categoryData, [e.target.name]: e.target.value });
@@ -70,7 +70,7 @@ export default function EditSubCategory({ params }) {
 
     const handleEditCategory = (e) => {
         e.preventDefault();
-        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/update/${params.id}`, categoryData)
+        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category/update/${params.id}`, categoryData)
         .then((res) => {
             //console.log(res);
             if (res.data.success) {
@@ -78,7 +78,7 @@ export default function EditSubCategory({ params }) {
                 if (categoryData.image) {
                     const formData = new FormData();
                     formData.append("image", categoryData.image, categoryData.image.name);
-                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/media/add/element/${params.id}`, formData)
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/media/add/category/${params.id}`, formData)
                     .then((res) => {
                         //console.log(res);
                         if (res.data.success) {
@@ -131,7 +131,7 @@ export default function EditSubCategory({ params }) {
                     <Button onClick={handleEditCategory}>Save Sub Category</Button> 
                 </div>
             </div>
-            {isElementLoading || isApiLoading ? (
+            {isCategoryLoading || isApiLoading ? (
                 <Skeleton className="h-96 w-full aspect-auto" />
                 ) : (
             <form className="w-full h-full flex gap-4" onSubmit={handleEditCategory}>
@@ -144,7 +144,7 @@ export default function EditSubCategory({ params }) {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Type</Label>
-                                <Select value={element.data.data.typeId._id} onValueChange={(value) => handleChangeType(value)} required>
+                                <Select value={category.data.data.typeId._id} onValueChange={(value) => handleChangeType(value)} required>
                                     <SelectTrigger>
                                     
                                         <SelectValue placeholder="Select type" />
@@ -154,20 +154,6 @@ export default function EditSubCategory({ params }) {
                                             <SelectItem key={type._id} value={type._id}>{type.name}</SelectItem>
                                         ))}
                                         
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div>
-                                <Label htmlFor="status">Category</Label>
-                                <Select value={element.data.data.categoryId._id} onValueChange={(value) => handleChangeCategory(value)} required>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {apiData.categories.map((category) => (
-                                            <SelectItem key={category._id} value={category._id}>{category.name}</SelectItem>
-                                        ))}
-                
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -182,7 +168,7 @@ export default function EditSubCategory({ params }) {
                                     <Label htmlFor="image">Image</Label>
                                     <Input name="image" onChange={handleChangeImage} type="file" required />
                                 </div>
-                                {element.data.data.mediaId || categoryData.image ? (
+                                {category.data.data.mediaId || categoryData.image ? (
                                     <>
                                         {categoryData.image ? (
                                             <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200">
@@ -197,7 +183,7 @@ export default function EditSubCategory({ params }) {
                                         ):(
                                             <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200">
                                                 <Image
-                                                    src={element.data.data.mediaId.url}
+                                                    src={category.data.data.mediaId.url}
                                                     alt="product image"
                                                     width={400}
                                                     height={400}
@@ -219,20 +205,16 @@ export default function EditSubCategory({ params }) {
                 <div className="w-full h-full flex flex-col gap-4">
                     <Card className="w-full h-full">
                         <CardHeader className="font-semibold">
-                            Element Information
+                            Category Information
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                                 <div>
                                     <Label htmlFor="name">Name</Label>
-                                    <Input name="name" defaultValue={element.data.data?.name} onChange={handleChange} placeholder="Type product name here..." required />
-                                </div>
-                                <div>
-                                    <Label htmlFor="name">Stock</Label>
-                                    <Input name="stock" defaultValue={element.data.data?.stock} onChange={handleChange} type="number" placeholder="Type product stock here..." />
+                                    <Input name="name" defaultValue={category.data.data?.name} onChange={handleChange} placeholder="Type product name here..." required />
                                 </div>
                                 <div>
                                     <Label htmlFor="description">Description</Label>
-                                    <Textarea name="description" defaultValue={element.data.data?.description} onChange={handleChange} placeholder="Type product description here..." />
+                                    <Textarea name="description" defaultValue={category.data.data?.description} onChange={handleChange} placeholder="Type product description here..." />
                                 </div>
                         </CardContent>
                     </Card>

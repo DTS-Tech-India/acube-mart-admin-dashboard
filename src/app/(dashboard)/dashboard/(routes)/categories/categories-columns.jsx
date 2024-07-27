@@ -32,6 +32,28 @@ export const categoryColumns = [
           }
     },
     {
+        accessorKey: "image",
+        header: "Image",
+        cell: ({ row }) => {
+            const image = row.getValue("image");
+            return (
+                <div className="w-10 h-10">
+                    {image ? (
+                        <Image
+                            src={image}
+                            alt="Category image"
+                            width={200}
+                            height={200}
+                            className="w-full h-full object-cover rounded-md"
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-muted rounded-md" />
+                    )}
+                </div>
+            )
+        }
+    },
+    {
         accessorKey: "name",
         header: "Category",
         cell: ({ row }) => {
@@ -99,12 +121,12 @@ export const categoryColumns = [
                     >
                         <Eye className="w-6 h-6 p-0.5" />
                 </Link> */}
-                {/* <Link 
+                <Link 
                     href={`/dashboard/categories/edit-category/${category.id}`} 
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
                 >
                     <Pen className="w-6 h-6 p-0.5" />
-                </Link> */}
+                </Link>
                 <Button 
                     href={`#`}
                     variant="ghost"

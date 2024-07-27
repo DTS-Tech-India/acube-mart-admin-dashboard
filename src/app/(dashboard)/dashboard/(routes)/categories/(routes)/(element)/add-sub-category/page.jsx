@@ -21,7 +21,7 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-import { Upload, X } from "lucide-react";
+import { ImageIcon, Upload, X } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -66,24 +66,45 @@ export default function AddSubCategory() {
         setCategoryData({ ...categoryData, categoryId: value });
     }
 
+    const handleChangeImage = (e) => {
+        setCategoryData({ ...categoryData, image: e.target.files[0] });
+    }
+
     const handleAddCategory = (e) => {
         e.preventDefault();
-        if (!categoryData.name || !categoryData.typeId || !categoryData.categoryId) {
+        if (!categoryData.name || !categoryData.typeId || !categoryData.categoryId || !categoryData.image) {
             toast.error("All fields are required");
             return;
         }
-        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/add`, categoryData)
-        .then((res) => {
-            //console.log(res);
-            if (res.data.success) {
-                toast.success(res.data.message);
-                router.push("/dashboard/categories");
-            }
-        })
-        .catch((err) => {
-            //console.log(err);
-            toast.error(err.message);
-        })
+
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/add`, categoryData)
+            .then((res) => {
+                //console.log(res);
+                if (res.data.success) {
+                    toast.success(res.data.message);
+
+                    const formData = new FormData();
+                    formData.append("image", categoryData.image, categoryData.image.name);
+
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/media/add/element/${res.data.data._id}`, formData)
+                    .then((res) => {
+                        //console.log(res);
+                        if (res.data.success) {
+                            toast.success(res.data.message);
+                        }
+                    })
+                    .catch((err) => {
+                        //console.log(err);
+                        toast.error(err.message);
+                    })
+
+                    router.push("/dashboard/categories");
+                }
+            })
+            .catch((err) => {
+                //console.log(err);
+                toast.error(err.message);
+            })        
     }
 
     const handleCancel = () => {
@@ -156,6 +177,34 @@ export default function AddSubCategory() {
                                     </SelectContent>
                                 </Select>
                             </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Media
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                                <div>
+                                    <Label htmlFor="image">Image</Label>
+                                    <Input name="image" onChange={handleChangeImage} type="file" required />
+                                </div>
+                                {categoryData.image ? (
+                                    <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200">
+                                        <Image
+                                            src={URL.createObjectURL(categoryData.image)}
+                                            alt="product image"
+                                            width={400}
+                                            height={400}
+                                            className="w-full h-full object-cover rounded-md"
+                                        />
+                                    </div>
+                            ):(
+                                <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
+                                    <span className="p-4 rounded-full hover:bg-muted">
+                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                    </span>
+                            </button>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

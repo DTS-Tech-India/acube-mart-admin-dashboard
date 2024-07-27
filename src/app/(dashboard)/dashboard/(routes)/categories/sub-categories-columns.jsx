@@ -38,13 +38,17 @@ export const elementColumns = [
             const image = row.getValue("image");
             return (
                 <div className="w-10 h-10">
-                    <Image
-                        src={image}
-                        alt="Category image"
-                        width={200}
-                        height={200}
-                        className="w-full h-full object-cover rounded-md"
-                    />
+                    {image ? (
+                        <Image
+                            src={image}
+                            alt="Category image"
+                            width={200}
+                            height={200}
+                            className="w-full h-full object-cover rounded-md"
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-muted rounded-md" />
+                    )}
                 </div>
             )
         }
@@ -101,7 +105,7 @@ export const elementColumns = [
             const category = row.original;
             const handleDeleteCategory = () => {
                 // delete category by category id
-                console.log(category.id);
+                //console.log(category.id);
 
                 // Delete category from database
                 fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/delete/${category.id}`, {
@@ -110,10 +114,10 @@ export const elementColumns = [
                 .then((res) => res.json())
                 .then((data) => {
                     toast.success(data.message);
-                    console.log(data);
+                    //console.log(data);
                 })
                 .catch((err) => {
-                    console.log(err);
+                    //console.log(err);
                     toast.error(err.message);
                 })
             }

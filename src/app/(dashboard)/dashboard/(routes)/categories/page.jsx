@@ -64,8 +64,7 @@ export default function CategoriesPage() {
           return {
             id: element._id,
             name: element.name,
-            image: `https://picsum.photos/${200 + Math.floor(Math.random() * 100)}`,
-            //sales: Math.floor(Math.random() * 100),
+            image: element?.mediaId?.url,
             stock: element?.stock,
             added: element.createdAt,
             type: element.typeId?.name,
@@ -81,6 +80,7 @@ export default function CategoriesPage() {
           return {
             id: category._id,
             name: category.name,
+            image: category?.mediaId?.url,
             added: category.createdAt,
             type: category.typeId?.name,
           }
