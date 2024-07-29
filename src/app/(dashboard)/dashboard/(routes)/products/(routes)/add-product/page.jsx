@@ -67,8 +67,8 @@ export default function AddProduct() {
             dimension: "",
             materials: "",
             labels: "",
-
         },
+        isSimpleProduct: true,
     });
     const [attribute, setAttribute] = useState({
         name: "",
@@ -182,6 +182,10 @@ export default function AddProduct() {
         setFeaturedImage(
             URL.createObjectURL(e.target.files[0])
         )
+    }
+
+    const handleChangeIsSimpleProduct = (value) => {
+        setProductData({ ...productData, isSimpleProduct: value });
     }
 
     const handleAddType = (value) => {
@@ -341,7 +345,6 @@ export default function AddProduct() {
             productData.model.length === 0 || 
             productData.price === "" ||
             productData.images.length === 0 || 
-            productData.attributes.length === 0 ||
             productData.image === ""
         ) {
             toast.error("Please fill all fields");
@@ -489,7 +492,6 @@ export default function AddProduct() {
             toast.error(err.message);
         });
     }
-
     const handleCancelButton = () => {
         router.push("/dashboard/products");
     }
@@ -630,18 +632,34 @@ export default function AddProduct() {
                         <CardHeader className="font-semibold">
                             Inventory
                         </CardHeader>
-                        <CardContent className="flex gap-4">
-                            <div className="w-full">
-                                <Label htmlFor="name">SKU</Label>
-                                <Input name="sku" placeholder="Product SKU" onChange={handleChange} />
+                        <CardContent className="flex flex-col gap-4">
+                            <div className="flex w-full gap-4">
+                               <div className="w-full">
+                                    <Label htmlFor="name">SKU</Label>
+                                    <Input name="sku" placeholder="Product SKU" onChange={handleChange} />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Barcode</Label>
+                                    <Input name="barcode" placeholder="Product Barcode" onChange={handleChange} />
+                                </div> 
                             </div>
-                            <div className="w-full">
-                                <Label htmlFor="description">Barcode</Label>
-                                <Input name="barcode" placeholder="Product Barcode" onChange={handleChange} />
-                            </div>
-                            <div className="w-full">
-                                <Label htmlFor="description">Stock</Label>
-                                <Input name="stock" onChange={handleChange} type="number" min={1} placeholder="Type product Quantity here..." />
+                            <div className="flex w-full gap-4">
+                                <div className="w-full">
+                                    <Label htmlFor="description">Stock</Label>
+                                    <Input name="stock" onChange={handleChange} type="number" min={1} placeholder="Type product Quantity here..." />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Product Type</Label>
+                                    <Select defaultValue={true} onValueChange={(value) => handleChangeIsSimpleProduct(value)}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select product type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value={true}>Simple</SelectItem>
+                                            <SelectItem value={false}>Variant</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -686,7 +704,7 @@ export default function AddProduct() {
                             
                         </CardContent>
                     </Card>
-                    <Card className="w-full h-full">
+                    <Card className={cn("w-full h-full", productData.isSimpleProduct && "hidden")}>
                         <CardHeader className="font-semibold">
                             Variants
                         </CardHeader>

@@ -70,6 +70,7 @@ export default function Page({ params }) {
             labels: "",
 
         },
+        isSimpleProduct: false,
     });
     const [updateData, setUpdateData] = useState({});
     const [attribute, setAttribute] = useState({
@@ -209,6 +210,11 @@ const handleDeselectAllModels = () => {
         setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, [e.target.name]: e.target.value } });
         //console.log(productData.additionalInfo);
         setUpdateData({ ...updateData, additionalInfo: { ...productData.additionalInfo, [e.target.name]: e.target.value } })
+    }
+
+    const handleChangeIsSimpleProduct = (value) => {
+        setProductData({ ...productData, isSimpleProduct: value });
+        setUpdateData({ ...updateData, isSimpleProduct: value })
     }
 
     const handleImagesChange = (e) => {
@@ -676,19 +682,36 @@ const handleDeselectAllModels = () => {
                         <CardHeader className="font-semibold">
                             Inventory
                         </CardHeader>
-                        <CardContent className="flex gap-4">
-                            <div className="w-full">
-                                <Label htmlFor="name">SKU</Label>
-                                <Input name="sku" value={productData?.sku} placeholder="Product SKU" onChange={handleChange} />
+                        <CardContent className="flex flex-col gap-4">
+                            <div className="flex gap-4 w-full">
+                                <div className="w-full">
+                                    <Label htmlFor="name">SKU</Label>
+                                    <Input name="sku" value={productData?.sku} placeholder="Product SKU" onChange={handleChange} />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="description">Barcode</Label>
+                                    <Input name="barcode" value={productData?.barcode} placeholder="Product Barcode" onChange={handleChange} />
+                                </div>
                             </div>
-                            <div className="w-full">
-                                <Label htmlFor="description">Barcode</Label>
-                                <Input name="barcode" value={productData?.barcode} placeholder="Product Barcode" onChange={handleChange} />
+                            <div className="flex gap-4 w-full">
+                                <div className="w-full">
+                                    <Label htmlFor="description">Stock</Label>
+                                    <Input name="stock" value={productData?.stock} onChange={handleChange} type="number" min={1} placeholder="Type product Quantity here..." />
+                                </div>
+                                <div className="w-full">
+                                        <Label htmlFor="description">Product Type</Label>
+                                        <Select value={productData?.isSimpleProduct} onValueChange={(value) => handleChangeIsSimpleProduct(value)}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select product type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value={true}>Simple</SelectItem>
+                                                <SelectItem value={false}>Variant</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                </div>
                             </div>
-                            <div className="w-full">
-                                <Label htmlFor="description">Stock</Label>
-                                <Input name="stock" value={productData?.stock} onChange={handleChange} type="number" min={1} placeholder="Type product Quantity here..." />
-                            </div>
+                            
                         </CardContent>
                     </Card>
                     
@@ -724,7 +747,7 @@ const handleDeselectAllModels = () => {
                             
                         </CardContent>
                     </Card>
-                    <Card className="w-full h-full">
+                    <Card className={cn("w-full h-full", productData.isSimpleProduct && "hidden")}>
                         <CardHeader className="font-semibold">
                             Variants
                         </CardHeader>
