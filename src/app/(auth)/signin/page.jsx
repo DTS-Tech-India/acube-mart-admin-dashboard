@@ -33,7 +33,7 @@ export default function SignIn() {
     const handleSubmit = () => {
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/login`, formData)
         .then((res) => {
-            //console.log(res.data);
+            console.log(res.data);
             if (res.data.success) {
                 axios.post('/api/signin', res.data)
                 .then((res) => {

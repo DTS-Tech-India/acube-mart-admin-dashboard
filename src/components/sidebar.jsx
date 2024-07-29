@@ -23,7 +23,8 @@ import {
     Star,
     LogOut,
     Menu,
-    Network
+    Network,
+    UserCog
 } from "lucide-react"
 
 
@@ -60,7 +61,12 @@ const Sidebar = () => {
             label: "Coupons",
             icon: Star,
             href: "/dashboard/coupons",
-        }
+        },
+        {
+            label: "Admins",
+            icon: UserCog,
+            href: "/dashboard/admins",
+        },
     ]
 
     const bottomRoutes = [
