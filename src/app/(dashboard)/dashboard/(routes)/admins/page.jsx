@@ -22,7 +22,7 @@ import { columns } from "./admins-columns";
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import axios from "axios";
-export default function Customers() {
+export default function Admins() {
     const router = useRouter();
 
     const { data: adminData, isLoading, isError, isSuccess } = useQuery({
@@ -38,8 +38,9 @@ export default function Customers() {
             name: admin.name,
             email: admin.email,
             status: admin?.status,
-            avatar: `https://picsum.photos/${200 + Math.floor(Math.random() * 100) + 1}`,
+            avatar: admin?.avatar?.url || `https://picsum.photos/${200 + Math.floor(Math.random() * 100) + 1}`,
             created: admin.createdAt,
+            role: admin.role,
           }
         })
       }, [adminData])
@@ -49,7 +50,7 @@ export default function Customers() {
 
     return (
         <div className="w-full h-full flex flex-col gap-4">
-        <h1 className="text-2xl font-semi">Customers</h1>
+        <h1 className="text-2xl font-semi">Admins</h1>
         <header className="flex items-center justify-between">
             <Breadcrumb>
                 <BreadcrumbList>
@@ -66,7 +67,7 @@ export default function Customers() {
             </Breadcrumb>
             <div className="flex items-center gap-2">
                 <Button variant="outline"><Upload className="w-8 h-8 p-2" /> Export</Button>
-                <Button /* onClick={() => {router.push("/dashboard/products/add-customer")}} */>Add Admin</Button> 
+                <Button onClick={() => {router.push("/dashboard/admins/add-admin")}}>Add Admin</Button> 
             </div>
         </header>
         {isLoading ? (

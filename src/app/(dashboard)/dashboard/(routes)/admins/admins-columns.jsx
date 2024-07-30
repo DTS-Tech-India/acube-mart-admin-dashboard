@@ -58,17 +58,17 @@ export const columns = [
         header: "Email",
     },
     {
-        accessorKey: "status",
-        header: "Status",
+        accessorKey: "role",
+        header: "Role",
         cell: ({ row }) => {
-            const status = row.getValue("status");
+            const role = row.getValue("role");
             return (
                 <div className={cn(
                     "font-medium p-1 px-3 flex items-center justify-center rounded-full",
-                     status === "active" && "text-green-600 bg-green-100",
-                     status === "blocked" && "text-red-600 bg-red-100",
+                     role === "admin" && "text-green-600 bg-green-100",
+                     role === "manager" && "text-sky-600 bg-sky-100",
                      )}>
-                    {status}
+                    {role}
                 </div>
             )
         }
@@ -120,7 +120,7 @@ export const columns = [
             }
             return (
               <div className="flex gap-0.5">
-                <Link 
+                {/* <Link 
                     href={`#`} 
                     variant="ghost" 
                     className="p-2 hover:text-green-500 hover:bg-muted rounded-md"
@@ -132,7 +132,7 @@ export const columns = [
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
                 >
                     <Pen className="w-6 h-6 p-0.5" />
-                </Link>
+                </Link> */}
                 <Button 
                     variant="ghost"
                     className="p-2 hover:text-red-500 hover:bg-muted rounded-md"
