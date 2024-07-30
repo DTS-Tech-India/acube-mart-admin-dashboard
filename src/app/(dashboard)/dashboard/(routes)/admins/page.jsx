@@ -37,7 +37,6 @@ export default function Admins() {
             id: admin._id,
             name: admin.name,
             email: admin.email,
-            status: admin?.status,
             avatar: admin?.avatar?.url || `https://picsum.photos/${200 + Math.floor(Math.random() * 100) + 1}`,
             created: admin.createdAt,
             role: admin.role,
