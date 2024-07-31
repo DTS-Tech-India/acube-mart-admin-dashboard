@@ -333,23 +333,19 @@ export default function AddProduct() {
         setVarients(Varients.filter((Varient) => Varient.id !== id));
     }
     const handleAddProduct = () => {
-        if(
-            productData.name === "" || 
-            productData.description === "" || 
-            productData.additionalInfo === "" || 
-            productData.type.length === 0 ||
-            productData.stock === "" ||
-            productData.category.length === 0 || 
-            productData.element.length === 0 || 
-            productData.brand.length === 0 || 
-            productData.model.length === 0 || 
-            productData.price === "" ||
-            productData.images.length === 0 || 
-            productData.image === ""
-        ) {
-            toast.error("Please fill all fields");
-            return;
-        }
+        
+        if(productData.name === "") return toast.error("Please fill product name");
+        if(productData.description === "") return toast.error("Please fill product description");
+        if(productData.type.length === 0) return toast.error("Please select product type");
+        if(productData.stock === "") return toast.error("Please fill product stock");
+        if(productData.category.length === 0) return toast.error("Please select product category");
+        if(productData.element.length === 0) return toast.error("Please select product element");
+        if(productData.brand.length === 0) return toast.error("Please select product brand");
+        if(productData.model.length === 0) return toast.error("Please select product model");
+        if(productData.price === "") return toast.error("Please fill product price");
+        if(productData.images.length === 0) return toast.error("Please upload product images");
+        if(productData.image === "") return toast.error("Please upload featured image"); 
+        
         // Add product to database
         fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/add`, {
             method: "POST",
