@@ -1,5 +1,6 @@
 "use client"
 
+import { useUser } from "@/lib/user-contex"
 import { 
     Avatar, 
     AvatarFallback, 
@@ -39,6 +40,7 @@ import axios from "axios"
 
 const MainHeader = () => {
     const router = useRouter()
+    const { admin } = useUser()
     const handleLogout = () => {
         axios.post('/api/signout')
         .then((res) => {
@@ -69,12 +71,12 @@ const MainHeader = () => {
                 <DropdownMenu>
                     <DropdownMenuTrigger className="flex items-center p-2 hover:bg-muted gap-2">
                         <Avatar>
-                            <AvatarImage src="https://picsum.photos/200" />
-                            <AvatarFallback>CN</AvatarFallback>
+                            <AvatarImage src={admin?.avatar?.url || "https://picsum.photos/200"} />
+                            <AvatarFallback>{admin?.name?.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div className="hidden md:flex flex-col items-start ">
-                            <h2 className="font-semibold text-sm">John Doe</h2>
-                            <p className="text-xs text-muted-foreground">Admin</p>
+                            <h2 className="font-semibold text-sm">{admin?.name}</h2>
+                            <p className="text-xs text-muted-foreground">{admin?.role}</p>
                         </div>
                         <ChevronDown className="w-8 h-8 p-2" />
                     </DropdownMenuTrigger>

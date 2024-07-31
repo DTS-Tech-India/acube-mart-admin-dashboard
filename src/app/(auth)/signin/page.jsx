@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useUser } from "@/lib/user-contex"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,6 +20,7 @@ import axios from "axios"
 
 export default function SignIn() {
     const router = useRouter()
+    const { setAdmin } = useUser()
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -33,8 +35,10 @@ export default function SignIn() {
     const handleSubmit = () => {
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/login`, formData)
         .then((res) => {
-            console.log(res.data);
+            //console.log(res.data);
             if (res.data.success) {
+                setAdmin(res.data.admin);
+
                 axios.post('/api/signin', res.data)
                 .then((res) => {
                     //console.log(res)
