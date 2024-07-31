@@ -21,60 +21,35 @@ import { columns } from "./customers-columns";
 
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import axios from "axios";
 export default function Customers() {
     const router = useRouter();
 
-    const customerData = [
-        {
-            id: "1",
-            name: "John Doe",
-            avatar: "https://picsum.photos/200",
-            email: "pLwL8@example.com",
-            phone: "1234567890",
-            orders: "10",
-            status: "active",
-            balance: "1000",
-            created: "2022-01-01",
-            status: "active",
-        },
-        {
-            id: "2",
-            name: "Jane Doe",
-            avatar: "https://picsum.photos/204",
-            email: "pLwL8@example.com",
-            phone: "1234567890",
-            orders: "10",
-            status: "blocked",
-            balance: "1000",
-            created: "2022-01-01",
-            status: "active",
-        },
-        {
-            id: "3",
-            name: "John Doe",
-            avatar: "https://picsum.photos/202",
-            email: "pLwL8@example.com",
-            phone: "1234567890",
-            orders: "10",
-            status: "active",
-            balance: "1000",
-            created: "2022-01-01",
-            status: "active",
-        },
-        {
-            id: "4",
-            name: "John Doe",
-            avatar: "https://picsum.photos/203",
-            email: "pLwL8@example.com",
-            phone: "1234567890",
-            orders: "10",
-            status: "active",
-            balance: "1000",
-            created: "2022-01-01",
-            status: "active",
-        }
-
-    ]
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["users"],
+        queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/all`)
+        .then((res) => res.data),
+    });
+    const modifiedData = useMemo(() => {
+        const sortedData = data?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return sortedData?.map((user) => {
+            return {
+                id: user._id,
+                name: user.name,
+                avatar: user?.avatar?.url || `https://picsum.photos/${200 + Math.floor(Math.random() * 100) + 1}`,
+                email: user.email,
+                phone: user.phone || Math.floor(Math.random() * 10000000000),
+                created: user.createdAt,
+                orders: user.orders || Math.floor(Math.random() * 10),
+                balance: user.balance || Math.floor(Math.random() * 1000),
+                status: user.status || Math.floor(Math.random() * 2) === 0 ? "active" : "blocked",
+            }
+        })
+    }, [data])
+    if(isError) {
+        return <div>Error while fetching customers</div>
+    }
+    //console.log(data);
 
     return (
         <div className="w-full h-full flex flex-col gap-4">
@@ -98,10 +73,15 @@ export default function Customers() {
                 <Button onClick={() => {router.push("/dashboard/products/add-customer")}}>Add Customer</Button> 
             </div>
         </header>
-        <DataTable
-            data={customerData}
-            columns={columns}
-        /> 
+        {isLoading ? (
+            <Skeleton />
+        ) : (
+            <DataTable
+                data={modifiedData}
+                columns={columns}
+            /> 
+        )}
+        
     </div>
 );
 }
