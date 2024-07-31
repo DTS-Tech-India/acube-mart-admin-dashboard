@@ -3,16 +3,15 @@
 import  { createContext, useContext, useEffect, useState } from "react";
 
 const UserContext = createContext();
-const initialAdmin = () => {
-    const myAdmin = JSON.parse(localStorage.getItem("admin"));
-    return myAdmin ? myAdmin : null
-}
+
 export const UserProvider = ({ children }) => {
-    const [admin, setAdmin] = useState(initialAdmin);
+    const [admin, setAdmin] = useState(null);
 
     useEffect(() => {
-        localStorage.setItem("admin", JSON.stringify(admin));
-    }, [admin]);
+        const myAdmin = JSON.parse(localStorage.getItem("admin"));
+        if (!myAdmin) return;
+        setAdmin(myAdmin);
+    }, []);
 
     return (
         <UserContext.Provider value={{ admin, setAdmin }}>
