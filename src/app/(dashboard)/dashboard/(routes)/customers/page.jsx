@@ -40,7 +40,7 @@ export default function Customers() {
                 email: user.email,
                 phone: user.phone || Math.floor(Math.random() * 10000000000),
                 created: user.createdAt,
-                orders: user.orders || Math.floor(Math.random() * 10),
+                orders: user.orders.length || Math.floor(Math.random() * 10),
                 balance: user.balance || Math.floor(Math.random() * 1000),
                 status: user.status || Math.floor(Math.random() * 2) === 0 ? "active" : "blocked",
             }
