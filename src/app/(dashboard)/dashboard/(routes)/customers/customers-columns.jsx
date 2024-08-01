@@ -126,15 +126,15 @@ export const columns = [
             }
             return (
               <div className="flex gap-0.5">
-                <Link 
+                {/* <Link 
                     href={`/dashboard/customers/customer-details/${user.id}`} 
                     variant="ghost" 
                     className="p-2 hover:text-green-500 hover:bg-muted rounded-md"
                     >
                         <Eye className="w-6 h-6 p-0.5" />
-                </Link>
+                </Link> */}
                 <Link 
-                    href={`/dashboard/customers/edit-customer`} 
+                    href={`/dashboard/customers/edit-customer/${user.id}`} 
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
                 >
                     <Pen className="w-6 h-6 p-0.5" />

@@ -109,8 +109,8 @@ export default function CustomerDetails({ params }) {
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline"><Upload className="w-8 h-8 p-2" /> Export</Button>
-                    <Button onClick={() => {router.push("/dashboard/products/add-customer")}}>Add Products</Button> 
+                    <Button variant="outline" onClick={() => {router.push("/dashboard/customers")}}><X className="w-8 h-8 p-2" /> Cancel</Button>
+                    <Button /* onClick={() => {router.push("/dashboard/customers/edit")}} */>Update Customer</Button> 
                 </div>
             </div>
             <div className="w-full h-full flex gap-4">
