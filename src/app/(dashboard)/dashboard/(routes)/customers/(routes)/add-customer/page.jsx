@@ -22,23 +22,28 @@ import {
 import { ImageIcon, Phone, Upload } from "lucide-react";
 import axios from "axios";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function AddAdmin() {
+export default function AddCustomer() {
     const router = useRouter();
 
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: "",
-        role: "manager",
+        phone: "",
         image: null,
+        street: "",
+        city: "",
+        state: "",
+        country: "",
+        pincode: "",
+        
     })
-
+console.log(formData);
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
@@ -53,18 +58,38 @@ export default function AddAdmin() {
 
     const handleAddAdmin = (e) => {
         e.preventDefault();
-        if (!formData.name || !formData.email || !formData.password || !formData.role || !formData.image) {
+        if (!formData.name || !formData.email || !formData.password || !formData.image) {
             toast.error("All fields are required");
             return;
         }
-        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/register`, formData)
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/register`, formData)
             .then((res) => {
                 //console.log(res);
                 if (res.data.success) {
                     toast.success(res.data.message);
+
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/address/add`, {
+                        street: formData.street,
+                        city: formData.city,
+                        state: formData.state,
+                        country: formData.country,
+                        pincode: formData.pincode,
+                        userId: res.data.data._id
+                    })
+                    .then((res) => {
+                        //console.log(res);
+                        if (res.data.success) {
+                            toast.success(res.data.message);
+                        }
+                    })
+                    .catch((err) => {
+                        //console.log(err);
+                        toast.error(err.message);
+                    })
+
                     const imageData = new FormData();
                     imageData.append("image", formData.image, formData.image.name);
-                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/media/add/admin/${res.data.admin._id}`, imageData)
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/media/add/user/${res.data.data._id}`, imageData)
                     .then((res) => {
                         //console.log(res);
                         if (res.data.success) {
@@ -84,7 +109,10 @@ export default function AddAdmin() {
                 toast.error(err.message);
             });
     }
-//console.log(formData)
+
+    const handleCancel = () => {
+        router.push("/dashboard/customers");
+    }
     return (
         <div className="w-full h-full flex flex-col gap-4">
         <h1 className="text-2xl font-semi">Add Admins</h1>
@@ -107,6 +135,7 @@ export default function AddAdmin() {
                 </BreadcrumbList>
             </Breadcrumb>
             <div className="flex items-center gap-2">
+                <Button onClick={handleCancel} variant="outline">Cancel</Button>
                 <Button onClick={handleAddAdmin} >Add Admin</Button> 
             </div>
         </header>
@@ -145,7 +174,7 @@ export default function AddAdmin() {
                 <div className="w-full h-full flex flex-col gap-4">
                     <Card className="w-full h-full">
                         <CardHeader className="font-semibold">
-                            Admin Information
+                            Customer Information
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                                 <div>
@@ -161,17 +190,36 @@ export default function AddAdmin() {
                                     <Input name="password" type="password" onChange={handleChange} placeholder="Type password here..." required />
                                 </div>
                                 <div>
-                                    <Label htmlFor="role">Role</Label>
-                                    <Select onValueChange={(value) => handleChangeRole(value)} required>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select Role" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                                <SelectItem value="admin">Admin</SelectItem>
-                                                <SelectItem value="manager">Manager</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <Label htmlFor="role">Phone</Label>
+                                    <Input name="phone" type="text" onChange={handleChange} placeholder="Type phone here..."  />
                                 </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Address
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                            <div>
+                                <Label htmlFor="street">Street</Label>
+                                <Input name="street" type="text" onChange={handleChange} placeholder="Type address here..." />
+                            </div>
+                            <div>
+                                <Label htmlFor="city">City</Label>
+                                <Input name="city" type="text" onChange={handleChange} placeholder="Type city here..." />
+                            </div>
+                            <div>
+                                <Label htmlFor="state">State</Label>
+                                <Input name="state" type="text" onChange={handleChange} placeholder="Type state here..." />
+                            </div>
+                            <div>
+                                <Label htmlFor="country">Country</Label>
+                                <Input name="country" type="text" onChange={handleChange} placeholder="Type country here..." />
+                            </div>
+                            <div>
+                                <Label htmlFor="pincode">Pin Code</Label>
+                                <Input name="pincode" type="text" onChange={handleChange} placeholder="Type zip here..." />
+                            </div>
                         </CardContent>
                     </Card>
                 </div>

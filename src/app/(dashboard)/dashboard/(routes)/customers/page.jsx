@@ -70,7 +70,7 @@ export default function Customers() {
             </Breadcrumb>
             <div className="flex items-center gap-2">
                 <Button variant="outline"><Upload className="w-8 h-8 p-2" /> Export</Button>
-                <Button onClick={() => {router.push("/dashboard/products/add-customer")}}>Add Customer</Button> 
+                <Button onClick={() => {router.push("/dashboard/customers/add-customer")}}>Add Customer</Button> 
             </div>
         </header>
         {isLoading ? (

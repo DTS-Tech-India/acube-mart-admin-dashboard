@@ -222,7 +222,6 @@ export default function CustomerDetails({ params }) {
                         />
                 </div>
             </div>
-            Customer Details: {params.id}
         </div>
     )
 }
