@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 
@@ -41,6 +42,24 @@ export const columns = [
                 >
                     #{orderId}
                 </Link>
+            )
+        }
+    },
+    {
+        accessorKey: "image",
+        header: "Image",
+        cell: ({ row }) => {
+            const image = row.getValue("image");
+            return (
+                <div className="w-10 h-10">
+                    <Image
+                        src={image}
+                        alt="product image"
+                        width={200}
+                        height={200}
+                        className="w-full h-full object-cover rounded-md"
+                    />
+                </div>
             )
         }
     },
@@ -118,7 +137,7 @@ export const columns = [
                         <Eye className="w-6 h-6 p-0.5" />
                 </Link>
                 <Link 
-                    href={`#`} 
+                    href={`/dashboard/orders/edit-order/${user.orderId}`} 
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
                 >
                     <Pen className="w-6 h-6 p-0.5" />

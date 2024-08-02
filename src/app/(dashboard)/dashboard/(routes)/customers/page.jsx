@@ -74,7 +74,7 @@ export default function Customers() {
             </div>
         </header>
         {isLoading ? (
-            <Skeleton />
+            <Skeleton className="h-96 w-full aspect-auto" />
         ) : (
             <DataTable
                 data={modifiedData}
