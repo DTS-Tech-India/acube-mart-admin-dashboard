@@ -30,6 +30,7 @@ import { columns } from "./transaction-columns"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useMemo } from "react"
 
 
 export default function CustomerDetails({ params }) {
@@ -40,24 +41,45 @@ export default function CustomerDetails({ params }) {
         .then((res) => res.data),
     })
 
+    const { data: orders, isLoading: isLoadingOrders, isError: isErrorOrders } = useQuery({
+        queryKey: ["orders"],
+        queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/user/${params.id}`)
+        .then((res) => res.data),
+    })
+
+    const modifiedData = useMemo(() => {
+        const sortedData = orders?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return sortedData?.map((order) => {
+          return {
+            id: order._id,
+            orderId: order._id,
+            total: order.total,
+            date: order.createdAt,
+            status: order.status,
+            image: order.products[0].productId.featuredImage.url,
+            product: order.products.map((product) => product.productId.name),
+          }
+        })
+      }, [orders])
+
     if(isErrorCustomer) {
         return <div>Error while fetching customer</div>
     }
-
-    /* console.log(customer) */
+    //console.log(orders)
+    console.log(customer)
     const quickCards = [
         {
           title: "Total Spend",
-          value: 723,
+          value: customer?.data?.orders.reduce((total, order) => total + order.total, 0),
           icon: Wallet2,
           percentage: 10,
           color: "text-green-800",
           bg: "bg-green-200",
-          valueCurrency: "$",
+          valueCurrency: "₹",
         },
         {
           title: "Total Orders",
-          value: 1296,
+          value: customer?.data?.orders.length,
           icon: ShoppingCart,
           percentage: 10,
           color: "text-indigo-800",
@@ -72,35 +94,7 @@ export default function CustomerDetails({ params }) {
           bg: "bg-red-200",
         },
       ]
-      const transactions = [
-          {
-              id: 1,
-              orderId: "123456",
-              image: "https://picsum.photos/204",
-              product: "Product 1",
-              total: 800,
-              status: "pending",
-              date: "2022-01-01",
-          },
-          {
-              id: 2,
-              orderId: "853456",
-              image: "https://picsum.photos/205",
-              product: "Product 2",
-              total: 100,
-              status: "delivered",
-              date: "2022-01-02",
-          },
-          {
-              id: 3,
-              orderId: "341956",
-              image: "https://picsum.photos/206",
-              product: "Product 3",
-              total: 400,
-              status: "cancelled",
-              date: "2022-01-03",
-          },
-      ]
+
     return (
         <div className="w-full h-full flex flex-col gap-4">
             <h1 className="text-2xl font-semi">Customer Details</h1>
@@ -191,14 +185,6 @@ export default function CustomerDetails({ params }) {
                                                 <MapPin className="w-8 h-8" />
                                             </div>
                                             <div className="flex flex-col gap-2">
-                                                {/* <div className="flex flex-col text-sm">
-                                                    <h2 className="font-semibold">Delivery Address</h2>
-                                                    <p>Shastri Nagar, Delhi, India, 123456</p>
-                                                </div>
-                                                <div className="flex flex-col text-sm">
-                                                    <h2 className="font-semibold">Delivery Address</h2>
-                                                    <p>Shastri Nagar, Delhi, India, 123456</p>
-                                                </div> */}
                                                 {customer?.data?.address && (
                                                     customer?.data?.address?.map((address) => (
                                                         <div key={address?._id} className="flex flex-col text-sm">
@@ -242,7 +228,7 @@ export default function CustomerDetails({ params }) {
                         </div>
                         <DataTable
                             columns={columns}
-                            data={transactions}
+                            data={modifiedData}
                             initialState={{ pageSize: 10 }}
                             />
                     </div>
