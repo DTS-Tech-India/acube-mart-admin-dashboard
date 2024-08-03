@@ -59,6 +59,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 export default function OrderEdit({ params }) {
     const [status, setStatus] = useState("");
@@ -92,10 +93,25 @@ export default function OrderEdit({ params }) {
     } , [order])
 
     if (isErrorOrder) return <div>Error occurred while fetching order</div>
+    const handleOrderUpdate = () => {
+        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/update/${params.id}`, {
+            status
+        })
+        .then(res => {
+            //console.log(res)
+            if (res.status === 200) {
+                toast.success(res.data.message);
+            }
+        })
+        .catch(err => {
+            //console.log(err)
+            toast.error(err.message)
+        })
+    }
     
     return (
         <div className="w-full h-full flex flex-col gap-4">
-            <h1 className="text-2xl font-semi">Order Details</h1>
+            <h1 className="text-2xl font-semi">Edit Order</h1>
             <div className="flex items-center justify-between">
                 <Breadcrumb>
                     <BreadcrumbList>
@@ -130,7 +146,7 @@ export default function OrderEdit({ params }) {
                         </SelectContent>
                     </Select>
                     <Button variant="outline" onClick={() => router.push("/dashboard/orders")}> <X className="h-4 w-4" /> Cancel</Button>
-                    <Button >Update Order</Button> 
+                    <Button onClick={handleOrderUpdate}>Update Order</Button> 
                 </div>
             </div>
             {isLoadingOrder ? (
@@ -140,7 +156,10 @@ export default function OrderEdit({ params }) {
                         <div className="w-full flex gap-4 ">
                                 <Card className="w-full">
                                     <CardHeader className="flex flex-row items-center justify-between">
-                                        <h2 className=" font-semibold">Order #{params.id}</h2>
+                                        <div className="flex flex-col gap-1">
+                                            <h2 className=" font-semibold">Order </h2>
+                                            <p className="text-sm">#{params.id}</p>
+                                        </div>
                                         <span 
                                             className={cn(
                                                 " px-4 py-1 text-sm rounded-full",

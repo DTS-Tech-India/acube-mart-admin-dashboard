@@ -140,7 +140,10 @@ export default function OrderDetails({ params }) {
                         <div className="w-full flex gap-4 ">
                                 <Card className="w-full">
                                     <CardHeader className="flex flex-row items-center justify-between">
-                                        <h2 className=" font-semibold">Order #{params.id}</h2>
+                                        <div className="flex flex-col gap-1">
+                                            <h2 className=" font-semibold">Order </h2>
+                                            <p className="text-sm">#{params.id}</p>
+                                        </div>
                                         <span 
                                             className={cn(
                                                 " px-4 py-1 text-sm rounded-full",
