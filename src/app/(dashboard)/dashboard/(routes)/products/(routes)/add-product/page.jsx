@@ -85,6 +85,9 @@ export default function AddProduct() {
         deliveryCharges: "",
         video: "",
         description: "",
+        sku: "",
+        stock: "",
+        barcode: "",
     });
     const [attributes, setAttributes] = useState([]);
     const [Varients, setVarients] = useState([]);
@@ -321,9 +324,12 @@ export default function AddProduct() {
             image: Array.from(Varient.image),
             video: Varient.video,
             variantAttributes: Varient.variantAttributes,
-            description: Varient.description
+            description: Varient.description,
+            sku: Varient.sku,
+            barcode: Varient.barcode,
+            stock: Varient.stock
         }]);
-        setVarient({ name: "", value: "", mrp: "", sp: "", deliveryCharges: "", codCharges: "", discount: "", video: "", image: [] , variantAttributes: []});
+        setVarient({ name: "", value: "", mrp: "", sp: "", deliveryCharges: "", codCharges: "", discount: "", video: "", image: [] , variantAttributes: [], description: "", sku: "", barcode: "", stock: "" });
         setVariantImage([]);
     }
     //console.log(Varient);
@@ -398,7 +404,10 @@ export default function AddProduct() {
                         video: Varients[i].video,
                         variantAttributes: Varients[i].variantAttributes,
                         productId: data.data._id,
-                        description: Varients[i].description
+                        description: Varients[i].description,
+                        sku: Varients[i].sku,
+                        barcode: Varients[i].barcode,
+                        stock: Varients[i].stock
                     };
                     //console.log(varientsData);
                     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/add`, {
@@ -736,6 +745,20 @@ export default function AddProduct() {
                                     <Input name="codCharges" type="number" min={0} onChange={handleVarientChange} value={Varient.codCharges} placeholder="Type COD charges..." />
                                 </div>
                             </div>
+                            <div className="flex gap-4 w-full">
+                                <div className="w-full">
+                                    <Label htmlFor="sku">SKU</Label>
+                                    <Input name="sku" placeholder="Type SKU here..." value={Varient.sku} onChange={handleVarientChange} />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="barcode">Barcode</Label>
+                                    <Input name="barcode" placeholder="Type Barcode here..." value={Varient.barcode} onChange={handleVarientChange} />  
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="stock">Stock</Label>
+                                    <Input name="stock" type="number" min={0} placeholder="Type Stock here..." value={Varient.stock} onChange={handleVarientChange} />
+                                </div>
+                            </div>
                             {attributes.length > 0 &&
                                     <div className="w-full flex gap-4">
                                         <Select name="name" onValueChange={(value) => addTepmoraryAttributeName(value)}>
@@ -846,7 +869,7 @@ export default function AddProduct() {
                                             <Input name="mrp" defaultValue={Varient.mrp} type="number" min={0} placeholder="Type MRP here..." />
                                         </div>
                                     </div>
-                                    <div className="flex gap-4 w-full">
+                                <div className="flex gap-4 w-full">
                                     <div className="w-full">
                                         <Label htmlFor="price">Selling Price(INR)</Label>
                                         <Input name="sp" defaultValue={Varient.sp} type="number" min={0} placeholder="Type SP here..." />
@@ -864,6 +887,20 @@ export default function AddProduct() {
                                     <div className="w-full">
                                         <Label htmlFor="codCharges">COD Charges(INR)</Label>
                                         <Input name="codCharges" type="number" min={0} defaultValue={Varient.codCharges} placeholder="Type COD charges..." />
+                                    </div>
+                                </div>
+                                <div className="flex gap-4 w-full">
+                                    <div className="w-full">
+                                        <Label htmlFor="sku">SKU</Label>
+                                        <Input name="sku" placeholder="Type SKU here..." defaultValue={Varient.sku} />
+                                    </div>
+                                    <div className="w-full">
+                                        <Label htmlFor="barcode">Barcode</Label>
+                                        <Input name="barcode" placeholder="Type Barcode here..." defaultValue={Varient.barcode} />  
+                                    </div>
+                                    <div className="w-full">
+                                        <Label htmlFor="stock">Stock</Label>
+                                        <Input name="stock" type="number" min={0} placeholder="Type Stock here..." defaultValue={Varient.stock} />
                                     </div>
                                 </div>
                                         {Varient.variantAttributes && Varient.variantAttributes.map(attribute => (

@@ -89,6 +89,9 @@ export default function Page({ params }) {
         discount: "",
         video: "",
         description: "",
+        sku: "",
+        barcode: "",
+        stock: ""
     })
     
     const [attributes, setAttributes] = useState([]);
@@ -406,7 +409,10 @@ const handleDeselectAllModels = () => {
             video: Varient.video,
             variantAttributes: Varient.variantAttributes,
             productId: params.id,
-            description: Varient.description
+            description: Varient.description,
+            sku: Varient.sku,
+            barcode: Varient.barcode,
+            stock: Varient.stock
         }
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/add`, variantData)
         .then((res) => {
@@ -436,7 +442,7 @@ const handleDeselectAllModels = () => {
                 }
             }
         })
-        setVarient({ name: "", value: "", mrp: "", sp: "", deliveryCharges: "", codCharges: "", discount: "", video: "", image: [] , variantAttributes: []});
+        setVarient({ name: "", value: "", mrp: "", sp: "", deliveryCharges: "", codCharges: "", discount: "", video: "", image: [] , variantAttributes: [], description: "", sku: "", barcode: "", stock: "" });
         setVariantImage([]);
     }
 
@@ -782,6 +788,20 @@ const handleDeselectAllModels = () => {
                                     <Input name="codCharges" type="number" min={0} onChange={handleVarientChange} value={Varient.codCharges} placeholder="Type COD charges..." />
                                 </div>
                             </div>
+                            <div className="flex gap-4 w-full">
+                                <div className="w-full">
+                                    <Label htmlFor="sku">SKU</Label>
+                                    <Input name="sku" value={Varient.sku} placeholder="Product SKU" onChange={handleVarientChange} />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="barcode">Barcode</Label>
+                                    <Input name="barcode" value={Varient.barcode} placeholder="Product Barcode" onChange={handleVarientChange} />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="stock">Stock</Label>
+                                    <Input name="stock" type="number" min={0} value={Varient.stock} placeholder="Product Stock" onChange={handleVarientChange} />
+                                </div>
+                            </div>
                             {attributes.length > 0 &&
                                     <div className="w-full flex gap-4">
                                         <Select name="name" onValueChange={(value) => addTepmoraryAttributeName(value)}>
@@ -907,6 +927,20 @@ const handleDeselectAllModels = () => {
                                         <div className="w-full">
                                             <Label htmlFor="codCharges">COD Charges(INR)</Label>
                                             <Input name="codCharges" type="number" min={0} onChange={handleVarientChange} value={variant.codCharges} placeholder="Type COD charges..." />
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-4 w-full">
+                                        <div className="w-full">
+                                            <Label htmlFor="sku" >SKU</Label>
+                                            <Input name="sku" defaultValue={variant.sku} placeholder="Type SKU here..." />
+                                        </div>
+                                        <div className="w-full">
+                                            <Label htmlFor="barcode">Barcode</Label>
+                                            <Input name="barcode" defaultValue={variant.barcode} placeholder="Type Barcode here..." />
+                                        </div>
+                                        <div className="w-full">
+                                            <Label htmlFor="stock">Stock</Label>
+                                            <Input name="stock" defaultValue={variant.stock} placeholder="Type Stock here..." />
                                         </div>
                                     </div>
                                         {variant.variantAttributes && variant.variantAttributes.map(attribute => (
