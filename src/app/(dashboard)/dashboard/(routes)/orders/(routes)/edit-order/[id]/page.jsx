@@ -53,10 +53,6 @@ import {
     CardHeader, 
     CardTitle 
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import { MobileIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -64,7 +60,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function OrderDetails({ params }) {
+export default function OrderEdit({ params }) {
     const [status, setStatus] = useState("");
     const router = useRouter();
 
@@ -73,13 +69,13 @@ export default function OrderDetails({ params }) {
         queryFn: async () => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/${params.id}`)
         .then(res => res.data),
     })
-
+    //console.log(order)
     useEffect(() => {
-        setStatus(order.data.status)
+        setStatus(order?.data.status)
     }, [setStatus, order])
    
     const orderList = useMemo(() => {
-        return order.data.products.map((product) => {
+        return order?.data.products.map((product) => {
             return {
                 id: product.productId._id,
                 name: product.productId.name,
@@ -96,36 +92,7 @@ export default function OrderDetails({ params }) {
     } , [order])
 
     if (isErrorOrder) return <div>Error occurred while fetching order</div>
-    //console.log(order)
-    const ordersList = [
-        {
-            id: 1,
-            name: "Product 1",
-            imageUrl: "https://picsum.photos/200",
-            sku: "123456",
-            price: 800,
-            quantity: 1,
-            total: 800,
-        },
-        {
-            id: 2,
-            name: "Product 2",
-            imageUrl: "https://picsum.photos/201",
-            sku: "853456",
-            price: 100,
-            quantity: 3,
-            total: 300,
-        },
-        {
-            id: 3,
-            name: "Product 3",
-            imageUrl: "https://picsum.photos/202",
-            sku: "341956",
-            price: 400,
-            quantity: 2,
-            total: 800,
-        },
-    ]
+    
     return (
         <div className="w-full h-full flex flex-col gap-4">
             <h1 className="text-2xl font-semi">Order Details</h1>
@@ -322,13 +289,15 @@ export default function OrderDetails({ params }) {
                                                 {orderList.map((order) => (
                                                     <TableRow key={order.id}>
                                                         <TableCell>
-                                                            <Image
-                                                                src={order?.imageUrl}
-                                                                alt={order.name}
-                                                                width={50}
-                                                                height={50}
-                                                                className="rounded-md"
-                                                            />
+                                                            <div className="w-10 h-10">
+                                                                <Image
+                                                                    src={order?.imageUrl}
+                                                                    alt={order.name}
+                                                                    width={200}
+                                                                    height={200}
+                                                                    className="rounded-md w-full h-full object-cover"
+                                                                />
+                                                            </div>
                                                         </TableCell>
                                                         <TableCell>{order.name}</TableCell>
                                                         <TableCell>{order.sku}</TableCell>
