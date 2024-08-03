@@ -21,6 +21,12 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+  import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+  } from "@/components/ui/accordion"
 import { ImageIcon, Trash2, Upload, X } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -895,6 +901,10 @@ const handleDeselectAllModels = () => {
                                 <Button className="mt-auto" onClick={addNewVarient}>+ Add Variant</Button>
                             </div>
                             {productData.variants && productData.variants.map(variant => (
+                                <Accordion type="single" collapsible key={variant.id}>
+                                <AccordionItem value={variant._id}>
+                                  <AccordionTrigger>Variant: {variant.name}</AccordionTrigger>
+                                  <AccordionContent>
                                 <div className="rounded-md bg-muted border border-dotted p-4 flex flex-col gap-4" key={variant._id}>
                                     <div className="flex gap-4 w-full">
                                         <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100 ml-auto" onClick={() => handleDeleteVarient(variant._id)} ><X className="w-8 h-8 p-2" /></Button>
@@ -971,6 +981,9 @@ const handleDeselectAllModels = () => {
                                         <ReactQuill theme="snow" defaultValue={variant?.description} placeholder="Type variant description here..." />
                                     </div>
                                 </div>
+                                </AccordionContent>
+                                </AccordionItem>
+                              </Accordion>
                             ))}
                         </CardContent>
                     </Card>

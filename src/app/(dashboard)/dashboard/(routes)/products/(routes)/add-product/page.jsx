@@ -21,8 +21,20 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+  import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+  } from "@/components/ui/accordion"
 import { ImageIcon, Upload, X } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { 
+    Card, 
+    CardContent, 
+    CardDescription, 
+    CardHeader, 
+    CardTitle 
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -855,6 +867,10 @@ export default function AddProduct() {
                             </div>
                             
                             {Varients && Varients.map(Varient => (
+                                <Accordion type="single" collapsible key={Varient.id}>
+                                <AccordionItem value={Varient.id}>
+                                  <AccordionTrigger>Variant: {Varient.name}</AccordionTrigger>
+                                  <AccordionContent>
                                 <div className="rounded-md bg-muted border border-dotted p-4 flex flex-col gap-4" key={Varient.id}>
                                     <div className="flex gap-4 w-full">
                                         <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100 ml-auto" onClick={() => handleDeleteVarient(Varient.id)} ><X className="w-8 h-8 p-2" /></Button>
@@ -931,6 +947,9 @@ export default function AddProduct() {
                                         
                                     </div>
                                 </div>
+                                </AccordionContent>
+                                </AccordionItem>
+                              </Accordion>
                             ))}
                         </CardContent>
                     </Card>
