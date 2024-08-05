@@ -65,6 +65,10 @@ export default function CustomerDetails({ params }) {
     if(isErrorCustomer) {
         return <div>Error while fetching customer</div>
     }
+
+    if(isErrorOrders) {
+        return <div>Error while fetching orders</div>
+    }
     //console.log(orders)
     //console.log(customer)
     const quickCards = [
@@ -121,7 +125,7 @@ export default function CustomerDetails({ params }) {
                     <Button /* onClick={() => {router.push("/dashboard/customers/edit")}} */>Update Customer</Button> 
                 </div>
             </div>
-            {isLoadingCustomer ? (
+            {isLoadingCustomer || isLoadingOrders ? (
                 <Skeleton className="h-96 w-full aspect-auto" />
                 ) : (
                   <div className="w-full h-full flex gap-4">

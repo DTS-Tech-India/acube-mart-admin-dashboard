@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 
 
@@ -33,6 +34,17 @@ export const columns = [
     {
         accessorKey: "orderId",
         header: "Order ID",
+        cell: ({ row }) => {
+            const orderId = row.getValue("orderId");
+            return (
+                <Link
+                    href={`/dashboard/orders/order-details/${orderId}`}
+                    className="text-blue-600 hover:underline"
+                >
+                    #{orderId}
+                </Link>
+            )
+        }
     },
     {
         accessorKey: "image",

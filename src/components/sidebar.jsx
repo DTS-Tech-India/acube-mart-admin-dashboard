@@ -75,12 +75,12 @@ const Sidebar = () => {
         {
             label: "Support",
             icon: Headphones,
-            href: "/support",
+            href: "/dashboard/support",
         },
         {
             label: "Settings",
             icon: Settings,
-            href: "/settings",
+            href: "/dashboard/settings",
         },
     ]
     return (
