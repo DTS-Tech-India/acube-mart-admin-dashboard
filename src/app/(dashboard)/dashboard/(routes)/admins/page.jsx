@@ -25,7 +25,7 @@ import axios from "axios";
 export default function Admins() {
     const router = useRouter();
 
-    const { data: adminData, isLoading, isError, isSuccess } = useQuery({
+    const { data: adminData, isLoading, isError } = useQuery({
         queryKey: ["adminData"],
         queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/all`),
     });
