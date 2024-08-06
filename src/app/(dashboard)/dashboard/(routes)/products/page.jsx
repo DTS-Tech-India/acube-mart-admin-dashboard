@@ -40,7 +40,7 @@ export default function Products() {
             image: product.featuredImage?.url,
             category: product.category.name,
             stock: product.stock,
-            price: product.price,
+            price: product.sp,
             date: product.createdAt,
             status: product.status,
             variants: product.variants
