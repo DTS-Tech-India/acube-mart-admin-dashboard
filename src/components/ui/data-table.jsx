@@ -55,6 +55,8 @@ export function DataTable({
       columnVisibility,
       globalFilter,
     },
+    autoResetPageIndex: false,
+    autoResetExpanded: false,
 
   })
 
