@@ -25,7 +25,8 @@ import {
     LogOut,
     Menu,
     Network,
-    UserCog
+    UserCog,
+    ReceiptIndianRupee
 } from "lucide-react"
 
 
@@ -68,6 +69,11 @@ const Sidebar = () => {
             label: "Admins",
             icon: UserCog,
             href: "/dashboard/admins",
+        },
+        {
+            label: "Transactions",
+            icon: ReceiptIndianRupee,
+            href: "/dashboard/transactions",
         },
     ]
 

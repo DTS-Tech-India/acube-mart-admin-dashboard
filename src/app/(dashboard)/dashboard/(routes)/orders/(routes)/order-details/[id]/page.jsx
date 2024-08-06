@@ -38,6 +38,7 @@ import {
     Gift, 
     Mail, 
     MapPin, 
+    ReceiptIndianRupeeIcon, 
     RefreshCcw, 
     ScrollText, 
     ShoppingCart, 
@@ -92,7 +93,6 @@ export default function OrderDetails({ params }) {
     } , [order])
 
     if (isErrorOrder) return <div>Error occurred while fetching order</div>
-    
     return (
         <div className="w-full h-full flex flex-col gap-4">
             <h1 className="text-2xl font-semi">Order Details</h1>
@@ -178,17 +178,17 @@ export default function OrderDetails({ params }) {
                                                 
                                                 <p>Payment Method</p>
                                             </div>
-                                            <p>Visa</p>
+                                            <p>{order?.data?.transactionId?.filter((item) => item.status === "SUCCESS")[0]?.paymentMode || "N/A"}</p>
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-4">
                                                 <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
-                                                    <Truck className="w-8 h-8" />
+                                                    <ReceiptIndianRupeeIcon className="w-8 h-8" />
                                                 </div>
                                                 
-                                                <p>Shiping Method</p>
+                                                <p>Transaction ID</p>
                                             </div>
-                                            <p>Flat Shiping</p>
+                                            <p className="text-blue-600 hover:underline" >{order?.data?.transactionId?.filter((item) => item.status === "SUCCESS")[0]?._id || "N/A"}</p>
                                         </div>
                                     </CardContent>
                                 </Card>

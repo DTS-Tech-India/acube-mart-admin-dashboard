@@ -581,7 +581,7 @@ const handleDeselectAllModels = () => {
                             <div>
                                 <Label htmlFor="description">Description</Label>
                                 {/* <Textarea name="description" value={productData.description} onChange={handleChange} placeholder="Type product description here..." /> */}
-                                <ReactQuill theme="snow" value={productData.description} onChange={(value) => handleDescriptionChange(value)} placeholder="Type productdescription here..." />
+                                <ReactQuill theme="snow" defaultValue={productData.description} onChange={(value) => handleDescriptionChange(value)} placeholder="Type productdescription here..." />
                             </div>
                         </CardContent>
                     </Card>
@@ -1021,7 +1021,7 @@ const handleDeselectAllModels = () => {
                                 <div className="w-full">
                                     <Label htmlFor="shortDescription">Short Description</Label>
                                     {/* <Textarea name="shortDescription" value={productData?.additionalInfo?.shortDescription} placeholder="Type short description here ..." onChange={handleChangeAdditionalInfo} /> */}
-                                    <ReactQuill theme="snow" value={productData?.additionalInfo.shortDescription} onChange={(value) => handleShortDescriptionChange(value)} placeholder="Type short description here..." />
+                                    <ReactQuill theme="snow" defaultValue={productData?.additionalInfo.shortDescription} onChange={(value) => handleShortDescriptionChange(value)} placeholder="Type short description here..." />
                                 </div>
                             </div>
                             
