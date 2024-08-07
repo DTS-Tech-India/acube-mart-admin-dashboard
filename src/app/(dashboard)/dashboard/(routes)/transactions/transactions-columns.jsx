@@ -38,10 +38,10 @@ export const columns = [
             const transactionId = row.getValue("id");
             return (
                 <Link 
-                    className="text-blue-600 hover:underline" 
-                    href={`/dashboard/orders/order-details/${transactionId}`}
+                    /* className="text-blue-600 hover:underline" */ 
+                    href={`#`}
                 >
-                    #{transactionId}
+                    {transactionId}
                 </Link>
             )
         }
@@ -90,6 +90,36 @@ export const columns = [
         }
     },
     {
+        accessorKey: "orderId",
+        header: "Order ID",
+        cell: ({ row }) => {
+            const orderId = row.getValue("orderId");
+            return (
+                <Link 
+                    className="text-blue-600 hover:underline" 
+                    href={`/dashboard/orders/order-details/${orderId}`}
+                >
+                    {orderId}
+                </Link>
+            )
+        }
+    },
+    {
+        accessorKey: "userId",
+        header: "User ID",
+        cell: ({ row }) => {
+            const userId = row.getValue("userId");
+            return (
+                <Link 
+                    className="text-blue-600 hover:underline" 
+                    href={`/dashboard/customers/edit-customer/${userId}`}
+                >
+                    {userId}
+                </Link>
+            )
+        }
+    }
+    /* {
         accessorKey: "action",
         header: "Action",
         cell: ({ row }) => {
@@ -106,5 +136,5 @@ export const columns = [
               </div>
             )
         }
-    }
+    } */
 ]

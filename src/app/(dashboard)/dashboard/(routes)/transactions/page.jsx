@@ -36,6 +36,8 @@ export default function Transactions() {
           return {
             id: transaction._id,
             transactionId: transaction._id,
+            orderId: transaction.orderId._id,
+            userId: transaction.userId._id,
             paymentMode: transaction.paymentMode,
             amount: transaction.amount,
             date: transaction.createdAt,
@@ -46,7 +48,7 @@ export default function Transactions() {
       }, [data])
 
     if(isError) return <div>Error while fetching transactions</div>;
-    //console.log(modifiedData)
+    console.log(data)
 
     return (
         <div className="w-full h-full flex flex-col gap-4">

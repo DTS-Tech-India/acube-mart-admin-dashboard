@@ -46,6 +46,7 @@ const MainHeader = () => {
         .then((res) => {
             //console.log(res)
             toast.success(res.data)
+            localStorage.removeItem('admin')
             router.push('/signin')
         })
         .catch((err) => {

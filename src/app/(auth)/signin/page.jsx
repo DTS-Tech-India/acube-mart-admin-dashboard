@@ -37,6 +37,7 @@ export default function SignIn() {
         .then((res) => {
             //console.log(res.data);
             if (res.data.success) {
+                localStorage.setItem("admin", JSON.stringify(res.data.admin));
                 setAdmin(res.data.admin);
 
                 axios.post('/api/signin', res.data)

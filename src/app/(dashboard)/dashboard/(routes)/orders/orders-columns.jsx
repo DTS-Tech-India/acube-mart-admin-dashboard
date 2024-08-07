@@ -40,7 +40,7 @@ export const columns = [
                     className="text-blue-600 hover:underline" 
                     href={`/dashboard/orders/order-details/${orderId}`}
                 >
-                    #{orderId}
+                    {orderId}
                 </Link>
             )
         }
