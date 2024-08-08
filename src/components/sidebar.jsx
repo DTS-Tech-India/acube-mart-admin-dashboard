@@ -36,11 +36,6 @@ const Sidebar = () => {
     const { admin } = useUser();
     const routes = [
         {
-            label: "Dashboard",
-            icon: LayoutDashboard,
-            href: "/dashboard",
-        },
-        {
             label: "Products",
             icon: ShoppingBag,
             href: "/dashboard/products",
@@ -61,6 +56,11 @@ const Sidebar = () => {
             href: "/dashboard/customers",
         },
         {
+            label: "Transactions",
+            icon: ReceiptIndianRupee,
+            href: "/dashboard/transactions",
+        },
+        {
             label: "Coupons",
             icon: Star,
             href: "/dashboard/coupons",
@@ -69,11 +69,6 @@ const Sidebar = () => {
             label: "Admins",
             icon: UserCog,
             href: "/dashboard/admins",
-        },
-        {
-            label: "Transactions",
-            icon: ReceiptIndianRupee,
-            href: "/dashboard/transactions",
         },
     ]
 
@@ -98,12 +93,21 @@ const Sidebar = () => {
                 </Link>
                 <div className=" w-full p-4 h-full flex flex-col">
                     <div className="mt-2 flex flex-col gap-1">
+                        <Link
+                            href={"/dashboard"}
+                            className={cn("text-sm group flex p-3 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-500 hover:text-white transition",
+                                pathname === "/dashboard" || pathname === "/" ? "bg-violet-500 text-white" : ""
+                            )}
+                        >
+                            <LayoutDashboard className="w-8 h-8 p-1" />
+                            <span>Dashboard</span>
+                        </Link>
                         {routes.map((routes) => (
                             <Link 
                                 key={routes.href} 
                                 href={routes.href} 
                                 className={cn("text-sm group flex p-3 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-500 hover:text-white transition",
-                                    pathname === routes.href ? "bg-violet-500 text-white" : "",
+                                    pathname.includes(routes.href) ? "bg-violet-500 text-white" : "",
                                     admin?.role === "manager" && routes.href === "/dashboard/admins" ? "hidden" : ""
                                     
                                 )}
