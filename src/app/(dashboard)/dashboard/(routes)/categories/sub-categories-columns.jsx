@@ -68,14 +68,6 @@ export const elementColumns = [
             )
         }
     },
-    /* {
-        accessorKey: "sales",
-        header: "Sales",
-    }, */
-    {
-        accessorKey: "stock",
-        header: "Stock",
-    },
     {
         accessorKey: "added",
         header: ({ column }) => {

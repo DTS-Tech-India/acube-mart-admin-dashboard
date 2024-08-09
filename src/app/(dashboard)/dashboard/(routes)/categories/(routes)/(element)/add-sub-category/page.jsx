@@ -40,7 +40,6 @@ export default function AddSubCategory() {
         description: "",
         typeId: "",
         categoryId: "",
-        stock: 0,
     });
 
     
@@ -91,6 +90,7 @@ export default function AddSubCategory() {
                         //console.log(res);
                         if (res.data.success) {
                             toast.success(res.data.message);
+                            router.push("/dashboard/categories");
                         }
                     })
                     .catch((err) => {
@@ -98,7 +98,7 @@ export default function AddSubCategory() {
                         toast.error(err.message);
                     })
 
-                    router.push("/dashboard/categories");
+                    
                 }
             })
             .catch((err) => {
@@ -217,10 +217,6 @@ export default function AddSubCategory() {
                                 <div>
                                     <Label htmlFor="name">Name</Label>
                                     <Input name="name" onChange={handleChange} placeholder="Type product name here..." required />
-                                </div>
-                                <div>
-                                    <Label htmlFor="name">Stock</Label>
-                                    <Input name="stock" onChange={handleChange} type="number" placeholder="Type product stock here..." />
                                 </div>
                                 <div>
                                     <Label htmlFor="description">Description</Label>

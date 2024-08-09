@@ -227,10 +227,6 @@ export default function EditSubCategory({ params }) {
                                     <Input name="name" defaultValue={element.data.data?.name} onChange={handleChange} placeholder="Type product name here..." required />
                                 </div>
                                 <div>
-                                    <Label htmlFor="name">Stock</Label>
-                                    <Input name="stock" defaultValue={element.data.data?.stock} onChange={handleChange} type="number" placeholder="Type product stock here..." />
-                                </div>
-                                <div>
                                     <Label htmlFor="description">Description</Label>
                                     <Textarea name="description" defaultValue={element.data.data?.description} onChange={handleChange} placeholder="Type product description here..." />
                                 </div>

@@ -65,7 +65,6 @@ export default function CategoriesPage() {
             id: element._id,
             name: element.name,
             image: element?.mediaId?.url,
-            stock: element?.stock,
             added: element.createdAt,
             type: element.typeId?.name,
             category: element.categoryId?.name
