@@ -124,8 +124,10 @@ export default function AddCoupon() {
                                             <SelectValue placeholder="Select Coupon Type" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="fixed" >Fixed</SelectItem>
-                                            <SelectItem value="percent">Percent</SelectItem>
+                                            <SelectItem value="fixed_amount" >Fixed Amount</SelectItem>
+                                            <SelectItem value="percent_discount">Percent Discount</SelectItem>
+                                            <SelectItem value="free_shipping">Free Shipping</SelectItem>
+                                            <SelectItem value="buy_one_get_one">Buy One Get One</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
