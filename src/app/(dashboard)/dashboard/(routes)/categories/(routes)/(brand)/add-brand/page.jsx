@@ -21,7 +21,7 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-import { Upload, X } from "lucide-react";
+import { ImageIcon, Upload, X } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -39,6 +39,7 @@ export default function AddBrand() {
         name: "",
         description: "",
         typeId: "",
+        image: "",
     });
 
     
@@ -49,7 +50,7 @@ export default function AddBrand() {
 
     
     if (isError) return "An error has occurred.";
-    console.log(data);
+    //console.log(data);
 
     const handleChange = (e) => {
         setBrandData({ ...brandData, [e.target.name]: e.target.value });
@@ -60,10 +61,14 @@ export default function AddBrand() {
         setBrandData({ ...brandData, typeId: value });
     }
 
+    const handleChangeImage = (e) => {
+        setBrandData({ ...brandData, image: e.target.files[0] });
+    }
+
     const handleAddBrand = (e) => {
         e.preventDefault();
         if (!brandData.name || !brandData.typeId) {
-            toast.error("All fields are required");
+            toast.error("Name and type are required");
             return;
         }
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/brand/add`, brandData)
@@ -71,7 +76,25 @@ export default function AddBrand() {
             //console.log(res);
             if (res.data.success) {
                 toast.success(res.data.message);
-                router.push("/dashboard/categories");
+                if (brandData.image) {
+                    const formData = new FormData();
+                    formData.append("image", brandData.image, brandData.image.name);
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/media/add/brand/${res.data.data._id}`, formData)
+                    .then((res) => {
+                        //console.log(res);
+                        if (res.data.success) {
+                            toast.success(res.data.message);
+                            router.push("/dashboard/categories");
+                        }
+                    })
+                    .catch((err) => {
+                        //console.log(err);
+                        toast.error(err.message);
+                    })
+                }
+                else {
+                    router.push("/dashboard/categories");
+                }
             }
         })
         .catch((err) => {
@@ -136,6 +159,34 @@ export default function AddBrand() {
                                     </SelectContent>
                                 </Select>
                             </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Media
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                                <div>
+                                    <Label htmlFor="image">Image</Label>
+                                    <Input name="image" onChange={handleChangeImage} type="file" required />
+                                </div>
+                                {brandData.image ? (
+                                    <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200">
+                                        <Image
+                                            src={URL.createObjectURL(brandData.image)}
+                                            alt="product image"
+                                            width={400}
+                                            height={400}
+                                            className="w-full h-full object-cover rounded-md"
+                                        />
+                                    </div>
+                            ):(
+                                <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
+                                    <span className="p-4 rounded-full hover:bg-muted">
+                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                    </span>
+                            </button>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

@@ -95,6 +95,7 @@ export default function CategoriesPage() {
             name: brand.name,
             type: brand.typeId?.name,
             added: brand.createdAt,
+            image: brand?.mediaId?.url
           }
         })
       }, [brand]);
@@ -109,6 +110,7 @@ export default function CategoriesPage() {
             type: model.typeId?.name,
             brand: model.brandId?.name,
             added: model.createdAt,
+            image: model?.mediaId?.url
           }
         })
       }, [model]);

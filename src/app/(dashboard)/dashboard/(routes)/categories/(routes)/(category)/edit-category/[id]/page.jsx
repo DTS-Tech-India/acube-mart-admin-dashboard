@@ -107,7 +107,7 @@ export default function EditCategory({ params }) {
     
     return (
         <div className="w-full h-full flex flex-col gap-4">
-            <h1 className="text-2xl font-semi">Add Category</h1>
+            <h1 className="text-2xl font-semi">Edit Category</h1>
             <div className="flex items-center justify-between">
                 <Breadcrumb>
                     <BreadcrumbList>
@@ -121,14 +121,14 @@ export default function EditCategory({ params }) {
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
                             <BreadcrumbPage>
-                                Add Category
+                                Edit Category
                             </BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={() => handleCancel()}><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button onClick={handleEditCategory}>Save Sub Category</Button> 
+                    <Button onClick={handleEditCategory}>Save Category</Button> 
                 </div>
             </div>
             {isCategoryLoading || isApiLoading ? (
