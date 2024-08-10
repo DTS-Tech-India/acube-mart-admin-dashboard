@@ -21,7 +21,7 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-import { Upload, X } from "lucide-react";
+import { ImageIcon, Upload, X } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -40,6 +40,7 @@ export default function AddModel() {
         description: "",
         typeId: "",
         brandId: "",
+        image: "",
     });
 
     
@@ -65,10 +66,14 @@ export default function AddModel() {
         setModelData({ ...modelData, brandId: value });
     }
 
+    const handleChangeImage = (e) => {
+        setModelData({ ...modelData, image: e.target.files[0] });
+    }
+
     const handleAddModel = (e) => {
         e.preventDefault();
         if (!modelData.name || !modelData.typeId || !modelData.brandId) {
-            toast.error("All fields are required");
+            toast.error("Name, type and brand are required");
             return;
         }
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/model/add`, modelData)
@@ -76,7 +81,25 @@ export default function AddModel() {
             //console.log(res);
             if (res.data.success) {
                 toast.success(res.data.message);
-                router.push("/dashboard/categories");
+                if (modelData.image) {
+                    const formData = new FormData();
+                    formData.append("image", modelData.image, modelData.image.name);
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/media/add/model/${res.data.data._id}`, formData)
+                    .then((res) => {
+                        //console.log(res);
+                        if (res.data.success) {
+                            toast.success(res.data.message);
+                            router.push("/dashboard/categories");
+                        }
+                    })
+                    .catch((err) => {
+                        //console.log(err);
+                        toast.error(err.message);
+                    })
+                }
+                else {
+                    router.push("/dashboard/categories");
+                }
             }
         })
         .catch((err) => {
@@ -155,6 +178,34 @@ export default function AddModel() {
                                     </SelectContent>
                                 </Select>
                             </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader className="font-semibold">
+                            Media
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-4">
+                                <div>
+                                    <Label htmlFor="image">Image</Label>
+                                    <Input name="image" onChange={handleChangeImage} type="file" required />
+                                </div>
+                                {modelData.image ? (
+                                    <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200">
+                                        <Image
+                                            src={URL.createObjectURL(modelData.image)}
+                                            alt="product image"
+                                            width={400}
+                                            height={400}
+                                            className="w-full h-full object-cover rounded-md"
+                                        />
+                                    </div>
+                            ):(
+                                <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
+                                    <span className="p-4 rounded-full hover:bg-muted">
+                                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                                    </span>
+                            </button>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

@@ -75,6 +75,7 @@ export default function EditSubCategory({ params }) {
             //console.log(res);
             if (res.data.success) {
                 toast.success(res.data.message);
+                
                 if (categoryData.image) {
                     const formData = new FormData();
                     formData.append("image", categoryData.image, categoryData.image.name);
@@ -91,7 +92,9 @@ export default function EditSubCategory({ params }) {
                         toast.error(err.message);
                     })
                 }
-
+                else {
+                    router.push("/dashboard/categories");
+                }
                 
             }
         })

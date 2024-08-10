@@ -81,24 +81,27 @@ export default function AddSubCategory() {
                 //console.log(res);
                 if (res.data.success) {
                     toast.success(res.data.message);
-
-                    const formData = new FormData();
-                    formData.append("image", categoryData.image, categoryData.image.name);
-
-                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/media/add/element/${res.data.data._id}`, formData)
-                    .then((res) => {
-                        //console.log(res);
-                        if (res.data.success) {
-                            toast.success(res.data.message);
-                            router.push("/dashboard/categories");
-                        }
-                    })
-                    .catch((err) => {
-                        //console.log(err);
-                        toast.error(err.message);
-                    })
-
                     
+                    if (categoryData.image) {
+                        const formData = new FormData();
+                        formData.append("image", categoryData.image, categoryData.image.name);
+
+                        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/media/add/element/${res.data.data._id}`, formData)
+                        .then((res) => {
+                            //console.log(res);
+                            if (res.data.success) {
+                                toast.success(res.data.message);
+                                router.push("/dashboard/categories");
+                            }
+                        })
+                        .catch((err) => {
+                            //console.log(err);
+                            toast.error(err.message);
+                        })
+                    }
+                    else {
+                        router.push("/dashboard/categories");
+                    }
                 }
             })
             .catch((err) => {

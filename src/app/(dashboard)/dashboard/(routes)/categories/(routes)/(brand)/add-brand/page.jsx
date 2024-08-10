@@ -76,6 +76,7 @@ export default function AddBrand() {
             //console.log(res);
             if (res.data.success) {
                 toast.success(res.data.message);
+                
                 if (brandData.image) {
                     const formData = new FormData();
                     formData.append("image", brandData.image, brandData.image.name);

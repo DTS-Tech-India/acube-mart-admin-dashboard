@@ -33,9 +33,9 @@ import { useRouter } from "next/navigation";
 import { getApiData } from "@/lib/get-api-data";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
-export default function EditBrand({ params }) {
+export default function EditModel({ params }) {
     const router = useRouter();
-    const [brandData, setBrandData] = useState({});
+    const [modelData, setModelData] = useState({});
 
     
     const { data: apiData, isLoading: isApiLoading, isError: isApiError } = useQuery({
@@ -43,39 +43,62 @@ export default function EditBrand({ params }) {
         queryFn: async() => await getApiData(),
     });
 
-    const { data: brand, isLoading: isBrandLoading, isError: isBrandError } = useQuery({
+    const { data: model, isLoading: isModelLoading, isError: isModelError } = useQuery({
         queryKey: ["cateegory"],
-        queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/brand/${params.id}`),
+        queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/model/${params.id}`),
     });
     
-    if (isBrandError || isApiError) return "An error has occurred.";
-    //console.log(brand);
+    if (isModelError || isApiError) return "An error has occurred.";
+    //console.log(model);
 
     const handleChange = (e) => {
-        setBrandData({ ...brandData, [e.target.name]: e.target.value });
+        setModelData({ ...modelData, [e.target.name]: e.target.value });
         //console.log(productData);
     }
 
     const handleChangeType = (value) => {
-        setBrandData({ ...brandData, typeId: value });
+        setModelData({ ...modelData, typeId: value });
     }
 
-    const handleChangebrand = (value) => {
-        setBrandData({ ...brandData, brandId: value });
+    const handleChangeBrand = (value) => {
+        setModelData({ ...modelData, brandId: value });
     }
 
     const handleChangeImage = (e) => {
-        setBrandData({ ...brandData, image: e.target.files[0] });
+        setModelData({ ...modelData, image: e.target.files[0] });
     }
 
-    const handleEditBrand = (e) => {
+    const handleEditModel = (e) => {
         e.preventDefault();
-        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/brand/update/${params.id}`, brandData)
+        if (!modelData.name || !modelData.typeId || !modelData.brandId) {
+            toast.error("All fields are required");
+            return;
+        }
+        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/model/update/${params.id}`, modelData)
         .then((res) => {
             //console.log(res);
             if (res.data.success) {
                 toast.success(res.data.message);
-                router.push("/dashboard/categories");
+                
+                if (modelData.image) {
+                    const formData = new FormData();
+                    formData.append("image", modelData.image, modelData.image.name);
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/media/add/model/${params.id}`, formData)
+                    .then((res) => {
+                        //console.log(res);
+                        if (res.data.success) {
+                            toast.success(res.data.message);
+                            router.push("/dashboard/categories");
+                        }
+                    })
+                    .catch((err) => {
+                        //console.log(err);
+                        toast.error(err.message);
+                    })
+                }
+                else {
+                    router.push("/dashboard/categories");
+                }
             }
         })
         .catch((err) => {
@@ -90,7 +113,7 @@ export default function EditBrand({ params }) {
     
     return (
         <div className="w-full h-full flex flex-col gap-4">
-            <h1 className="text-2xl font-semi">Edit brand</h1>
+            <h1 className="text-2xl font-semi">Edit model</h1>
             <div className="flex items-center justify-between">
                 <Breadcrumb>
                     <BreadcrumbList>
@@ -99,35 +122,35 @@ export default function EditBrand({ params }) {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                                <Link href="/dashboard/categories">Brand</Link>
+                                <Link href="/dashboard/categories">model</Link>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
                             <BreadcrumbPage>
-                                Edit Brand
+                                Edit model
                             </BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={() => handleCancel()}><X className="w-8 h-8 p-2" /> cancel</Button>
-                    <Button onClick={handleEditBrand}>Save Brand</Button> 
+                    <Button onClick={handleEditModel}>Save model</Button> 
                 </div>
             </div>
-            {isBrandLoading || isApiLoading ? (
+            {isModelLoading || isApiLoading ? (
                 <Skeleton className="h-96 w-full aspect-auto" />
                 ) : (
-            <form className="w-full h-full flex gap-4" onSubmit={handleEditBrand}>
+            <form className="w-full h-full flex gap-4" onSubmit={handleEditModel}>
                 
                 <div className="w-full h-full max-w-xs flex flex-col gap-4">
                     <Card className="w-full h-full">
                         <CardHeader className="font-semibold">
-                            Brand Type
+                            model Type
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Type</Label>
-                                <Select value={brand.data.data.typeId._id} onValueChange={(value) => handleChangeType(value)} required>
+                                <Select defaultValue={model.data.data.typeId._id} onValueChange={(value) => handleChangeType(value)} required>
                                     <SelectTrigger>
                                     
                                         <SelectValue placeholder="Select type" />
@@ -135,6 +158,20 @@ export default function EditBrand({ params }) {
                                     <SelectContent>
                                         {apiData.types.map((type) => (
                                             <SelectItem key={type._id} value={type._id}>{type.name}</SelectItem>
+                                        ))}
+                                        
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div>
+                                <Label htmlFor="brandId">Brand</Label>
+                                <Select defaultValue={model.data.data.brandId._id} onValueChange={(value) => handleChangeBrand(value)} required>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select model" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {apiData.brands.map((brand) => (
+                                            <SelectItem key={brand._id} value={brand._id}>{brand.name}</SelectItem>
                                         ))}
                                         
                                     </SelectContent>
@@ -151,12 +188,12 @@ export default function EditBrand({ params }) {
                                     <Label htmlFor="image">Image</Label>
                                     <Input name="image" onChange={handleChangeImage} type="file" required />
                                 </div>
-                                {brand.data.data.mediaId || brandData.image ? (
+                                {model.data.data.mediaId || modelData.image ? (
                                     <>
-                                        {brandData.image ? (
+                                        {modelData.image ? (
                                             <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200">
                                                 <Image
-                                                    src={URL.createObjectURL(brandData.image)}
+                                                    src={URL.createObjectURL(modelData.image)}
                                                     alt="product image"
                                                     width={400}
                                                     height={400}
@@ -166,7 +203,7 @@ export default function EditBrand({ params }) {
                                         ):(
                                             <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200">
                                                 <Image
-                                                    src={brand.data.data.mediaId.url}
+                                                    src={model.data.data.mediaId.url}
                                                     alt="product image"
                                                     width={400}
                                                     height={400}
@@ -188,16 +225,16 @@ export default function EditBrand({ params }) {
                 <div className="w-full h-full flex flex-col gap-4">
                     <Card className="w-full h-full">
                         <CardHeader className="font-semibold">
-                            Brand Information
+                            model Information
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
                                 <div>
                                     <Label htmlFor="name">Name</Label>
-                                    <Input name="name" defaultValue={brand.data.data?.name} onChange={handleChange} placeholder="Type product name here..." required />
+                                    <Input name="name" defaultValue={model.data.data?.name} onChange={handleChange} placeholder="Type product name here..." required />
                                 </div>
                                 <div>
                                     <Label htmlFor="description">Description</Label>
-                                    <Textarea name="description" defaultValue={brand.data.data?.description} onChange={handleChange} placeholder="Type product description here..." />
+                                    <Textarea name="description" defaultValue={model.data.data?.description} onChange={handleChange} placeholder="Type product description here..." />
                                 </div>
                         </CardContent>
                     </Card>
