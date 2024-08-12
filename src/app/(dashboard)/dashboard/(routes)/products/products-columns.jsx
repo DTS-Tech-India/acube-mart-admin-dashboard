@@ -125,7 +125,7 @@ export const columns = [
             const product = row.original;
             const handleDeleteProduct = () => {
                 // delete product by product id
-                console.log(product.id);
+                //console.log(product.id);
 
                 // Delete product from database
                 fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/delete/${product.id}`, {

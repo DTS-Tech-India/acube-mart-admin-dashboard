@@ -140,6 +140,14 @@ const Sidebar = () => {
                 </Link>
                 <div className=" w-full h-full p-1 flex flex-col">
                     <div className="mt-2 flex flex-col gap-1">
+                        <Link
+                            href={"/dashboard"} 
+                            className={cn("text-sm group flex p-1 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-500 hover:text-white transition",
+                                pathname === "/dashboard" || pathname === "/" ? "bg-violet-500 text-white" : ""
+                            )}
+                        >
+                            <LayoutDashboard className="w-8 h-8 p-1" />
+                        </Link>
                         {routes.map((routes) => (
                              <TooltipProvider key={routes.href}>
                                     <Tooltip>
@@ -148,7 +156,7 @@ const Sidebar = () => {
                                                 
                                                 href={routes.href} 
                                                 className={cn("text-sm group flex p-1 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-500 hover:text-white transition",
-                                                    pathname === routes.href ? "bg-violet-500 text-white" : ""
+                                                    pathname.includes(routes.href) ? "bg-violet-500 text-white" : ""
                                                     
                                                 )}
                                             >
