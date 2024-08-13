@@ -38,7 +38,6 @@ export default function Products() {
             slug: product.slug,
             name: product.name,
             image: product.featuredImage?.url,
-            category: product.category.name,
             stock: product.stock,
             price: product.sp,
             date: product.createdAt,

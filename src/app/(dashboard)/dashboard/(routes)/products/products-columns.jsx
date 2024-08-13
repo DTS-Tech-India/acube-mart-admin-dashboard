@@ -66,10 +66,6 @@ export const columns = [
         }
     },
     {
-        accessorKey: "category",
-        header: "Category",
-    },
-    {
         accessorKey: "stock",
         header: "Stock",
     },

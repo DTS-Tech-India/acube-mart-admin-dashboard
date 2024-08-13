@@ -112,7 +112,7 @@ export default function AddAdmin() {
     }
     const handleChangePassword = () => {
         if (!formData.oldPassword || !formData.newPassword) {
-            toast.error("All fields are required");
+            toast.error("Old Password and New Password are required");
             return;
         }
         axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/update/password/${admin._id}`, formData)
