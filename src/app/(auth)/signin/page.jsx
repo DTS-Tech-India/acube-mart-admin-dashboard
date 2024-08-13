@@ -33,6 +33,10 @@ export default function SignIn() {
     }
     
     const handleSubmit = () => {
+        if (!formData.email || !formData.password) {
+            toast.error("Email and Password are required");
+            return
+        }
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/login`, formData)
         .then((res) => {
             //console.log(res.data);
@@ -79,7 +83,7 @@ export default function SignIn() {
                 <Label htmlFor="email">Email</Label>
                 <Input
                     name="email"
-                    type="email"
+                    
                     placeholder="m@example.com"
                     required
                     onChange={handleOnchange}

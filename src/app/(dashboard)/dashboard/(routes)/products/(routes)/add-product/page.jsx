@@ -570,7 +570,7 @@ export default function AddProduct() {
                                     <div className="flex gap-4">
                                         {images.map((image) => (
                                             <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
-                                                <Image src={image} alt={image} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                <Image src={image} alt={image} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                             </div>
                                         ))}
                                     </div>
@@ -827,7 +827,7 @@ export default function AddProduct() {
                                         <div className="flex gap-4">
                                             {variantImage.map((image) => (
                                                 <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
-                                                    <Image src={image} alt={image} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                    <Image src={image} alt={image} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                                 </div>
                                             ))}
                                         </div>
@@ -930,7 +930,7 @@ export default function AddProduct() {
                                     <div className="w-full flex gap-4">
                                         {Varient.image.length > 0 && Varient.image.map(image => (
                                             <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image.name}>
-                                                <Image src={URL.createObjectURL(image)} alt="varientImage" width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                <Image src={URL.createObjectURL(image)} alt="varientImage" width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                             </div>
                                             
                                         ))}
@@ -1138,8 +1138,8 @@ export default function AddProduct() {
                                 <Image
                                     src={featuredImage}
                                     alt="product image"
-                                    width={400}
-                                    height={400}
+                                    width={1000}
+                                    height={1000}
                                     className="w-full h-full object-cover rounded-md"
                                 />
                             ):(

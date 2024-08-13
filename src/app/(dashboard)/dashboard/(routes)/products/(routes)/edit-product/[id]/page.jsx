@@ -601,7 +601,7 @@ const handleDeselectAllModels = () => {
                                         {productData.image.map((image) => (
                                             <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200 relative" key={image._id}>
                                                 <Button variant="ghost" onClick={() => handleDeleteImage(image._id)} className="absolute top-2 right-2 text-red-600 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
-                                                <Image src={image.url} alt={image._id} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                <Image src={image.url} alt={image._id} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                             </div>
                                         ))}
                                     </div>
@@ -610,7 +610,7 @@ const handleDeselectAllModels = () => {
                                             <div className="flex gap-4">
                                                 {images.map((image) => (
                                                     <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
-                                                        <Image src={image} alt={image} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                        <Image src={image} alt={image} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                                     </div>
                                                 ))}
                                             </div>
@@ -862,7 +862,7 @@ const handleDeselectAllModels = () => {
                                         <div className="flex gap-4">
                                             {variantImage.map((image) => (
                                                 <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
-                                                    <Image src={image} alt={image} width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                    <Image src={image} alt={image} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                                 </div>
                                             ))}
                                         </div>
@@ -965,7 +965,7 @@ const handleDeselectAllModels = () => {
                                             <div className="w-full flex gap-4">
                                                 {variant.image.map((image, index) => (
                                                     <div key={index} className="w-full max-w-xs aspect-square rounded-sm bg-slate-200">
-                                                        <Image src={image.url} alt="varientImage" width={400} height={400} className="w-full h-full object-cover rounded-sm" />
+                                                        <Image src={image.url} alt="varientImage" width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                                     </div>
                                                 ))}
                                             </div>
@@ -1180,8 +1180,8 @@ const handleDeselectAllModels = () => {
                                 <Image
                                     src={productData.featuredImage?.url}
                                     alt="product featured image"
-                                    width={400}
-                                    height={400}
+                                    width={1000}
+                                    height={1000}
                                     className="w-full h-full object-cover rounded-md"
                                 />
                             ):(

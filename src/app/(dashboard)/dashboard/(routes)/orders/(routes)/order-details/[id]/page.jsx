@@ -316,12 +316,21 @@ export default function OrderDetails({ params }) {
                                                     <TableCell>₹{order?.data?.total}</TableCell>
                                                 </TableRow>
                                                 <TableRow>
-                                                    <TableCell colSpan={5}>Shipping Rate</TableCell>
+                                                    <TableCell colSpan={4}>Shipping Rate</TableCell>
+                                                    <TableCell colSpan={1}>+</TableCell>
                                                     <TableCell>₹{orderList.reduce((acc, curr) => acc + curr.deliveryCharges, 0)}</TableCell>
                                                 </TableRow>
                                                 <TableRow>
-                                                    <TableCell colSpan={5}>COD Charges</TableCell>
+                                                    <TableCell colSpan={4}>COD Charges</TableCell>
+                                                    <TableCell colSpan={1}>+</TableCell>
                                                     <TableCell>₹{orderList.reduce((acc, curr) => acc + curr.codCharges, 0)}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell colSpan={2}>Coupon Discount</TableCell>
+                                                    <TableCell colSpan={1}>{order?.data?.couponId?.code}</TableCell>
+                                                    <TableCell colSpan={1}>{order?.data?.couponId?.couponType}</TableCell>
+                                                    <TableCell colSpan={1}>-</TableCell>
+                                                    <TableCell>₹{order?.data?.couponId?.amount || 0}</TableCell>
                                                 </TableRow>
                                                 <TableRow>
                                                     <TableCell colSpan={5}>Grand Total</TableCell>
