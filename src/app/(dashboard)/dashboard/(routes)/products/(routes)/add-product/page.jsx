@@ -365,6 +365,149 @@ export default function AddProduct() {
         if(productData.image === "") return toast.error("Please upload featured image"); 
         
         // Add product to database
+
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/add`, productData)
+        .then((res) => {
+            //console.log(res);
+            if (res.data.success) {
+                toast.success(res.data.message);
+                const productId = res.data.data._id;
+                //Add attributes to db
+                for (let i = 0; i < attributes.length; i++) {
+                    const attributeData = {
+                        name: attributes[i].name,
+                        value: attributes[i].value,
+                        productId: productId,
+                    };
+                    //console.log(attributeData);
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/attribute/add`, attributeData)
+                    .then((res) => {
+                        //console.log(res);
+                        if (res.data.success) {
+                            toast.success(res.data.message);
+                        } else {
+                            toast.error(res.data.message);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        toast.error(err.message);
+                    })
+                }
+                
+                //Add varients to db
+                for (let i = 0; i < Varients.length; i++) {
+                    const varientData = {
+                        name: Varients[i].name,
+                        mrp: Varients[i].mrp,
+                        sp: Varients[i].sp,
+                        deliveryCharges: Varients[i].deliveryCharges,
+                        codCharges: Varients[i].codCharges,
+                        discount: Varients[i].discount,
+                        video: Varients[i].video,
+                        variantAttributes: Varients[i].variantAttributes,
+                        productId: productId,
+                        description: Varients[i].description,
+                        sku: Varients[i].sku,
+                        barcode: Varients[i].barcode,
+                        stock: Varients[i].stock
+                    };
+                    //console.log(varientData);
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/add`, varientData)
+                    .then((res) => {
+                        //console.log(res);
+                        if (res.data.success) {
+                            toast.success(res.data.message);
+                            //Add varient images
+                            for (let j = 0; j < Varients[i].image.length; j++) {
+                                const imageData = new FormData();
+                                imageData.append("image", Varients[i].image[j], Varients[i].image[j].name);
+                                imageData.append("variantId", res.data.data._id);
+                                imageData.append("productId", productId);
+                                axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add/variant`, imageData, {
+                                    headers: {
+                                        "Content-Type": "multipart/form-data",
+                                    },
+                                })
+                                .then((res) => {
+                                    //console.log(res);
+                                    if (res.data.success) {
+                                        toast.success(res.data.message);
+                                    } else {
+                                        toast.error(res.data.message);
+                                    }
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    toast.error(err.message);
+                                })
+                            }
+                        } else {
+                            toast.error(res.data.message);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        toast.error(err.message);
+                    })
+                }
+
+                // Add featured image to db
+                const imageData = new FormData();
+                imageData.append("image", productData.image, productData.image.name);
+                imageData.append("productId", productId);
+                imageData.append("isFeatured", true);
+                axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add`, imageData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                .then((res) => {
+                    //console.log(res);
+                    if (res.data.success) {
+                        toast.success(res.data.message);
+                    } else {
+                        toast.error(res.data.message);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    toast.error(err.message);
+                })
+
+                //Add images to db
+                const formData = new FormData();
+                for (let i = 0; i < productData.images.length; i++) {
+                    formData.append("images", productData.images[i], productData.images[i].name);
+                }
+                    formData.append("productId", res.data.data._id);
+                    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add/multiple`, formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    })
+                    .then((res) => {
+                        if (res.data.success) {
+                            //console.log(res);
+                            toast.success(res.data.message);
+                            router.push("/dashboard/products");
+                        } else {
+                            toast.error(res.data.message);
+                        }
+                    })
+                    .catch((err) => {
+                        //console.log(err);
+                        toast.error(err.message);
+                    })
+                
+            }
+        })
+        .catch((err) => {
+            //console.log(err);
+            toast.error(err.message);
+        })
+
+/* 
         fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/add`, {
             method: "POST",
             headers: {
@@ -507,7 +650,7 @@ export default function AddProduct() {
         .catch((err) => {
             //console.log(err);
             toast.error(err.message);
-        });
+        }); */
     }
     const handleCancelButton = () => {
         router.push("/dashboard/products");

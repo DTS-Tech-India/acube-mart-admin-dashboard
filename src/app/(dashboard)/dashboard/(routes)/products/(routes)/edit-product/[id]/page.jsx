@@ -514,19 +514,12 @@ const handleDeselectAllModels = () => {
     //console.log(updateData);
     const handleUpdateProduct = () => {
         // Add product to database
-        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/edit/${params.id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updateData),
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            //console.log(data);
-            if (data.success) {
-                toast.success(data.message); 
-            } 
+        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/edit/${params.id}`, updateData)
+        .then((res) => {
+            //console.log(res);
+            if (res.data.success) {
+                toast.success(res.data.message);
+            }
         })
         .catch((err) => {
             //console.log(err);
