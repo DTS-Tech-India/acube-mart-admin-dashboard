@@ -49,6 +49,7 @@ import dynamic from "next/dynamic";
  */
 import 'react-quill/dist/quill.snow.css';
 import Multiselect from 'multiselect-react-dropdown';
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AddProduct() {
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
@@ -120,7 +121,6 @@ export default function AddProduct() {
         queryFn: async() => await getApiData(),
     });
 
-    if (isLoading) return "Loading...";
     if (isError) return "An error has occurred.";
     //console.log(data); 
 
@@ -536,6 +536,12 @@ export default function AddProduct() {
                     <Button onClick={handleAddProduct}>Add Product</Button> 
                 </div>
             </div>
+            {isLoading ? (
+                <Skeleton
+                className="h-96 w-full aspect-auto" 
+            />
+            ):(
+            <>
             <div className="w-full h-full flex gap-4">
                 <div className="w-full h-full flex flex-col gap-4">
                     <Card className="w-full h-full">
@@ -1152,6 +1158,7 @@ export default function AddProduct() {
                     </Card>
                 </div>
             </div>
+            
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm">
                     <h2>Product Completion</h2>
@@ -1162,6 +1169,8 @@ export default function AddProduct() {
                     <Button onClick={handleAddProduct}>Add Product</Button> 
                 </div>
             </div>
+        </>
+        )}
         </div>
     );
 }

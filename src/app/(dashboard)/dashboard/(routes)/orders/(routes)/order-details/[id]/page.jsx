@@ -334,7 +334,7 @@ export default function OrderDetails({ params }) {
                                                 </TableRow>
                                                 <TableRow>
                                                     <TableCell colSpan={5}>Grand Total</TableCell>
-                                                    <TableCell>₹{order?.data?.total + orderList.reduce((acc, curr) => acc + curr.deliveryCharges, 0) + orderList.reduce((acc, curr) => acc + curr.codCharges, 0)}</TableCell>
+                                                    <TableCell>₹{order?.data?.total + orderList.reduce((acc, curr) => acc + curr.deliveryCharges, 0) + orderList.reduce((acc, curr) => acc + curr.codCharges, 0) - (order?.data?.couponId?.amount || 0)}</TableCell>
                                                 </TableRow>
                                             </TableFooter>
                                         </Table>

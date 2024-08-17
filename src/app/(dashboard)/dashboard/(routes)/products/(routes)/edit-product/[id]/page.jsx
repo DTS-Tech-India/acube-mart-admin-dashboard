@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react";
 import Link from "next/link"
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
@@ -39,7 +40,6 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
-/* import ReactQuill from 'react-quill'; */
 import 'react-quill/dist/quill.snow.css';
 import Multiselect from "multiselect-react-dropdown";
 import axios from "axios";
@@ -327,11 +327,6 @@ const handleDeselectAllModels = () => {
         //console.log(res);
             if (res.data.success) {
                 toast.success(res.data.message);
-                 /* setAttributes([...attributes, {
-                    id: attributes.length,
-                    name: attribute.name,
-                    value: attribute.value.split(",").map((value) => value.trim()),
-                }]); */
                 setAttribute({ name: "", value: "" });
                 //console.log(attributes);
             }
@@ -383,20 +378,20 @@ const handleDeselectAllModels = () => {
         )
     }
 
-    const handleDescriptionChange = (value) => {
-        setProductData({ ...productData, description: value });
+    const handleDescriptionChange = (html) => {
+        setProductData({ ...productData, description: html });
         //console.log(productData.description);
-        setUpdateData({ ...updateData, description: value })
+        setUpdateData({ ...updateData, description: html })
     }
 
-    const handleShortDescriptionChange = (value) => {
-        setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, shortDescription: value } });
+    const handleShortDescriptionChange = (html) => {
+        setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, shortDescription: html } });
         //console.log(productData.additionalInfo);
-        setUpdateData({ ...updateData, additionalInfo: { ...productData.additionalInfo, shortDescription: value } })
+        setUpdateData({ ...updateData, additionalInfo: { ...productData.additionalInfo, shortDescription: html } })
     }
 
-    const handleVarientDescriptionChange = (value) => {
-        setVarient({ ...Varient, description: value });
+    const handleVarientDescriptionChange = (html) => {
+        setVarient({ ...Varient, description: html });
         //console.log(Varient.description);
     }
 
@@ -557,7 +552,9 @@ const handleDeselectAllModels = () => {
                 </div>
             </div>
             {(isApiDataLoading || isProductLoading) ? (
-              <Skeleton className="w-full h-" />
+              <Skeleton
+              className="h-96 w-full aspect-auto" 
+          />
             ) : (
               <>
               <div className="w-full h-full flex gap-4">
@@ -574,7 +571,7 @@ const handleDeselectAllModels = () => {
                             <div>
                                 <Label htmlFor="description">Description</Label>
                                 {/* <Textarea name="description" value={productData.description} onChange={handleChange} placeholder="Type product description here..." /> */}
-                                <ReactQuill theme="snow" defaultValue={productData.description} onChange={(value) => handleDescriptionChange(value)} placeholder="Type productdescription here..." />
+                                <ReactQuill theme="snow" defaultValue={productData.description} onChange={handleDescriptionChange} placeholder="Type productdescription here..." />
                             </div>
                         </CardContent>
                     </Card>
@@ -887,7 +884,7 @@ const handleDeselectAllModels = () => {
                             </div>
                             <div className="flex flex-col gap-4 w-full">
                                 <Label htmlFor="description">Description</Label>
-                                <ReactQuill theme="snow" value={Varient.description} onChange={(value) => handleVarientDescriptionChange(value)} placeholder="Type product description here..." />
+                                <ReactQuill theme="snow" defaultValue={Varient.description} onChange={handleVarientDescriptionChange} placeholder="Type product description here..." />
                                 
                             </div>
                             <div>
@@ -1014,7 +1011,7 @@ const handleDeselectAllModels = () => {
                                 <div className="w-full">
                                     <Label htmlFor="shortDescription">Short Description</Label>
                                     {/* <Textarea name="shortDescription" value={productData?.additionalInfo?.shortDescription} placeholder="Type short description here ..." onChange={handleChangeAdditionalInfo} /> */}
-                                    <ReactQuill theme="snow" defaultValue={productData?.additionalInfo.shortDescription} onChange={(value) => handleShortDescriptionChange(value)} placeholder="Type short description here..." />
+                                    <ReactQuill theme="snow" defaultValue={productData?.additionalInfo.shortDescription} onChange={handleShortDescriptionChange} placeholder="Type short description here..." />
                                 </div>
                             </div>
                             
