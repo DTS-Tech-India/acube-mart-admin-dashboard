@@ -203,44 +203,44 @@ export default function AddProduct() {
         setProductData({ ...productData, isSimpleProduct: value });
     }
 
-    const handleAddType = (value) => {
+    const handleAddType = (list, value) => {
         setProductData({ ...productData, type: [...productData.type, value._id] });
     }
 
-    const handleRemoveType = (value) => {
-        setProductData({ ...productData, type: productData.type.filter((item) => item !== value._id) });
+    const handleRemoveType = (list, value) => {
+        setProductData({ ...productData, type: list.map((item) => item._id) });
     }
 
-    const handleAddCategory = (value) => {
+    const handleAddCategory = (list, value) => {
         setProductData({ ...productData, category: [...productData.category, value._id] });
     }
 
-    const handleRemoveCategory = (value) => {
-        setProductData({ ...productData, category: productData.category.filter((item) => item !== value._id) });
+    const handleRemoveCategory = (list, value) => {
+        setProductData({ ...productData, category: list.map((item) => item._id) });
     }
 
-    const handleAddElement = (value) => {
+    const handleAddElement = (list, value) => {
         setProductData({ ...productData, element: [...productData.element, value._id] });
     }
 
-    const handleRemoveElement = (value) => {
-        setProductData({ ...productData, element: productData.element.filter((item) => item !== value._id) });
+    const handleRemoveElement = (list, value) => {
+        setProductData({ ...productData, element: list.map((item) => item._id) });
     }
 
-    const handleAddBrand = (value) => {
+    const handleAddBrand = (list, value) => {
         setProductData({ ...productData, brand: [...productData.brand, value._id] });
     }
 
-    const handleRemoveBrand = (value) => {
-        setProductData({ ...productData, brand: productData.brand.filter((item) => item !== value._id) });
+    const handleRemoveBrand = (list, value) => {
+        setProductData({ ...productData, brand: list.map((item) => item._id) });
     }
 
-    const handleAddModel = (value) => {
+    const handleAddModel = (list, value) => {
         setProductData({ ...productData, model: [...productData.model, value._id] });
     }
 
-    const handleRemoveModel = (value) => {
-        setProductData({ ...productData, model: productData.model.filter((item) => item !== value._id) });
+    const handleRemoveModel = (list, value) => {
+        setProductData({ ...productData, model: list.map((item) => item._id) });
     }
 
     const handleStatusChange = (value) => {
@@ -1033,8 +1033,8 @@ export default function AddProduct() {
                                 <Multiselect 
                                     options={data.types}
                                     displayValue="name"
-                                    onSelect={(_, item) => handleAddType(item)}
-                                    onRemove={(_, item) => handleRemoveType(item)}
+                                    onSelect={handleAddType}
+                                    onRemove={handleRemoveType}
                                     selectedValues={multiselectAll.type}
                                     placeholder="Select types"
                                     showCheckbox
@@ -1053,8 +1053,8 @@ export default function AddProduct() {
                                 <Multiselect 
                                     options={data.categories}
                                     displayValue="name"
-                                    onSelect={(_, item) => handleAddCategory(item)}
-                                    onRemove={(_, item) => handleRemoveCategory(item)}
+                                    onSelect={handleAddCategory}
+                                    onRemove={handleRemoveCategory}
                                     selectedValues={multiselectAll.category}
                                     placeholder="Select categories"
                                     showCheckbox
@@ -1071,8 +1071,8 @@ export default function AddProduct() {
                                 <Multiselect 
                                     options={data.elements}
                                     displayValue="name"
-                                    onSelect={(_, item) => handleAddElement(item)}
-                                    onRemove={(_, item) => handleRemoveElement(item)}
+                                    onSelect={handleAddElement}
+                                    onRemove={handleRemoveElement}
                                     selectedValues={multiselectAll.element}
                                     placeholder="Select elements"
                                     showCheckbox
@@ -1096,8 +1096,8 @@ export default function AddProduct() {
                                 <Multiselect 
                                     options={data.brands}
                                     displayValue="name"
-                                    onSelect={(_, item) => handleAddBrand(item)}
-                                    onRemove={(_, item) => handleRemoveBrand(item)}
+                                    onSelect={handleAddBrand}
+                                    onRemove={handleRemoveBrand}
                                     selectedValues={multiselectAll.brand}
                                     placeholder="Select brands"
                                     showCheckbox
@@ -1114,8 +1114,8 @@ export default function AddProduct() {
                                 <Multiselect 
                                     options={data.models}
                                     displayValue="name"
-                                    onSelect={(_, item) => handleAddModel(item)}
-                                    onRemove={(_, item) => handleRemoveModel(item)}
+                                    onSelect={handleAddModel}
+                                    onRemove={handleRemoveModel}
                                     selectedValues={multiselectAll.model}
                                     placeholder="Select models"
                                     showCheckbox

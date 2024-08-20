@@ -252,54 +252,55 @@ const handleDeselectAllModels = () => {
         setUpdateData({ ...updateData, status: value })
     }
 
-    const handleAddType = (value) => {
+    const handleAddType = (list, value) => {
         setProductData({ ...productData, type: [...productData.type, value._id] });
         setUpdateData({ ...updateData, type: [...updateData.type, value._id] });
     }
 
-    const handleRemoveType = (value) => {
-        setProductData({ ...productData, type: productData.type.filter((item) => item !== value._id) });
-        setUpdateData({ ...updateData, type: updateData.type.filter((item) => item !== value._id) });
+    const handleRemoveType = (list, value) => {
+        console.log(list, value);
+        setProductData({ ...productData, type: list.map((item) => item._id) });
+        setUpdateData({ ...updateData, type: list.map((item) => item._id) });
     }
 
-    const handleAddCategory = (value) => {
+    const handleAddCategory = (list, value) => {
         setProductData({ ...productData, category: [...productData.category, value._id] });
         setUpdateData({ ...updateData, category: [...updateData.category, value._id] });
     }
 
-    const handleRemoveCategory = (value) => {
-        setProductData({ ...productData, category: productData.category.filter((item) => item !== value._id) });
-        setUpdateData({ ...updateData, category: updateData.category.filter((item) => item !== value._id) });
+    const handleRemoveCategory = (list, value) => {
+        setProductData({ ...productData, category: list.map((item) => item._id) });
+        setUpdateData({ ...updateData, category: list.map((item) => item._id) });
     }
 
-    const handleAddElement = (value) => {
+    const handleAddElement = (list, value) => {
         setProductData({ ...productData, element: [...productData.element, value._id] });
         setUpdateData({ ...updateData, element: [...updateData.element, value._id] });
     }
 
-    const handleRemoveElement = (value) => {
-        setProductData({ ...productData, element: productData.element.filter((item) => item !== value._id) });
-        setUpdateData({ ...updateData, element: updateData.element.filter((item) => item !== value._id) });
+    const handleRemoveElement = (list, value) => {
+        setProductData({ ...productData, element: list.map((item) => item._id) });
+        setUpdateData({ ...updateData, element: list.map((item) => item._id) });
     }
 
-    const handleAddBrand = (value) => {
+    const handleAddBrand = (list, value) => {
         setProductData({ ...productData, brand: [...productData.brand, value._id] });
         setUpdateData({ ...updateData, brand: [...updateData.brand, value._id] });
     }
 
-    const handleRemoveBrand = (value) => {
-        setProductData({ ...productData, brand: productData.brand.filter((item) => item !== value._id) });
-        setUpdateData({ ...updateData, brand: updateData.brand.filter((item) => item !== value._id) });
+    const handleRemoveBrand = (list, value) => {
+        setProductData({ ...productData, brand: list.map((item) => item._id) });
+        setUpdateData({ ...updateData, brand: list.map((item) => item._id) });
     }
 
-    const handleAddModel = (value) => {
+    const handleAddModel = (list, value) => {
         setProductData({ ...productData, model: [...productData.model, value._id] });
         setUpdateData({ ...updateData, model: [...updateData.model, value._id] });
     }
 
-    const handleRemoveModel = (value) => {
-        setProductData({ ...productData, model: productData.model.filter((item) => item !== value._id) });
-        setUpdateData({ ...updateData, model: updateData.model.filter((item) => item !== value._id) });
+    const handleRemoveModel = (list, value) => {
+        setProductData({ ...productData, model: list.map((item) => item._id) });
+        setUpdateData({ ...updateData, model: list.map((item) => item._id) });
     }
     const handleChangePhysicalProduct = () => {
         setProductData({ ...productData, additionalInfo: { ...productData.additionalInfo, isPhysicalProduct: !isPhysicalProduct } });
@@ -1058,8 +1059,8 @@ const handleDeselectAllModels = () => {
                                     options={apiData.types}
                                     selectedValues={multiselectAll.type}
                                     displayValue="name"
-                                    onSelect={(_, item) => handleAddType(item)}
-                                    onRemove={(_, item) => handleRemoveType(item)}
+                                    onSelect={handleAddType}
+                                    onRemove={handleRemoveType}
                                     //selectedValues={(value) => console.log(value)}
                                     placeholder="Select types"
                                     showCheckbox
@@ -1078,8 +1079,8 @@ const handleDeselectAllModels = () => {
                                     options={apiData.categories}
                                     selectedValues={multiselectAll.category}
                                     displayValue="name"
-                                    onSelect={(_, item) => handleAddCategory(item)}
-                                    onRemove={(_, item) => handleRemoveCategory(item)}
+                                    onSelect={handleAddCategory}
+                                    onRemove={handleRemoveCategory}
                                     //selectedValues={(value) => console.log(value)}
                                     placeholder="Select categories"
                                     showCheckbox
@@ -1098,8 +1099,8 @@ const handleDeselectAllModels = () => {
                                     options={apiData.elements}
                                     selectedValues={multiselectAll.element}
                                     displayValue="name"
-                                    onSelect={(_, item) => handleAddElement(item)}
-                                    onRemove={(_, item) => handleRemoveElement(item)}
+                                    onSelect={handleAddElement}
+                                    onRemove={handleRemoveElement}
                                     //selectedValues={(value) => console.log(value)}
                                     placeholder="Select elements"
                                     showCheckbox
@@ -1124,8 +1125,8 @@ const handleDeselectAllModels = () => {
                                     options={apiData.brands}
                                     selectedValues={multiselectAll.brand}
                                     displayValue="name"
-                                    onSelect={(_, item) => handleAddBrand(item)}
-                                    onRemove={(_, item) => handleRemoveBrand(item)}
+                                    onSelect={handleAddBrand}
+                                    onRemove={handleRemoveBrand}
                                     //selectedValues={(value) => console.log(value)}
                                     placeholder="Select brands"
                                     showCheckbox
@@ -1143,8 +1144,8 @@ const handleDeselectAllModels = () => {
                                     options={apiData.models}
                                     selectedValues={multiselectAll.model}
                                     displayValue="name"
-                                    onSelect={(_, item) => handleAddModel(item)}
-                                    onRemove={(_, item) => handleRemoveModel(item)}
+                                    onSelect={handleAddModel}
+                                    onRemove={handleRemoveModel}
                                     //selectedValues={(value) => console.log(value)}
                                     placeholder="Select models"
                                     showCheckbox
