@@ -379,6 +379,7 @@ const handleDeselectAllModels = () => {
     }
 
     const handleDescriptionChange = (html) => {
+        if(prev => prev === html) return
         setProductData({ ...productData, description: html });
         //console.log(productData.description);
         setUpdateData({ ...updateData, description: html })
@@ -571,7 +572,7 @@ const handleDeselectAllModels = () => {
                             <div>
                                 <Label htmlFor="description">Description</Label>
                                 {/* <Textarea name="description" value={productData.description} onChange={handleChange} placeholder="Type product description here..." /> */}
-                                <ReactQuill theme="snow" defaultValue={productData.description} onChange={handleDescriptionChange} placeholder="Type productdescription here..." />
+                                <ReactQuill theme="snow" value={productData.description} onChange={handleDescriptionChange} placeholder="Type productdescription here..." />
                             </div>
                         </CardContent>
                     </Card>
@@ -884,7 +885,7 @@ const handleDeselectAllModels = () => {
                             </div>
                             <div className="flex flex-col gap-4 w-full">
                                 <Label htmlFor="description">Description</Label>
-                                <ReactQuill theme="snow" defaultValue={Varient.description} onChange={handleVarientDescriptionChange} placeholder="Type product description here..." />
+                                <ReactQuill theme="snow" value={Varient.description} onChange={handleVarientDescriptionChange} placeholder="Type product description here..." />
                                 
                             </div>
                             <div>
@@ -1011,7 +1012,7 @@ const handleDeselectAllModels = () => {
                                 <div className="w-full">
                                     <Label htmlFor="shortDescription">Short Description</Label>
                                     {/* <Textarea name="shortDescription" value={productData?.additionalInfo?.shortDescription} placeholder="Type short description here ..." onChange={handleChangeAdditionalInfo} /> */}
-                                    <ReactQuill theme="snow" defaultValue={productData?.additionalInfo.shortDescription} onChange={handleShortDescriptionChange} placeholder="Type short description here..." />
+                                    <ReactQuill theme="snow" value={productData?.additionalInfo.shortDescription} onChange={handleShortDescriptionChange} placeholder="Type short description here..." />
                                 </div>
                             </div>
                             
