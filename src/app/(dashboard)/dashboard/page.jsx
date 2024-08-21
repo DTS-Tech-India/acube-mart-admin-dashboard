@@ -1,4 +1,4 @@
-
+"use client"
 
 import { DatePickerWithRange } from "@/components/date-range-picker";
 import { Button } from "@/components/ui/button";
@@ -24,48 +24,96 @@ import {
   Box,
   ReceiptIndianRupee,
   ScanLineIcon,
-  Wallet
+  Wallet,
+  User
 } from "lucide-react"
 import { cn } from "@/lib/utils";
 import { RadialChartComponent } from "@/components/radial-chart";
 import { AreaChartComponent } from "@/components/area-chart";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { DataTable } from "@/components/ui/data-table";
+
+import { useMemo } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { columns } from "./(routes)/orders/orders-columns";
 
 export default function Dashboard() {
 
+  const {data: products, isLoadingProducts, isErrorProducts} = useQuery({
+    queryKey: ["products"],
+    queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/all`)
+  });
+
+  const {data: orders, isLoadingOrders, isErrorOrders} = useQuery({
+    queryKey: ["orders"],
+    queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/all`)
+    .then((res) => res.data),
+  });
+  const {data: customers, isLoadingCustomers, isErrorCustomers} = useQuery({
+    queryKey: ["customers"],
+    queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/all`)
+  });
+
+  const modifiedData = useMemo(() => {
+        
+    const sortedData = orders?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    return sortedData?.map((order) => {
+      return {
+        id: order._id,
+        orderId: order._id,
+        total: order.total,
+        date: order.createdAt,
+        status: order.status,
+        image: order.products[0].productId.featuredImage.url,
+        product: order.products.map((product) => product.productId.name),
+        payment: order?.transactionId?.paymentMode || "N/A",
+        customer: order?.userId?.name,
+      }
+    })
+  }, [orders])
+
+  if(isErrorProducts || isErrorOrders || isErrorCustomers) {
+    return <div>Error while fetching data</div>
+  }
+
+  if(isLoadingProducts || isLoadingOrders || isLoadingCustomers) {
+    return <div>Loading...</div>
+  }
   const quickCards = [
     {
       title: "Total Revenue",
-      value: 75000,
+      value: modifiedData?.reduce((acc, curr) => acc + curr.total, 0) || 0,
       icon: ReceiptIndianRupee,
       percentage: 36,
       color: "text-green-800",
       bg: "bg-green-200",
-      valueCurrency: "$",
+      valueCurrency: "₹",
     },
     {
       title: "Total Sales",
-      value: 3150,
+      value: modifiedData?.length || 0,
       icon: ShoppingCart,
       percentage: 10,
       color: "text-indigo-800",
       bg: "bg-indigo-200",
     },
     {
-      title: "Products",
-      value: 1390,
+      title: "Total Products",
+      value: products?.data?.data?.length || 0,
       icon: Box,
       percentage: 5,
       color: "text-red-800",
       bg: "bg-red-200",
     },
     {
-      title: "Balance",
-      value: 113,
-      icon: Wallet,
+      title: "Total Customers",
+      value: customers?.data?.data?.length || 0,
+      icon: User,
       percentage: 8,
       color: "text-orange-800",
       bg: "bg-orange-200",
-      valueCurrency: "$",
+      /* valueCurrency: "₹", */
     },
   ]
 
@@ -82,11 +130,6 @@ export default function Dashboard() {
             <TabsTrigger value="7 days">7 Days</TabsTrigger>
             <TabsTrigger value="24 hours">24 Hours</TabsTrigger>
           </TabsList>
-          {/* <TabsContent value="all time">All Time Data.</TabsContent>
-          <TabsContent value="12 months">12 Months Data.</TabsContent>
-          <TabsContent value="30 days">30 Days Data.</TabsContent>
-          <TabsContent value="7 days">7 Days Data.</TabsContent>
-          <TabsContent value="24 hours">24 Hours Data.</TabsContent> */}
         </Tabs>
         <div className="flex flex-wrap items-center gap-2">
           <DatePickerWithRange />
@@ -104,7 +147,7 @@ export default function Dashboard() {
             <h2 className="text-sm text-muted-foreground">{card.title}</h2>
             <div className="flex gap-1">
               <p className="text-2xl font-bold">{card?.valueCurrency}{card.value}</p>
-              <span className={cn("text-xs p-1 rounded-full mb-auto", card.color, card.bg)}>+ {card.percentage}%</span>
+              {/* <span className={cn("text-xs p-1 rounded-full mb-auto", card.color, card.bg)}>+ {card.percentage}%</span> */}
             </div>
           </CardContent>
         </Card>
@@ -114,7 +157,6 @@ export default function Dashboard() {
         <RadialChartComponent />
         <AreaChartComponent />
       </div>
-      
     </main>
   );
 }
