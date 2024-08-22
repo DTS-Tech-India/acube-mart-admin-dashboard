@@ -94,7 +94,7 @@ export default function AddCustomer() {
                         //console.log(res);
                         if (res.data.success) {
                             toast.success(res.data.message);
-                            router.push("/dashboard/admins");
+                            router.push("/dashboard/customers");
                         }
                     })
                     .catch((err) => {

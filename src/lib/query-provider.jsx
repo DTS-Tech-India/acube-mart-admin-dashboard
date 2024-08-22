@@ -9,8 +9,10 @@ export default function Providers({ children }) {
         () => new QueryClient({
             defaultOptions: {
                 queries: {
-                    staleTime: 1000 * 5,
-                    refetchInterval: 1000 * 5,
+                    staleTime: 1000 * 30,
+                    refetchInterval: 1000 * 30,
+                    retryOnMount: true,
+                    refetchOnReconnect: true,
             },
         },
         })
