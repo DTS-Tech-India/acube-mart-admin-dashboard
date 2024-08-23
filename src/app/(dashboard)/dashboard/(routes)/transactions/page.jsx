@@ -27,11 +27,11 @@ export default function Transactions() {
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["transaction"],
-        queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/transaction/all`),
+        queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/transaction/all`).then((res) => res.data),
     });
 
     const modifiedData = useMemo(() => {
-        const sortedData = data?.data?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const sortedData = data?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         return sortedData?.map((transaction) => {
           return {
             id: transaction._id,

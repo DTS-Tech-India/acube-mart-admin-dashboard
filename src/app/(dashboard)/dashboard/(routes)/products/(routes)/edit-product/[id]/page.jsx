@@ -50,34 +50,10 @@ export default function Page({ params }) {
     const router = useRouter();
     const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
     const [images, setImages] = useState([]);
+    const [description, setDescription] = useState("");
     const [featuredImage, setFeaturedImage] = useState("");
     const [variantImage, setVariantImage] = useState("");
-    const [productData, setProductData] = useState({
-        name: "",
-        description: "",
-        stock: "",
-        price: "",
-        images: [],
-        status: "draft",
-        type: "",
-        category: [],
-        element: [],
-        brand: [],
-        model: [],
-        barcode: "",
-        sku: "",
-        featuredImage: "",
-        additionalInfo: {
-            isPhysicalProduct: isPhysicalProduct,
-            shortDescription: "",
-            weight: "",
-            dimension: "",
-            materials: "",
-            labels: "",
-
-        },
-        isSimpleProduct: false,
-    });
+    const [productData, setProductData] = useState({});
     const [updateData, setUpdateData] = useState({});
     const [attribute, setAttribute] = useState({
         name: "",
@@ -139,6 +115,7 @@ export default function Page({ params }) {
             brand: product.brand,
             model: product.model,
         })
+        setDescription(product.description)
     }
     //console.log(product)
     }, [isSuccess, product])
@@ -380,8 +357,8 @@ const handleDeselectAllModels = () => {
     }
 
     const handleDescriptionChange = (html) => {
-        if(prev => prev === html) return
         setProductData({ ...productData, description: html });
+        setDescription(html);
         //console.log(productData.description);
         setUpdateData({ ...updateData, description: html })
     }
@@ -573,7 +550,7 @@ const handleDeselectAllModels = () => {
                             <div>
                                 <Label htmlFor="description">Description</Label>
                                 {/* <Textarea name="description" value={productData.description} onChange={handleChange} placeholder="Type product description here..." /> */}
-                                <ReactQuill theme="snow" value={productData.description} onChange={handleDescriptionChange} placeholder="Type productdescription here..." />
+                                <ReactQuill theme="snow" value={description} onChange={handleDescriptionChange} placeholder="Type productdescription here..." />
                             </div>
                         </CardContent>
                     </Card>
@@ -1013,7 +990,7 @@ const handleDeselectAllModels = () => {
                                 <div className="w-full">
                                     <Label htmlFor="shortDescription">Short Description</Label>
                                     {/* <Textarea name="shortDescription" value={productData?.additionalInfo?.shortDescription} placeholder="Type short description here ..." onChange={handleChangeAdditionalInfo} /> */}
-                                    <ReactQuill theme="snow" value={productData?.additionalInfo.shortDescription} onChange={handleShortDescriptionChange} placeholder="Type short description here..." />
+                                    <ReactQuill theme="snow" value={productData?.additionalInfo?.shortDescription} onChange={handleShortDescriptionChange} placeholder="Type short description here..." />
                                 </div>
                             </div>
                             

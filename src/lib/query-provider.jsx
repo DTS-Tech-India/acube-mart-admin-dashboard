@@ -9,8 +9,8 @@ export default function Providers({ children }) {
         () => new QueryClient({
             defaultOptions: {
                 queries: {
-                    staleTime: 1000 * 30,
-                    refetchInterval: 1000 * 30,
+                    staleTime: 1000 * 15,
+                    refetchInterval: 1000 * 15,
                     retryOnMount: true,
                     refetchOnReconnect: true,
             },
@@ -20,7 +20,7 @@ export default function Providers({ children }) {
     return (
         <QueryClientProvider client={queryClient}>
             {children}
-            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+            <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
     )
 }

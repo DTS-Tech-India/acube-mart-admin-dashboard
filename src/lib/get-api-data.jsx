@@ -54,7 +54,7 @@ async function getTransactions() {
 }
 
 async function getData(url) {
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url);
     const data = await res.json();
     return data.data;
 }

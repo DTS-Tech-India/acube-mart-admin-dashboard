@@ -21,27 +21,27 @@ import { columns } from "./products-columns";
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { products } from "@/lib/get-api-data";
+import axios from "axios";
 
 export default function Products() {
     const router = useRouter()
     const { data, isLoading, isError } = useQuery({
         queryKey: ["products"],
-        queryFn: async() => await products(),
+        queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/all`).then((res) => res.data),
     });
 
     const modifiedData = useMemo(() => {
-        
-        const sortedData = data?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const sortedData = data?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         return sortedData?.map((product) => {
           return {
             id: product._id,
             slug: product.slug,
             name: product.name,
-            image: product.featuredImage?.url,
-            stock: product.stock,
-            price: product.sp,
+            price: product.price,
             date: product.createdAt,
             status: product.status,
+            image: product.featuredImage?.url,
+            stock: product.stock,
             variants: product.variants
           }
         })

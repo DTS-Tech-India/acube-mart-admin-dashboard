@@ -21,7 +21,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { CircleCheck, LockKeyhole, Mail, MapPin, Phone, ShoppingCart, Upload, Wallet2, X } from "lucide-react"
+import { ArrowLeft, ArrowLeftCircle, CircleCheck, LockKeyhole, Mail, MapPin, Phone, ShoppingCart, Upload, Wallet2, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -121,8 +121,7 @@ export default function CustomerDetails({ params }) {
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={() => {router.push("/dashboard/customers")}}><X className="w-8 h-8 p-2" /> Cancel</Button>
-                    <Button /* onClick={() => {router.push("/dashboard/customers/edit")}} */>Update Customer</Button> 
+                    <Button variant="outline" onClick={() => {router.push("/dashboard/customers")}}><ArrowLeft className="w-8 h-8 p-2" /> Back</Button>
                 </div>
             </div>
             {isLoadingCustomer || isLoadingOrders ? (

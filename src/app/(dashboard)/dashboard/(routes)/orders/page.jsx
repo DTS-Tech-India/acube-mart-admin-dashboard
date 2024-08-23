@@ -49,11 +49,6 @@ export default function Orders() {
         })
       }, [orders])
 
-    if (isLoadingOrders) return (
-        <Skeleton
-            className="h-96 w-full aspect-auto" 
-        />
-    );
     if (isErrorOrders) return "An error has occurred while fetching products."; 
 
     //console.log(orders)
