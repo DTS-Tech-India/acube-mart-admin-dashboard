@@ -31,8 +31,7 @@ export default function Products() {
     });
 
     const modifiedData = useMemo(() => {
-        const sortedData = data?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return sortedData?.map((product) => {
+        return data?.data.map((product) => {
           return {
             id: product._id,
             slug: product.slug,

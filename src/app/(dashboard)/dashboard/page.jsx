@@ -41,21 +41,23 @@ import { columns } from "./(routes)/orders/orders-columns";
 export default function Dashboard() {
 
   const {data: products, isLoadingProducts, isErrorProducts} = useQuery({
-    queryKey: ["products"],
-    queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/all`)
+    queryKey: ["productsCount"],
+    queryFn: async() => await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/count`)
+    .then((res) => res.data),
   });
 
   const {data: orders, isLoadingOrders, isErrorOrders} = useQuery({
-    queryKey: ["orders"],
-    queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/all`)
+    queryKey: ["ordersCount"],
+    queryFn: async() => await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/count`)
     .then((res) => res.data),
   });
   const {data: customers, isLoadingCustomers, isErrorCustomers} = useQuery({
-    queryKey: ["customers"],
-    queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/all`)
+    queryKey: ["customersCount"],
+    queryFn: async() => await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/count`)
+    .then((res) => res.data),
   });
-
-  const modifiedData = useMemo(() => {
+  
+/*   const modifiedData = useMemo(() => {
         
     const sortedData = orders?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return sortedData?.map((order) => {
@@ -79,11 +81,11 @@ export default function Dashboard() {
 
   if(isLoadingProducts || isLoadingOrders || isLoadingCustomers) {
     return <div>Loading...</div>
-  }
+  } */
   const quickCards = [
     {
       title: "Total Revenue",
-      value: modifiedData?.reduce((acc, curr) => acc + curr.total, 0) || 0,
+      value: products?.data || 0,
       icon: ReceiptIndianRupee,
       percentage: 36,
       color: "text-green-800",
@@ -92,7 +94,7 @@ export default function Dashboard() {
     },
     {
       title: "Total Sales",
-      value: modifiedData?.length || 0,
+      value: orders?.data || 0,
       icon: ShoppingCart,
       percentage: 10,
       color: "text-indigo-800",
@@ -100,7 +102,7 @@ export default function Dashboard() {
     },
     {
       title: "Total Products",
-      value: products?.data?.data?.length || 0,
+      value: products?.data || 0,
       icon: Box,
       percentage: 5,
       color: "text-red-800",
@@ -108,7 +110,7 @@ export default function Dashboard() {
     },
     {
       title: "Total Customers",
-      value: customers?.data?.data?.length || 0,
+      value: customers?.data || 0,
       icon: User,
       percentage: 8,
       color: "text-orange-800",

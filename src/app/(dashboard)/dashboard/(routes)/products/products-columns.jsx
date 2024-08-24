@@ -38,13 +38,18 @@ export const columns = [
             const image = row.getValue("image");
             return (
                 <div className="w-10 h-10">
-                    <Image
-                        src={image}
-                        alt="Product image"
-                        width={200}
-                        height={200}
-                        className="w-full h-full object-cover rounded-md"
-                    />
+                    {image ? (
+                        <Image
+                            src={image}
+                            alt="Product image"
+                            width={200}
+                            height={200}
+                            className="w-full h-full object-cover rounded-md"
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-muted rounded-md" />
+                    )}
+
                 </div>
             )
         }

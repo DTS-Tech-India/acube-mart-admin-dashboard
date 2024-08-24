@@ -48,6 +48,7 @@ import axios from "axios";
 export default function Page({ params }) {
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
     const router = useRouter();
+    router.refresh();
     const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
     const [images, setImages] = useState([]);
     const [description, setDescription] = useState("");
@@ -94,10 +95,10 @@ export default function Page({ params }) {
        queryKey: ["product"],
        queryFn: async() => await getApiDataByQuery(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/${params.id}`),
    })
-
+   
    useEffect(() => {
     if(isSuccess){
-        setProductData(product)
+        
         setAttributes(product.attributes)
         setVarients(product.varients)
         setUpdateData({
@@ -116,6 +117,7 @@ export default function Page({ params }) {
             model: product.model,
         })
         setDescription(product.description)
+        setProductData(product)
     }
     //console.log(product)
     }, [isSuccess, product])
@@ -357,7 +359,7 @@ const handleDeselectAllModels = () => {
     }
 
     const handleDescriptionChange = (html) => {
-        setProductData({ ...productData, description: html });
+        //setProductData({ ...productData, description: html });
         setDescription(html);
         //console.log(productData.description);
         setUpdateData({ ...updateData, description: html })
@@ -564,7 +566,7 @@ const handleDeselectAllModels = () => {
                                 <Input name="images" type="file" multiple onChange={handleImagesChange} placeholder="Type product name here..." />
                             </div>
                             {/* preview image before upload */}
-                            {productData?.image?.length > 0 ? (
+                            {productData.image?.length > 0 ? (
                                 <>
                                     <div className="flex gap-4">
                                         {productData.image.map((image) => (
