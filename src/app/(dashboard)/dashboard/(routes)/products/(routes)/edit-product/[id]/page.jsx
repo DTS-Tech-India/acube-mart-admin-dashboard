@@ -97,12 +97,11 @@ export default function Page({ params }) {
    })
    
    useEffect(() => {
-    if(isSuccess){
-        
+    if(isSuccess) {
+        setProductData(() => product)
         setAttributes(product.attributes)
         setVarients(product.varients)
         setUpdateData({
-            ...updateData,
             type: product.type.map((item) => item._id),
             category: product.category.map((item) => item._id),
             element: product.element.map((item) => item._id),
@@ -117,7 +116,7 @@ export default function Page({ params }) {
             model: product.model,
         })
         setDescription(product.description)
-        setProductData(product)
+        
     }
     //console.log(product)
     }, [isSuccess, product])
