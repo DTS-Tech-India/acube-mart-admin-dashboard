@@ -31,8 +31,8 @@ export default function Transactions() {
     });
 
     const modifiedData = useMemo(() => {
-        const sortedData = data?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return sortedData?.map((transaction) => {
+        
+        return data?.data.map((transaction) => {
           return {
             id: transaction._id,
             transactionId: transaction._id,

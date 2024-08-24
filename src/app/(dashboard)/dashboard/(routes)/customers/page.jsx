@@ -31,8 +31,8 @@ export default function Customers() {
         .then((res) => res.data),
     });
     const modifiedData = useMemo(() => {
-        const sortedData = data?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return sortedData?.map((user) => {
+       
+        return data?.data.map((user) => {
             return {
                 id: user._id,
                 name: user.name,

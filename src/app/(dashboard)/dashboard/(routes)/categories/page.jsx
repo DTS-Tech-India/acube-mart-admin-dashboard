@@ -59,8 +59,7 @@ export default function CategoriesPage() {
 
     const modifiedData = useMemo(() => {
         
-        const sortedData = data?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return sortedData?.map((element) => {
+        return data?.map((element) => {
           return {
             id: element._id,
             name: element.name,
@@ -74,8 +73,7 @@ export default function CategoriesPage() {
 
       const modifiedCategoryData = useMemo(() => {
         
-        const sortedData = category?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return sortedData?.map((category) => {
+        return category?.map((category) => {
           return {
             id: category._id,
             name: category.name,
@@ -88,8 +86,7 @@ export default function CategoriesPage() {
 
       const modifiedBrandData = useMemo(() => {
         
-        const sortedData = brand?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return sortedData?.map((brand) => {
+        return brand?.map((brand) => {
           return {
             id: brand._id,
             name: brand.name,
@@ -102,8 +99,7 @@ export default function CategoriesPage() {
 
       const modifiedModelData = useMemo(() => {
         
-        const sortedData = model?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return sortedData?.map((model) => {
+        return model?.map((model) => {
           return {
             id: model._id,
             name: model.name,

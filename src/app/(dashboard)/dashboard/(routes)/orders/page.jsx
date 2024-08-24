@@ -33,8 +33,7 @@ export default function Orders() {
 
     const modifiedData = useMemo(() => {
         
-        const sortedData = orders?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return sortedData?.map((order) => {
+        return orders?.data.map((order) => {
           return {
             id: order._id,
             orderId: order._id,

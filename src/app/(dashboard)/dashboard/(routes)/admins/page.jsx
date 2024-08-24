@@ -31,8 +31,8 @@ export default function Admins() {
     });
 
     const modifiedData = useMemo(() => {
-        const sortedData = adminData?.data.admins.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return sortedData?.map((admin) => {
+       
+        return adminData?.data.admins.map((admin) => {
           return {
             id: admin._id,
             name: admin.name,

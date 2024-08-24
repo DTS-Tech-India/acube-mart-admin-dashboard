@@ -26,8 +26,8 @@ export default function Coupons() {
     });
 
     const modifiedData = useMemo(() => {
-        const sortedData = data?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        return sortedData?.map((coupon) => {
+        
+        return data?.data.map((coupon) => {
           return {
             id: coupon._id,
             code: coupon.code,
