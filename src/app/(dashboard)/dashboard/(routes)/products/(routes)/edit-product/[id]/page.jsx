@@ -91,13 +91,17 @@ export default function Page({ params }) {
         value: "",
     });
     const [varientAttributes, setVarientAttributes] = useState([]);
+    const [productImages, setProductImages] = useState({
+        featuredImage: "",
+        galleryImages: [],
+    });
    const {data: product, isLoading: isProductLoading, isError: isProductError, isSuccess} = useQuery({
        queryKey: ["product"],
        queryFn: async() => await getApiDataByQuery(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/${params.id}`),
    })
    
    useEffect(() => {
-    if(isSuccess) {
+    if(product) {
         setProductData(() => product)
         setAttributes(product.attributes)
         setVarients(product.varients)
@@ -116,10 +120,12 @@ export default function Page({ params }) {
             model: product.model,
         })
         setDescription(product.description)
-        
+        setProductImages({
+            featuredImage: product.featuredImage,
+            galleryImages: product.image
+        })
     }
-    //console.log(product)
-    }, [isSuccess, product])
+    }, [product])
 
     const { data: apiData, isLoading: isApiDataLoading, isError: isApiDataError } = useQuery({
         queryKey: ["apiData"],
@@ -215,13 +221,14 @@ const handleDeselectAllModels = () => {
     }
 
     const handleChangeFeaturedImage = (e) => {
-        setProductData({ ...productData, featuredImage: e.target.files[0] });
+        //setProductData({ ...productData, featuredImage: e.target.files[0] });
         //console.log(productData.featuredImage);
+        setUpdateData({ ...updateData, featuredImage: e.target.files[0] })
         //Set Image url
         setFeaturedImage(
             URL.createObjectURL(e.target.files[0])
         )
-        setUpdateData({ ...updateData, featuredImage: e.target.files[0] })
+       
     }
 
     const handleStatusChange = (value) => {
@@ -486,6 +493,27 @@ const handleDeselectAllModels = () => {
         })
     }
 
+    const handleUpdateFeaturedImage = () => {
+        const formData = new FormData();
+        formData.append("image", updateData.featuredImage, updateData.featuredImage.name);
+        formData.append("productId", params.id);
+        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/update/featured/${productImages.featuredImage._id}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
+        .then((res) => {
+            if (res.data.success) {
+                //console.log(res);
+                toast.success(res.data.message);
+            }
+        })
+        .catch((err) => {
+            //console.log(err);
+            toast.error(err.message);
+        })
+    }
+
     //console.log(updateData);
     const handleUpdateProduct = () => {
         // Add product to database
@@ -565,10 +593,10 @@ const handleDeselectAllModels = () => {
                                 <Input name="images" type="file" multiple onChange={handleImagesChange} placeholder="Type product name here..." />
                             </div>
                             {/* preview image before upload */}
-                            {productData.image?.length > 0 ? (
+                            {(productImages.galleryImages || images) ? (
                                 <>
                                     <div className="flex gap-4">
-                                        {productData.image.map((image) => (
+                                        {productImages.galleryImages.map((image) => (
                                             <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200 relative" key={image._id}>
                                                 <Button variant="ghost" onClick={() => handleDeleteImage(image._id)} className="absolute top-2 right-2 text-red-600 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
                                                 <Image src={image.url} alt={image._id} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
@@ -1146,14 +1174,28 @@ const handleDeselectAllModels = () => {
                                 <Label htmlFor="price">Image</Label>
                                 <Input type="file" name="featuredImage" onChange={handleChangeFeaturedImage} />
                             </div>
-                            {productData?.featuredImage?.url ? (
+                            {(productImages.featuredImage || featuredImage) ? (
+                                <div className="w-full h-full flex flex-col gap-4">
                                 <Image
-                                    src={productData.featuredImage?.url}
+                                    src={productImages.featuredImage.url}
                                     alt="product featured image"
                                     width={1000}
                                     height={1000}
                                     className="w-full h-full object-cover rounded-md"
                                 />
+                                {featuredImage && (
+                                    <div className="w-full h-full flex flex-col gap-4">
+                                    <Image
+                                        src={featuredImage}
+                                        alt="product featured image"
+                                        width={1000}
+                                        height={1000}
+                                        className="w-full h-full object-cover rounded-md"
+                                    />
+                                    <Button onClick={handleUpdateFeaturedImage}>Update</Button>
+                                    </div>
+                                )}
+                                </div>
                             ):(
                                 <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
                                     <span className="p-4 rounded-full hover:bg-muted">
