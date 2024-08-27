@@ -76,10 +76,13 @@ export default function Customers() {
         {isLoading ? (
             <Skeleton className="h-96 w-full aspect-auto" />
         ) : (
-            <DataTable
-                data={modifiedData}
-                columns={columns}
-            /> 
+            <>
+            {modifiedData &&
+                <DataTable
+                    data={modifiedData}
+                    columns={columns}
+                /> }
+            </>
         )}
         
     </div>

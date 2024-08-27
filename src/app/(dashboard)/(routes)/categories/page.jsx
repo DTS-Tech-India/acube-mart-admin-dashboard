@@ -159,32 +159,36 @@ export default function CategoriesPage() {
             <div className="flex flex-col gap-8">
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="price" className="font-semibold text-xl">Categories</Label>
+                    {modifiedCategoryData &&
                     <DataTable
                         data={modifiedCategoryData}
                         columns={categoryColumns}
-                    />  
+                    />  }
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="price" className="font-semibold text-xl">Sub Category</Label>
+                    {modifiedData &&
                     <DataTable
                         data={modifiedData}
                         columns={elementColumns}
-                    />  
+                    />  }
                 </div>
                    
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="price" className="font-semibold text-xl">Brands</Label>
+                    {modifiedBrandData &&
                     <DataTable
                         data={modifiedBrandData}
                         columns={brandColumns}
-                    />  
+                    />  }
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="price" className="font-semibold text-xl">Models</Label>
+                    {modifiedModelData &&
                     <DataTable
                         data={modifiedModelData}
                         columns={modelColumns}
-                    />  
+                    />  }
                 </div>
                 
             </div>

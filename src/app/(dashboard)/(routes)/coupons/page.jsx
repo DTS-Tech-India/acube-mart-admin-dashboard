@@ -70,10 +70,13 @@ export default function Coupons() {
         {isLoading ? (
             <Skeleton className="w-full h-full" />
         ) : (
-            <DataTable
-                data={modifiedData}
-                columns={columns}
-            /> 
+            <>
+            {modifiedData &&
+                <DataTable
+                    data={modifiedData}
+                    columns={columns}
+                /> }
+            </>
         )}                    
     </div>
   )

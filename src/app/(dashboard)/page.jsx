@@ -37,8 +37,10 @@ import { DataTable } from "@/components/ui/data-table";
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { columns } from "./(routes)/orders/orders-columns";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+  const router = useRouter()
 
   const {data: products, isLoadingProducts, isErrorProducts} = useQuery({
     queryKey: ["productsCount"],
@@ -57,10 +59,16 @@ export default function Dashboard() {
     .then((res) => res.data),
   });
   
-/*   const modifiedData = useMemo(() => {
+  const {data: ordersList, isLoadingOrdersList, isErrorOrdersList} = useQuery({
+    queryKey: ["ordersList"],
+    queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/all`)
+    .then((res) => res.data),
+  })
+  //console.log(ordersList)
+  
+  const modifiedData = useMemo(() => {
         
-    const sortedData = orders?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    return sortedData?.map((order) => {
+    return ordersList?.data.map((order) => {
       return {
         id: order._id,
         orderId: order._id,
@@ -73,7 +81,7 @@ export default function Dashboard() {
         customer: order?.userId?.name,
       }
     })
-  }, [orders])
+  }, [ordersList])
 
   if(isErrorProducts || isErrorOrders || isErrorCustomers) {
     return <div>Error while fetching data</div>
@@ -81,11 +89,11 @@ export default function Dashboard() {
 
   if(isLoadingProducts || isLoadingOrders || isLoadingCustomers) {
     return <div>Loading...</div>
-  } */
+  }
   const quickCards = [
     {
       title: "Total Revenue",
-      value: products?.data || 0,
+      value: modifiedData?.reduce((acc, curr) => acc + curr.total, 0) || 0,
       icon: ReceiptIndianRupee,
       percentage: 36,
       color: "text-green-800",
@@ -135,7 +143,7 @@ export default function Dashboard() {
         </Tabs>
         <div className="flex flex-wrap items-center gap-2">
           <DatePickerWithRange />
-          <Button className="bg-violet-500">+ Add Products</Button>
+          <Button onClick={() => router.push("/products/add-product")} className="bg-violet-500">+ Add Products</Button>
         </div>
       </header>
       {/* Quick Details Cards */}
@@ -158,6 +166,20 @@ export default function Dashboard() {
       <div className="flex flex-col md:flex-row gap-4 w-full">
         <RadialChartComponent />
         <AreaChartComponent />
+      </div>
+      <div className="w-full h-full">
+      {isLoadingOrdersList ? (
+        <Skeleton className="h-96 w-full aspect-auto" />
+          ): (
+            <div className="w-full h-full flex flex-col gap-4">
+            <h1 className="text-2xl font-semibold">Recent Orders</h1>
+            {modifiedData &&
+            <DataTable
+                data={modifiedData}
+                columns={columns}
+            /> }
+            </div>
+        )}
       </div>
     </main>
   );

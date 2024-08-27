@@ -72,10 +72,13 @@ export default function Admins() {
         {isLoading ? (
             <Skeleton className="w-full h-full" />
         ) : (
-            <DataTable
-                data={modifiedData}
-                columns={columns}
-            /> 
+            <>
+                {modifiedData &&
+                <DataTable
+                    data={modifiedData}
+                    columns={columns}
+                /> }
+            </>
         )}
     </div>
 );
