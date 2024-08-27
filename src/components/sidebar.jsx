@@ -38,37 +38,37 @@ const Sidebar = () => {
         {
             label: "Products",
             icon: ShoppingBag,
-            href: "/dashboard/products",
+            href: "/products",
         },
         {
             label: "Categories",
             icon: Network,
-            href: "/dashboard/categories", 
+            href: "/categories", 
         },
         {
             label: "Orders",
             icon: ShoppingCart,
-            href: "/dashboard/orders",
+            href: "/orders",
         },
         {
             label: "Customers",
             icon: Users,
-            href: "/dashboard/customers",
+            href: "/customers",
         },
         {
             label: "Transactions",
             icon: ReceiptIndianRupee,
-            href: "/dashboard/transactions",
+            href: "/transactions",
         },
         {
             label: "Coupons",
             icon: Star,
-            href: "/dashboard/coupons",
+            href: "/coupons",
         },
         {
             label: "Admins",
             icon: UserCog,
-            href: "/dashboard/admins",
+            href: "/admins",
         },
     ]
 
@@ -76,12 +76,12 @@ const Sidebar = () => {
         {
             label: "Support",
             icon: Headphones,
-            href: "/dashboard/support",
+            href: "/support",
         },
         {
             label: "Settings",
             icon: Settings,
-            href: "/dashboard/settings",
+            href: "/settings",
         },
     ]
     return (
@@ -94,9 +94,9 @@ const Sidebar = () => {
                 <div className=" w-full p-4 h-full flex flex-col">
                     <div className="mt-2 flex flex-col gap-1">
                         <Link
-                            href={"/dashboard"}
+                            href={"/"}
                             className={cn("text-sm group flex p-3 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-500 hover:text-white transition",
-                                pathname === "/dashboard" || pathname === "/" ? "bg-violet-500 text-white" : ""
+                                pathname === "/" ? "bg-violet-500 text-white" : ""
                             )}
                         >
                             <LayoutDashboard className="w-8 h-8 p-1" />
@@ -108,7 +108,7 @@ const Sidebar = () => {
                                 href={routes.href} 
                                 className={cn("text-sm group flex p-3 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-500 hover:text-white transition",
                                     pathname.includes(routes.href) ? "bg-violet-500 text-white" : "",
-                                    admin?.role === "manager" && routes.href === "/dashboard/admins" ? "hidden" : ""
+                                    admin?.role === "manager" && routes.href === "/admins" ? "hidden" : ""
                                     
                                 )}
                             >
@@ -141,9 +141,9 @@ const Sidebar = () => {
                 <div className=" w-full h-full p-1 flex flex-col">
                     <div className="mt-2 flex flex-col gap-1">
                         <Link
-                            href={"/dashboard"} 
+                            href={"/"} 
                             className={cn("text-sm group flex p-1 w-full items-center justify-start gap-1 font-medium cursor-pointer rounded-xl hover:bg-violet-500 hover:text-white transition",
-                                pathname === "/dashboard" || pathname === "/" ? "bg-violet-500 text-white" : ""
+                                pathname === "/" ? "bg-violet-500 text-white" : ""
                             )}
                         >
                             <LayoutDashboard className="w-8 h-8 p-1" />

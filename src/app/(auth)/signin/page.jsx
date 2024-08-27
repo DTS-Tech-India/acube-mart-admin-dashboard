@@ -49,7 +49,7 @@ export default function SignIn() {
                     //console.log(res)
                     if(res.status === 200) {
                         toast.success(res.data);
-                        router.push('/dashboard')
+                        router.push('/')
                     }
                 })
                 .catch((err) => {
