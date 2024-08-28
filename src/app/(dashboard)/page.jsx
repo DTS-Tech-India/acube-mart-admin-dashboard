@@ -178,6 +178,7 @@ export default function Dashboard() {
                 data={modifiedData}
                 columns={columns}
             /> }
+            {isErrorOrdersList && <div>Error while fetching recent orders</div>}
             </div>
         )}
       </div>
