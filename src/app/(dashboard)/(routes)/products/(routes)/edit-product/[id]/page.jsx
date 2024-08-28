@@ -497,7 +497,7 @@ const handleDeselectAllModels = () => {
         const formData = new FormData();
         formData.append("image", updateData.featuredImage, updateData.featuredImage.name);
         formData.append("productId", params.id);
-        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/update/featured/${productData.featuredImage._id}`, formData, {
+        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/update/featured/${productImages.featuredImage._id}`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
