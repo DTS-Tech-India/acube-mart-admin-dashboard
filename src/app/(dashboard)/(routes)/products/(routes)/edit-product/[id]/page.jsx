@@ -497,7 +497,7 @@ const handleDeselectAllModels = () => {
         const formData = new FormData();
         formData.append("image", updateData.featuredImage, updateData.featuredImage.name);
         formData.append("productId", params.id);
-        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/update/featured/${productImages.featuredImage._id}`, formData, {
+        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/update/featured/${params.id}`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
@@ -711,7 +711,7 @@ const handleDeselectAllModels = () => {
                                 </div>
                                 <div className="w-full">
                                         <Label htmlFor="description">Product Type</Label>
-                                        <Select value={productData?.isSimpleProduct} onValueChange={(value) => handleChangeIsSimpleProduct(value)}>
+                                        <Select value={productData.isSimpleProduct} onValueChange={(value) => handleChangeIsSimpleProduct(value)}>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select product type" />
                                             </SelectTrigger>
@@ -758,7 +758,7 @@ const handleDeselectAllModels = () => {
                             
                         </CardContent>
                     </Card>
-                    <Card className={cn("w-full h-full", productData.isSimpleProduct && "hidden")}>
+                    <Card className={cn("w-full h-full", productData.isSimpleProduct === true ? "hidden": "")}>
                         <CardHeader className="font-semibold">
                             Variants
                         </CardHeader>
