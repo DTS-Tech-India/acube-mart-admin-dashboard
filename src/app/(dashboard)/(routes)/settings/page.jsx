@@ -88,7 +88,7 @@ export default function Settings() {
                             <div className="flex flex-col gap-4">
                                 <div className="flex flex-col gap-2">
                                     <Label htmlFor="store-name">Store Name</Label>
-                                    <Input name="store-name" placeholder="Enter store name" /* value="Acube Mart" *//>
+                                    <Input name="store-name" placeholder="Acube Mart" /* value="Acube Mart" *//>
                                 </div>
                             </div>
                         </CardContent>
