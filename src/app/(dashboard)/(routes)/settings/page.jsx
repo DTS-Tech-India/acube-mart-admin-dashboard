@@ -1,4 +1,4 @@
-
+"use client"
 
 import Link from "next/link"
 import Image from "next/image";
@@ -20,9 +20,41 @@ import {
 import { Upload } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch"
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 
 
 export default function Settings() {
+    const router = useRouter()
+    const [paymentMethod, setPaymentMethod] = useState({
+        cashOnDelivery: true,
+        phonePay: true,
+        razorPay: false,
+    })
+    
+    const handleCODToggle = () => {
+        setPaymentMethod({
+            ...paymentMethod,
+            cashOnDelivery: !paymentMethod.cashOnDelivery
+        })
+    }
+    
+    const handleRazorpayToggle = () => {
+        setPaymentMethod({
+            ...paymentMethod,
+            razorPay: !paymentMethod.razorPay
+        })
+    }
+
+    const handlePhonePayToggle = () => {
+        setPaymentMethod({
+            ...paymentMethod,
+            phonePay: !paymentMethod.phonePay
+        })
+    }
+    console.log(paymentMethod)
     
     return (
         <div className="w-full h-full flex flex-col gap-4">
@@ -56,7 +88,40 @@ export default function Settings() {
                             <div className="flex flex-col gap-4">
                                 <div className="flex flex-col gap-2">
                                     <Label htmlFor="store-name">Store Name</Label>
-                                    <Input name="store-name" placeholder="Enter store name" value="Acube Mart"/>
+                                    <Input name="store-name" placeholder="Enter store name" /* value="Acube Mart" *//>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-full h-full">
+                        <CardHeader  className="font-semibold">
+                            Payment Method
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex flex-col gap-4">
+                                <div className="flex justify-between gap-2">
+                                    <Label htmlFor="cashOnDelivery"> Cash On Delivery</Label>
+                                    <Switch
+                                        name="cashOnDelivery"
+                                        checked={paymentMethod.cashOnDelivery}
+                                        onCheckedChange={handleCODToggle}
+                                    />
+                                </div>
+                                <div className="flex justify-between gap-2">
+                                    <Label htmlFor="razorpay">Razorpay</Label>
+                                    <Switch
+                                        name="razorpay"
+                                        checked={paymentMethod.rozerPay}
+                                        onCheckedChange={handleRazorpayToggle}
+                                    />
+                                </div>
+                                <div className="flex justify-between gap-2">
+                                    <Label htmlFor="phonePay">Phone Pay</Label>
+                                    <Switch
+                                        name="phonePay"
+                                        checked={paymentMethod.phonePay}
+                                        onCheckedChange={handlePhonePayToggle}
+                                    />
                                 </div>
                             </div>
                         </CardContent>
