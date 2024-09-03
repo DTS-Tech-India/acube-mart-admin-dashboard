@@ -54,7 +54,7 @@ export default function Settings() {
             phonePay: !paymentMethod.phonePay
         })
     }
-    console.log(paymentMethod)
+    //console.log(paymentMethod)
     
     return (
         <div className="w-full h-full flex flex-col gap-4">

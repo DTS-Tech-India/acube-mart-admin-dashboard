@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import dynamic from 'next/dynamic'
+//import dynamic from 'next/dynamic'
 
 import {
   Breadcrumb,
@@ -24,7 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { useState } from "react";
 
-const Tiptap = dynamic(() => import('@/components/tiptap'), { ssr: false })
+//const Tiptap = dynamic(() => import('@/components/tiptap'), { ssr: false })
 
 export default function Support() {
     const [text, setText] = useState("");
@@ -61,7 +61,7 @@ export default function Support() {
                                 <div className="flex flex-col gap-2">
                                     <Label htmlFor="query">Need Help?</Label>
                                     <Textarea name="query" placeholder="Enter your query" />
-                                    <Tiptap text={text} setText={setText} />
+                                    
                                 </div>
                             </div>
                         </CardContent>
