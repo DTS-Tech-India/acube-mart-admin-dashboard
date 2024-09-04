@@ -88,7 +88,7 @@ export default function Settings() {
                             <div className="flex flex-col gap-4">
                                 <div className="flex flex-col gap-2">
                                     <Label htmlFor="store-name">Store Name</Label>
-                                    <Input name="store-name" placeholder="Acube Mart" /* value="Acube Mart" *//>
+                                    <Input name="store-name" placeholder="Acube Mart" defaultValue="Acube Mart"/>
                                 </div>
                             </div>
                         </CardContent>
@@ -99,29 +99,36 @@ export default function Settings() {
                         </CardHeader>
                         <CardContent>
                             <div className="flex flex-col gap-4">
-                                <div className="flex justify-between gap-2">
-                                    <Label htmlFor="cashOnDelivery"> Cash On Delivery</Label>
-                                    <Switch
-                                        name="cashOnDelivery"
-                                        checked={paymentMethod.cashOnDelivery}
-                                        onCheckedChange={handleCODToggle}
-                                    />
+                                <div className="flex items-center justify-between gap-2 border rounded-md">
+                                    <Link href={"/settings/payment-method/cash-on-delivery"} className="hover:text-blue-600 hover:bg-muted w-full p-4" > Cash On Delivery</Link>
+                                    <div className="w-full flex items-center justify-center max-w-20 p-4">
+                                        <Switch
+                                            name="cashOnDelivery"
+                                            checked={paymentMethod.cashOnDelivery}
+                                            onCheckedChange={handleCODToggle}
+                                        />
+                                    </div>
+                                    
                                 </div>
-                                <div className="flex justify-between gap-2">
-                                    <Label htmlFor="razorpay">Razorpay</Label>
-                                    <Switch
-                                        name="razorpay"
-                                        checked={paymentMethod.rozerPay}
-                                        onCheckedChange={handleRazorpayToggle}
-                                    />
+                                <div className="flex items-center justify-between gap-2 border rounded-md">
+                                    <Link href={"/settings/payment-method/razorpay"} className="hover:text-blue-600 hover:bg-muted w-full p-4" >Razorpay</Link>
+                                    <div className="w-full flex items-center justify-center max-w-20 p-4">
+                                        <Switch
+                                            name="razorpay"
+                                            checked={paymentMethod.rozerPay}
+                                            onCheckedChange={handleRazorpayToggle}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="flex justify-between gap-2">
-                                    <Label htmlFor="phonePay">Phone Pay</Label>
-                                    <Switch
-                                        name="phonePay"
-                                        checked={paymentMethod.phonePay}
-                                        onCheckedChange={handlePhonePayToggle}
-                                    />
+                                <div className="flex items-center justify-between gap-2 border rounded-md">
+                                    <Link href={"/settings/payment-method/phone-pay"} className="hover:text-blue-600 hover:bg-muted w-full p-4" >Phone Pay</Link>
+                                    <div className="w-full flex items-center justify-center max-w-20 p-4">
+                                        <Switch
+                                            name="phonePay"
+                                            checked={paymentMethod.phonePay}
+                                            onCheckedChange={handlePhonePayToggle}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
