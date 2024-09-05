@@ -95,7 +95,11 @@ export default function Settings() {
                     </Card>
                     <Card className="w-full h-full">
                         <CardHeader  className="font-semibold">
-                            Payment Method
+                            <div className=" flex items-center justify-between">
+                                <span>Payment Method</span>
+                            <Button onClick={() => {router.push("/settings/add-payment-method")}}>Add Payment Method</Button>
+                            </div>
+                            
                         </CardHeader>
                         <CardContent>
                             <div className="flex flex-col gap-4">

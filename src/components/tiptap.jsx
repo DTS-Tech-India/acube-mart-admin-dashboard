@@ -2,26 +2,34 @@
 
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+
+import TextAlign from '@tiptap/extension-text-align'
+import Highlight from '@tiptap/extension-highlight'
+import Underline from '@tiptap/extension-underline'
 import Toolbar from './toolbar'
 
-
-export default function Tiptap({
-    text,
-    setText,
+export default function TiptapEditor({
+    content,
+    onChange,
 }) {
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure(),
+            Underline.configure({ HTMLAttributes: { class: 'underline' } }),
+            TextAlign.configure({ types: ['heading', 'paragraph'] }),
+            Highlight,
         ],
-        content: text,
+        content: content,
+        immediatelyRender: false,
+        shouldRerenderOnTransaction: false,
         editorProps: {
             attributes: {
                 class: "rounded-md border min-h-[150px] p-2 border-input bg-background"
             },
         },
         onUpdate: ({ editor }) => {
-            setText(editor.getHTML())
-            console.log(editor.getHTML())
+            onChange(editor.getHTML())
+            //console.log(editor.getHTML())
         },
     })
 

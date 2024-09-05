@@ -23,6 +23,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import { useState } from "react";
+import TiptapEditor from "@/components/tiptap";
+
 
 //const Tiptap = dynamic(() => import('@/components/tiptap'), { ssr: false })
 
@@ -61,7 +63,7 @@ export default function Support() {
                                 <div className="flex flex-col gap-2">
                                     <Label htmlFor="query">Need Help?</Label>
                                     <Textarea name="query" placeholder="Enter your query" />
-                                    
+                                    {/* <TiptapEditor text={text} setText={setText} /> */}
                                 </div>
                             </div>
                         </CardContent>
