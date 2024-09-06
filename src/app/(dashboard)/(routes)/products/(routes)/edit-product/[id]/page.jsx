@@ -1177,25 +1177,30 @@ const handleDeselectAllModels = () => {
                             </div>
                             {(productImages.featuredImage || featuredImage) ? (
                                 <div className="w-full h-full flex flex-col gap-4">
-                                <Image
-                                    src={productImages.featuredImage.url}
-                                    alt="product featured image"
-                                    width={1000}
-                                    height={1000}
-                                    className="w-full h-full object-cover rounded-md"
-                                />
-                                {featuredImage && (
-                                    <div className="w-full h-full flex flex-col gap-4">
-                                    <Image
-                                        src={featuredImage}
-                                        alt="product featured image"
-                                        width={1000}
-                                        height={1000}
-                                        className="w-full h-full object-cover rounded-md"
-                                    />
-                                    <Button onClick={handleUpdateFeaturedImage}>Update</Button>
-                                    </div>
-                                )}
+                                    {productImages.featuredImage && (
+                                         <div className="w-full h-full flex ">
+                                            <Image
+                                                src={productImages.featuredImage?.url}
+                                                alt="product featured image"
+                                                width={1000}
+                                                height={1000}
+                                                className="w-full h-full object-cover rounded-md"
+                                            />
+                                        </div>
+                                    )}
+                                   
+                                    {featuredImage && (
+                                        <div className="w-full h-full flex flex-col gap-4">
+                                            <Image
+                                                src={featuredImage}
+                                                alt="product featured image"
+                                                width={1000}
+                                                height={1000}
+                                                className="w-full h-full object-cover rounded-md"
+                                            />
+                                            <Button onClick={handleUpdateFeaturedImage}>Update</Button>
+                                        </div>
+                                    )} 
                                 </div>
                             ):(
                                 <button className="flex aspect-square w-full max-w-xs items-center justify-center rounded-md border border-dashed">
