@@ -95,9 +95,10 @@ export default function Page({ params }) {
         featuredImage: "",
         galleryImages: [],
     });
-   const {data: product, isLoading: isProductLoading, isError: isProductError, isSuccess} = useQuery({
+   const {data: product, isLoading: isProductLoading, isError: isProductError, isSuccess, refetch: refetchProduct} = useQuery({
        queryKey: ["product"],
        queryFn: async() => await getApiDataByQuery(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/${params.id}`),
+       gcTime: 1000 * 60 * 60, //60 minutes
    })
    
    useEffect(() => {
@@ -130,6 +131,7 @@ export default function Page({ params }) {
     const { data: apiData, isLoading: isApiDataLoading, isError: isApiDataError } = useQuery({
         queryKey: ["apiData"],
         queryFn: async() => await getApiData(),
+        gcTime:  1000 * 60 * 60, //60 minutes
     })
     
     if (isProductError) return <div>Error while fetching the product</div>
@@ -469,6 +471,7 @@ const handleDeselectAllModels = () => {
                 //console.log(res);
                 toast.success(res.data.message);
                 setImages([]);
+                refetchProduct();
             }
         })
         .catch((err) => {
@@ -507,6 +510,7 @@ const handleDeselectAllModels = () => {
                 //console.log(res);
                 toast.success(res.data.message);
                 setFeaturedImage("");
+                refetchProduct();
             }
         })
         .catch((err) => {
@@ -523,6 +527,7 @@ const handleDeselectAllModels = () => {
             //console.log(res);
             if (res.data.success) {
                 toast.success(res.data.message);
+                refetchProduct();
             }
         })
         .catch((err) => {

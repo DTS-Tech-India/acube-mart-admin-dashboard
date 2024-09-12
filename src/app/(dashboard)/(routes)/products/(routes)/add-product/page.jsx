@@ -120,6 +120,7 @@ export default function AddProduct() {
     const { data, isLoading, isError, isSuccess } = useQuery({
         queryKey: ["apiData"],
         queryFn: async() => await getApiData(),
+        gcTime: 1000 * 60 * 60, //60 minutes
     });
 
     if (isError) return "An error has occurred.";
