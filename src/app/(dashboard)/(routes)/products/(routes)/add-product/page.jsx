@@ -53,7 +53,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 //import TiptapEditor from "@/components/tiptap";
 
 export default function AddProduct() {
-    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
+    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
     const router = useRouter();
     const [isPhysicalProduct, setIsPhysicalProduct] = useState(false);
     const [images, setImages] = useState([]);
@@ -558,7 +558,7 @@ export default function AddProduct() {
                             </div>
                             <div>
                                 <Label htmlFor="description">Description</Label>
-                                <ReactQuill theme="snow" value={productData.description} onChange={(value) => handleDescriptionChange(value)} placeholder="Type product description here..." />
+                                <ReactQuill theme="snow" value={productData.description} onChange={handleDescriptionChange} placeholder="Type product description here..." />
                                 {/* <Textarea name="description" onChange={handleChange} placeholder="Type product description here..." /> */}
                                {/*  <TiptapEditor content={productData.description} onChange={(value) => handleDescriptionChange(value)} /> */}
                             </div>
@@ -867,7 +867,7 @@ export default function AddProduct() {
                             </div>
                             <div className="flex flex-col gap-4 w-full">
                                 <Label htmlFor="description">Description</Label>
-                                <ReactQuill theme="snow" value={Varient.description} onChange={(value) => handleVarientDescriptionChange(value)} placeholder="Type product description here..." />
+                                <ReactQuill theme="snow" value={Varient.description} onChange={handleVarientDescriptionChange} placeholder="Type product description here..." />
                                 {/* <TiptapEditor content={Varient.description} onChange={handleVarientDescriptionChange} /> */}
                             </div>
                             <div>
@@ -994,7 +994,7 @@ export default function AddProduct() {
                             <div className="flex flex-col gap-4">
                                 <Label htmlFor="description">Description</Label>
                                 {/* <Editor /> */} 
-                                <ReactQuill theme="snow" value={productData.additionalInfo.shortDescription} onChange={(value) => handleShortDescriptionChange(value)} placeholder="Type short description here..." />
+                                <ReactQuill theme="snow" value={productData.additionalInfo.shortDescription} onChange={handleShortDescriptionChange} placeholder="Type short description here..." />
                                 {/* <TiptapEditor content={productData.additionalInfo.shortDescription} onChange={(value) => handleShortDescriptionChange(value)} /> */}
                             </div>
                         </CardContent>
