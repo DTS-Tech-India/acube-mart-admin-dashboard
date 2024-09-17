@@ -112,7 +112,7 @@ export const columns = [
             return (
                 <Link 
                     className="text-blue-600 hover:underline" 
-                    href={`/customers/edit-customer/${userId}`}
+                    href={`/customers/customer-details/${userId}`}
                 >
                     {userId}
                 </Link>
