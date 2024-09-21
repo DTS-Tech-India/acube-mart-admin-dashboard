@@ -59,16 +59,13 @@ const MainHeader = () => {
             <div className="flex flex-1 items-center justify-between">
                 <Button variant="ghost"><Menu className="w-8 h-8 p-1" /></Button>
                 
-                <div className="hidden md:flex items-center gap-2">
+               {/*  <div className="hidden md:flex items-center gap-2">
                     <Button variant="ghost"><Search className="w-8 h-8 p-1" /></Button>
                     <Button variant="ghost"><Calendar className="w-8 h-8 p-1" /></Button>
                     <Button variant="ghost"><Bell className="w-8 h-8 p-1" /></Button>
-                    <Button variant="ghost"><Mail className="w-8 h-8 p-1" /></Button>
-                    
-                    
-                </div>
-            </div>
-            <div className="flex flex-end items-center p-4 ml-auto border-l">
+                    <Button variant="ghost"><Mail className="w-8 h-8 p-1" /></Button> 
+                </div> */}
+
                 <DropdownMenu>
                     <DropdownMenuTrigger className="flex items-center p-2 hover:bg-muted gap-2">
                         <Avatar>
@@ -93,31 +90,6 @@ const MainHeader = () => {
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-                {/* <NavigationMenu>
-                    <NavigationMenuList>
-                        <NavigationMenuItem>
-                            <NavigationMenuTrigger  className="flex items-center p-2 gap-2">
-                                <Avatar>
-                                    <AvatarImage src="https://picsum.photos/200" />
-                                    <AvatarFallback>CN</AvatarFallback>
-                                </Avatar>
-                                <div className="hidden md:flex flex-col items-start ">
-                                    <h2 className="font-semibold text-sm">John Doe</h2>
-                                    <p className="text-xs text-muted-foreground">Admin</p>
-                                </div>
-                            </NavigationMenuTrigger>
-                            <NavigationMenuContent>
-
-                                <NavigationMenuLink href="/">profile</NavigationMenuLink>
-                                <Separator />
-                                <NavigationMenuLink>Settings</NavigationMenuLink>
-                                <Separator />
-                                <NavigationMenuLink>Logout</NavigationMenuLink>
-                                <Separator />
-                            </NavigationMenuContent>
-                        </NavigationMenuItem>
-                    </NavigationMenuList>
-                </NavigationMenu> */}
             </div>
         </div>
     )

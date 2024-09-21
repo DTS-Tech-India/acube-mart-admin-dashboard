@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import { getSession, updateSession } from './lib/session'
 
  //const superAdminRoutes = ['/dashboard/admin'] 
- const adminRoutes = ['/admins']
+ const adminRoutes = ['/admins', '/settings']
  
 // This function can be marked `async` if using `await` inside
 export async function middleware(request) {

@@ -25,7 +25,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-const chartData = [
+import axios from "axios"
+import { useQuery } from "@tanstack/react-query"
+import { Skeleton } from "./ui/skeleton"
+/* const chartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
   { date: "2024-04-02", desktop: 97, mobile: 180 },
   { date: "2024-04-03", desktop: 167, mobile: 120 },
@@ -117,30 +120,72 @@ const chartData = [
   { date: "2024-06-28", desktop: 149, mobile: 200 },
   { date: "2024-06-29", desktop: 103, mobile: 160 },
   { date: "2024-06-30", desktop: 446, mobile: 400 },
-]
+] */
 
 const chartConfig = {
   visitors: {
     label: "Visitors",
   },
-  desktop: {
-    label: "Desktop",
+  order: {
+    label: "Order",
     color: "hsl(var(--chart-1))",
   },
-  mobile: {
-    label: "Mobile",
+  user: {
+    label: "User",
     color: "hsl(var(--chart-2))",
   },
 }
 
 export function AreaChartComponent() {
-  const [timeRange, setTimeRange] = React.useState("90d")
+  const {data: ordersList, isLoadingOrdersList, isErrorOrdersList} = useQuery({
+    queryKey: ["ordersList"],
+    queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/all`)
+    .then((res) => res.data),
+  })
+  //console.log(ordersList)
 
-  const filteredData = chartData.filter((item) => {
+  const {data: users, isLoadingUsers, isErrorUsers} = useQuery({
+    queryKey: ["users"],
+    queryFn: async() => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/all`)
+    .then((res) => res.data),
+  })
+  //console.log(users)
+
+  const modifiedData = React.useMemo(() => {
+    //array of objects contaning date and number of orders and  users
+    const dates = [
+      ...(ordersList?.data?.map((item) => item.createdAt) || []),
+      ...(users?.data?.map((item) => item.createdAt) || []),
+    ]
+    const uniqueDates = [...new Set(dates)].sort((a, b) => new Date(a) - new Date(b))
+
+    return uniqueDates.map((date) => {
+      const order = ordersList?.data.filter(
+        (order) => new Date(order.createdAt) <= new Date(date)
+      ).length
+      const user = users?.data.filter(
+        (user) => new Date(user.createdAt) <= new Date(date)
+      ).length
+      return {
+        date: date.split("T")[0],
+        order,
+        user,
+      }
+    })
+  }, [ordersList, users])
+  //console.log(modifiedData)
+  
+  const [timeRange, setTimeRange] = React.useState("365d")
+
+  const filteredData = modifiedData.filter((item) => {
     const date = new Date(item.date)
     const now = new Date()
-    let daysToSubtract = 90
-    if (timeRange === "30d") {
+    let daysToSubtract = 365
+    if (timeRange === "90d") {
+      daysToSubtract = 90
+    } else if (timeRange === "60d") {
+      daysToSubtract = 60
+    } else if (timeRange === "30d") {
       daysToSubtract = 30
     } else if (timeRange === "7d") {
       daysToSubtract = 7
@@ -150,12 +195,16 @@ export function AreaChartComponent() {
   })
 
   return (
+    <>
+    {isLoadingOrdersList || isErrorOrdersList || isLoadingUsers || isErrorUsers || !modifiedData ? (
+      <Skeleton className="h-60 w-full" />
+    ):(
     <Card className="w-full">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Total Visitors</CardTitle>
+          <CardTitle>Total Orders and Users</CardTitle>
           <CardDescription>
-            Showing total visitors for the last 3 months
+            Showing total orders over time with respect to total users
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
@@ -163,14 +212,20 @@ export function AreaChartComponent() {
             className="w-[160px] rounded-lg sm:ml-auto"
             aria-label="Select a value"
           >
-            <SelectValue placeholder="Last 3 months" />
+            <SelectValue placeholder="Last 1 year" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
+            <SelectItem value="365d" className="rounded-lg">
+              Last 1 year
+            </SelectItem>
             <SelectItem value="90d" className="rounded-lg">
               Last 3 months
             </SelectItem>
+            <SelectItem value="60d" className="rounded-lg">
+              Last 2 months
+            </SelectItem>
             <SelectItem value="30d" className="rounded-lg">
-              Last 30 days
+              Last 1 month
             </SelectItem>
             <SelectItem value="7d" className="rounded-lg">
               Last 7 days
@@ -185,27 +240,27 @@ export function AreaChartComponent() {
         >
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillOrder" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-desktop)"
+                  stopColor="var(--color-order)"
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-desktop)"
+                  stopColor="var(--color-order)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillUser" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-mobile)"
+                  stopColor="var(--color-user)"
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-mobile)"
+                  stopColor="var(--color-user)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
@@ -240,17 +295,17 @@ export function AreaChartComponent() {
               }
             />
             <Area
-              dataKey="mobile"
+              dataKey="user"
               type="natural"
-              fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
+              fill="url(#fillUser)"
+              stroke="var(--color-user)"
               stackId="a"
             />
             <Area
-              dataKey="desktop"
+              dataKey="order"
               type="natural"
-              fill="url(#fillDesktop)"
-              stroke="var(--color-desktop)"
+              fill="url(#fillOrder)"
+              stroke="var(--color-order)"
               stackId="a"
             />
             <ChartLegend content={<ChartLegendContent />} />
@@ -258,5 +313,7 @@ export function AreaChartComponent() {
         </ChartContainer>
       </CardContent>
     </Card>
+  )}
+    </>
   )
 }
