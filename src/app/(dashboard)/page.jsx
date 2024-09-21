@@ -28,7 +28,7 @@ import {
   User
 } from "lucide-react"
 import { cn } from "@/lib/utils";
-import { RadialChartComponent } from "@/components/radial-chart";
+import { LineChartComponent } from "@/components/line-chart";
 import { AreaChartComponent } from "@/components/area-chart";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -38,6 +38,7 @@ import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { columns } from "./(routes)/orders/orders-columns";
 import { useRouter } from "next/navigation";
+
 
 export default function Dashboard() {
   const router = useRouter()
@@ -164,7 +165,7 @@ export default function Dashboard() {
       ))}
       </div>
       <div className="flex flex-col md:flex-row gap-4 w-full">
-        <RadialChartComponent />
+        <LineChartComponent />
         <AreaChartComponent />
       </div>
       <div className="w-full h-full">
