@@ -601,7 +601,7 @@ const handleDeselectAllModels = () => {
                             {/* preview image before upload */}
                             {(productImages.galleryImages || images) ? (
                                 <>
-                                    <div className="flex gap-4">
+                                    <div className="grid grid-cols-5 gap-4">
                                         {productImages.galleryImages.map((image) => (
                                             <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200 relative" key={image._id}>
                                                 <Button variant="ghost" onClick={() => handleDeleteImage(image._id)} className="absolute top-2 right-2 text-red-600 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
@@ -611,7 +611,7 @@ const handleDeselectAllModels = () => {
                                     </div>
                                     {images.length > 0 ? (
                                         <div className="flex flex-col gap-4">
-                                            <div className="flex gap-4">
+                                            <div className="grid grid-cols-5 gap-4">
                                                 {images.map((image) => (
                                                     <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
                                                         <Image src={image} alt={image} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />

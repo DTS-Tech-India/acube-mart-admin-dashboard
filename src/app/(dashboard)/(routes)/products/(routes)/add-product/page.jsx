@@ -575,7 +575,7 @@ export default function AddProduct() {
                             </div>
                             {/* preview image before upload */}
                             {images.length > 0 ? (
-                                    <div className="flex gap-4">
+                                    <div className="grid grid-cols-5 gap-4">
                                         {images.map((image) => (
                                             <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
                                                 <Image src={image} alt={image} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
