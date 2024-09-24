@@ -317,6 +317,7 @@ const handleDeselectAllModels = () => {
                 toast.success(res.data.message);
                 setAttribute({ name: "", value: "" });
                 //console.log(attributes);
+                refetchProduct();
             }
         })
        
@@ -331,6 +332,7 @@ const handleDeselectAllModels = () => {
                 //console.log(res.data.message);
                 toast.success(res.data.message);
                 //setAttributes(attributes.filter((attribute) => attribute.id !== id));
+                refetchProduct();
             }
         })
     }
@@ -423,6 +425,7 @@ const handleDeselectAllModels = () => {
                         if (res.data.success) {
                             //console.log(res);
                             toast.success(res.data.message);
+                            refetchProduct();
                         }
                     })
                     .catch((err) => {
@@ -445,6 +448,7 @@ const handleDeselectAllModels = () => {
                 //console.log(res.data.message);
                 toast.success(res.data.message);
                 //setAttributes(attributes.filter((attribute) => attribute.id !== id));
+                refetchProduct();
             }
         })
         .catch((err) => {
@@ -488,6 +492,7 @@ const handleDeselectAllModels = () => {
                 //console.log(res);
                 toast.success(res.data.message);
                 //setAttributes(attributes.filter((attribute) => attribute.id !== id));
+                refetchProduct();
             }
         })
         .catch((err) => {
