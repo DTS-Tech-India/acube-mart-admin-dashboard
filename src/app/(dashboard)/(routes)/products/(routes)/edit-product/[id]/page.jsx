@@ -95,6 +95,7 @@ export default function Page({ params }) {
         featuredImage: "",
         galleryImages: [],
     });
+    const [attributesUpdate, setAttributesUpdate] = useState([]);
    const {data: product, isLoading: isProductLoading, isError: isProductError, isSuccess, refetch: refetchProduct} = useQuery({
        queryKey: ["product"],
        queryFn: async() => await getApiDataByQuery(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/${params.id}`),
@@ -336,6 +337,32 @@ const handleDeselectAllModels = () => {
             }
         })
     }
+
+    const handleChangeAttributesData = (e) => {
+        setAttributesUpdate({ ...attributesUpdate, [e.target.name]: e.target.value });
+        //console.log(attributesUpdate);
+    }
+
+    const handleUpdateAttribute = (id) => {
+        const attributeData = {
+            productId: params.id,
+            attributeId: id
+        }
+        if (attributesUpdate?.name) attributeData.name = attributesUpdate.name;
+        if (attributesUpdate?.value) attributeData.value = attributesUpdate.value.split(",").map((value) => value.trim());
+        //console.log(attributeData);
+        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/attribute/update`, attributeData)
+        .then((res) => {
+            //console.log(res);
+            if (res.data.success) {
+                //console.log(res.data.message);
+                toast.success(res.data.message);
+                setAttributesUpdate({ name: "", value: "" });
+                refetchProduct();
+            }
+        })
+    }
+    
 
     const handleVarientChange = (e) => {
         setVarient({ ...Varient, [e.target.name]: e.target.value });
@@ -756,12 +783,13 @@ const handleDeselectAllModels = () => {
                                 <div key={attribute._id} className="flex gap-4">
                                     <div className="w-full">
                                         <Label htmlFor="name">Attribute name</Label>
-                                        <Input id="name" defaultValue={attribute.name} placeholder="Attribute name" />
+                                        <Input name="name" defaultValue={attribute.name} onChange={handleChangeAttributesData} placeholder="Attribute name" />
                                     </div>
                                     <div className="w-full">
                                         <Label htmlFor="description">Attribute value</Label>
-                                        <Input id="value" defaultValue={attribute.value} placeholder="Attribute value" />
+                                        <Input name="value" defaultValue={attribute.value} onChange={handleChangeAttributesData} placeholder="Attribute value" />
                                     </div>
+                                    <Button className="mt-auto" onClick={() => handleUpdateAttribute(attribute._id)}>Update</Button>
                                     <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteAttribute(attribute._id)} ><X className="w-8 h-8 p-2" /></Button>
                                 </div>
                             ))}
