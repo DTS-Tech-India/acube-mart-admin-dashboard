@@ -675,7 +675,7 @@ export default function AddProduct() {
                                 </div>
                                 <div className="w-full">
                                     <Label htmlFor="description">Product Type</Label>
-                                    <Select defaultValue={true} onValueChange={(value) => handleChangeIsSimpleProduct(value)}>
+                                    <Select value={productData.isSimpleProduct} onValueChange={(value) => handleChangeIsSimpleProduct(value)}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select product type" />
                                         </SelectTrigger>
