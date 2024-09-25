@@ -70,10 +70,10 @@ export default function EditModel({ params }) {
 
     const handleEditModel = (e) => {
         e.preventDefault();
-        if (!modelData.name || !modelData.typeId || !modelData.brandId) {
+        /* if (!modelData.name || !modelData.typeId || !modelData.brandId) {
             toast.error("All fields are required");
             return;
-        }
+        } */
         axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/model/update/${params.id}`, modelData)
         .then((res) => {
             //console.log(res);

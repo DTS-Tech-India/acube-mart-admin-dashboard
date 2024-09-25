@@ -66,10 +66,10 @@ export default function EditBrand({ params }) {
 
     const handleEditBrand = (e) => {
         e.preventDefault();
-        if (!brandData.name || !brandData.typeId) {
+        /* if (!brandData.name || !brandData.typeId) {
             toast.error("Name and type are required");
             return;
-        }
+        } */
         axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/brand/update/${params.id}`, brandData)
         .then((res) => {
             //console.log(res);
