@@ -99,7 +99,7 @@ export default function Page({ params }) {
    const {data: product, isLoading: isProductLoading, isError: isProductError, isSuccess, refetch: refetchProduct} = useQuery({
        queryKey: ["product"],
        queryFn: async() => await getApiDataByQuery(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/${params.id}`),
-       gcTime: 1000 * 60 * 60, //60 minutes
+       gcTime: 1000 * 60 * 60 * 2, //120 minutes
    })
    
    useEffect(() => {
@@ -132,7 +132,7 @@ export default function Page({ params }) {
     const { data: apiData, isLoading: isApiDataLoading, isError: isApiDataError } = useQuery({
         queryKey: ["apiData"],
         queryFn: async() => await getApiData(),
-        gcTime:  1000 * 60 * 60, //60 minutes
+        gcTime:  1000 * 60 * 60 * 2, //120 minutes
     })
     
     if (isProductError) return <div>Error while fetching the product</div>
