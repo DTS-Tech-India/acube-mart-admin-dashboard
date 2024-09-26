@@ -96,6 +96,7 @@ export default function Page({ params }) {
         galleryImages: [],
     });
     const [attributesUpdate, setAttributesUpdate] = useState([]);
+    const [varientUpdate, setVarientUpdate] = useState({});
    const {data: product, isLoading: isProductLoading, isError: isProductError, isSuccess, refetch: refetchProduct} = useQuery({
        queryKey: ["product"],
        queryFn: async() => await getApiDataByQuery(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/${params.id}`),
@@ -414,7 +415,7 @@ const handleDeselectAllModels = () => {
     }
 
     const addNewVarient = () => {
-        if (Varient.name === "" || Varient.image === "" || Varient.mrp === "" || Varient.sp === "" || Varient.deliveryCharges === "" || Varient.codCharges === "" || Varient.discount === "" || Varient.video === "" || Varient.variantAttributes.length === 0) {
+        if (Varient.name === "" || Varient.image === "" || Varient.mrp === "" || Varient.sp === "" || Varient.deliveryCharges === "" || Varient.codCharges === "" || Varient.discount === "" || Varient.variantAttributes.length === 0) {
             toast.error("Please fill variant name and value");
             return;
         }
@@ -475,6 +476,31 @@ const handleDeselectAllModels = () => {
                 //console.log(res.data.message);
                 toast.success(res.data.message);
                 //setAttributes(attributes.filter((attribute) => attribute.id !== id));
+                refetchProduct();
+            }
+        })
+        .catch((err) => {
+            //console.log(err);
+            toast.error(err.response.data.message);
+        })
+    }
+
+    const handleUpdateVariantChange = (e) => {
+        setVarientUpdate({ ...varientUpdate, [e.target.name]: e.target.value });
+        //console.log(varientUpdate);
+    }
+    const handleUpdateVariantDescriptionChange = (html) => {
+        setVarientUpdate({ ...varientUpdate, description: html });
+    }
+
+    const handleUpdateVariant = (id) => {
+
+        axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/update/${id}`, varientUpdate)
+        .then((res) => {
+            //console.log(res);
+            if (res.data.success) {
+                //console.log(res.data.message);
+                toast.success(res.data.message);
                 refetchProduct();
             }
         })
@@ -944,50 +970,53 @@ const handleDeselectAllModels = () => {
                                   <AccordionContent>
                                 <div className="rounded-md bg-muted border border-dotted p-4 flex flex-col gap-4" key={variant._id}>
                                     <div className="flex gap-4 w-full">
-                                        <Button variant="outline" className=" mt-auto hover:text-red-500 hover:bg-red-100 ml-auto" onClick={() => handleDeleteVarient(variant._id)} ><X className="w-8 h-8 p-2" /></Button>
+                                        <div className="flex gap-4 ml-auto">
+                                            <Button className="" onClick={() => handleUpdateVariant(variant._id)} >Update</Button>
+                                            <Button variant="outline" className="hover:text-red-500 hover:bg-red-100" onClick={() => handleDeleteVarient(variant._id)} ><X className="w-8 h-8 p-2" /></Button>
+                                        </div>
                                     </div>
                                     <div  className="flex gap-4">
                                         <div className="w-full">
                                             <Label htmlFor="name">Variant name</Label>
-                                            <Input name="name" defaultValue={variant.name} placeholder="Variant name" />
+                                            <Input name="name" defaultValue={variant.name} onChange={handleUpdateVariantChange} placeholder="Variant name" />
                                         </div>
                                         <div className="w-full">
                                             <Label htmlFor="price">Maximum Retail Price(INR)</Label>
-                                            <Input name="price" defaultValue={variant.mrp} placeholder="Variant value" />
+                                            <Input name="mrp" type="number" defaultValue={variant.mrp} onChange={handleUpdateVariantChange} placeholder="Variant value" />
                                         </div>
                                     </div>
                                     <div className="flex gap-4 w-full">
                                         <div className="w-full">
                                             <Label htmlFor="price">Selling Price(INR)</Label>
-                                            <Input name="sp" onChange={handleVarientChange} type="number" min={0} defaultValue={variant?.sp} placeholder="Type SP here..." />
+                                            <Input name="sp" type="number" min={0} defaultValue={variant?.sp} onChange={handleUpdateVariantChange}  placeholder="Type SP here..." />
                                         </div>
                                         <div className="w-full">
                                             <Label htmlFor="discount">Discount Percentage (%)</Label>   
-                                            <Input name="discount" type="number" min={0} max={100} onChange={handleVarientChange} defaultValue={variant?.discount} placeholder="Type Discount percentage..." />
+                                            <Input name="discount" type="number" min={0} max={100} defaultValue={variant?.discount} onChange={handleUpdateVariantChange} placeholder="Type Discount percentage..." />
                                         </div>
                                     </div>
                                     <div className="flex gap-4 w-full">
                                         <div className="w-full">
                                             <Label htmlFor="description">Delivery Charges(INR)</Label>
-                                            <Input name="deliveryCharges" type="number" min={0} max={100} onChange={handleVarientChange} value={variant.deliveryCharges} placeholder="Type COD charges..." />
+                                            <Input name="deliveryCharges" type="number" min={0} defaultValue={variant.deliveryCharges} onChange={handleUpdateVariantChange} placeholder="Type COD charges..." />
                                         </div>
                                         <div className="w-full">
                                             <Label htmlFor="codCharges">COD Charges(INR)</Label>
-                                            <Input name="codCharges" type="number" min={0} onChange={handleVarientChange} value={variant.codCharges} placeholder="Type COD charges..." />
+                                            <Input name="codCharges" type="number" min={0} defaultValue={variant.codCharges} onChange={handleUpdateVariantChange} placeholder="Type COD charges..." />
                                         </div>
                                     </div>
                                     <div className="flex gap-4 w-full">
                                         <div className="w-full">
                                             <Label htmlFor="sku" >SKU</Label>
-                                            <Input name="sku" defaultValue={variant.sku} placeholder="Type SKU here..." />
+                                            <Input name="sku" defaultValue={variant.sku} onChange={handleUpdateVariantChange} placeholder="Type SKU here..." />
                                         </div>
                                         <div className="w-full">
                                             <Label htmlFor="barcode">Barcode</Label>
-                                            <Input name="barcode" defaultValue={variant.barcode} placeholder="Type Barcode here..." />
+                                            <Input name="barcode" defaultValue={variant.barcode} onChange={handleUpdateVariantChange} placeholder="Type Barcode here..." />
                                         </div>
                                         <div className="w-full">
                                             <Label htmlFor="stock">Stock</Label>
-                                            <Input name="stock" defaultValue={variant.stock} placeholder="Type Stock here..." />
+                                            <Input name="stock" defaultValue={variant.stock} onChange={handleUpdateVariantChange} placeholder="Type Stock here..." />
                                         </div>
                                     </div>
                                         {variant.variantAttributes && variant.variantAttributes.map(attribute => (
@@ -1010,12 +1039,12 @@ const handleDeselectAllModels = () => {
                                     <div className="flex gap-4">
                                         <div className="w-full">
                                             <Label htmlFor="description">Video</Label>
-                                            <Input name="video" placeholder="Type video link here..." defaultValue={variant.video} onChange={handleVarientChange} />
+                                            <Input name="video" placeholder="Type video link here..." defaultValue={variant.video} onChange={handleUpdateVariantChange} />
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-2 w-full">
                                         <Label htmlFor="description">Description</Label>
-                                        <ReactQuill theme="snow" defaultValue={variant?.description} placeholder="Type variant description here..." />
+                                        <ReactQuill theme="snow" defaultValue={variant?.description} onChange={handleUpdateVariantDescriptionChange} placeholder="Type variant description here..." />
                                     </div>
                                 </div>
                                 </AccordionContent>
