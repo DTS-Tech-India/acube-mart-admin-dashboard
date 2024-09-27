@@ -322,7 +322,7 @@ export default function AddProduct() {
     }
 
     const addNewVarient = () => {
-        if (Varient.name === "" || Varient.mrp === "" || Varient.sp === "" || Varient.deliveryCharges === "" || Varient.codCharges === "" || Varient.discount === "" || Varient.image.length === 0 || Varient.video === "" || Varient.variantAttributes.length === 0) {
+        if (Varient.name === "" || Varient.mrp === "" || Varient.sp === "" || Varient.deliveryCharges === "" || Varient.codCharges === "" || Varient.discount === "" || Varient.image.length === 0 || Varient.variantAttributes.length === 0) {
             toast.error("Please fill all fields");
             return;
         }

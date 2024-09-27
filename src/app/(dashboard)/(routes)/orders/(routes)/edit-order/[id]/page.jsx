@@ -248,7 +248,7 @@ export default function OrderEdit({ params }) {
                                                 
                                                 <p>Phone</p>
                                             </div>
-                                            <p>{order?.data?.userId?.phone}</p>
+                                            <p>{order?.data?.phone}</p>
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -415,7 +415,7 @@ export default function OrderEdit({ params }) {
                                                         message = "An order has been shipped";
                                                         break;
                                                     case 'delivered':
-                                                        icon = <CheckCircle className="w-8 h-8" />;
+                                                        icon = <BadgeCheckIcon className="w-8 h-8" />;
                                                         message = "An order has been delivered";
                                                         break;
                                                     case 'cancelled':
