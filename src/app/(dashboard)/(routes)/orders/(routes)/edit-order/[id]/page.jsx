@@ -31,9 +31,13 @@ import {
   } from "@/components/ui/table"
   
 import { 
+    AlertCircle,
+    AlertOctagon,
     BadgeCheckIcon, 
     CalendarCheck, 
     Check, 
+    CircleAlert, 
+    Container, 
     CreditCard, 
     Gift, 
     Mail, 
@@ -60,12 +64,13 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import _ from 'lodash';
 
 export default function OrderEdit({ params }) {
     const [status, setStatus] = useState("");
     const router = useRouter();
 
-    const { data: order, isLoading: isLoadingOrder, isError: isErrorOrder } = useQuery({
+    const { data: order, isLoading: isLoadingOrder, isError: isErrorOrder, refetch } = useQuery({
         queryKey: ["order"],
         queryFn: async () => await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/${params.id}`)
         .then(res => res.data),
@@ -101,6 +106,7 @@ export default function OrderEdit({ params }) {
             //console.log(res)
             if (res.status === 200) {
                 toast.success(res.data.message);
+                refetch();
             }
         })
         .catch(err => {
@@ -382,56 +388,56 @@ export default function OrderEdit({ params }) {
                                     </CardHeader>
                                     <CardContent className="flex flex-col gap-2 text-sm">
                                         <div className="flex flex-col items-center gap-4 w-full">
-                                            <div className="flex items-center gap-4 w-full">
-                                                <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
-                                                    <ShoppingCart className="w-8 h-8" />
-                                                </div>
-                                                <div className="flex flex-col text-sm">
-                                                    <h2 className="font-semibold">Order Placed</h2>
-                                                    <p>An order has been placed</p>
-                                                    <span>12/05/2022, 10:00 AM</span>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-4 w-full">
-                                                <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
-                                                    <RefreshCcw className="w-8 h-8" />
-                                                </div>
-                                                <div className="flex flex-col text-sm">
-                                                    <h2 className="font-semibold">Processing</h2>
-                                                    <p>An order has been processed</p>
-                                                    <span>12/05/2022, 06:00 PM</span>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-4 w-full">
-                                                <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
-                                                    <Gift className="w-8 h-8" />
-                                                </div>
-                                                <div className="flex flex-col text-sm">
-                                                    <h2 className="font-semibold">Packed</h2>
-                                                    <p>An order has been packed</p>
-                                                    <span>13/05/2022, 11:00 AM</span>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-4 w-full">
-                                                <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
-                                                    <Truck className="w-8 h-8" />
-                                                </div>
-                                                <div className="flex flex-col text-sm">
-                                                    <h2 className="font-semibold">Shipping</h2>
-                                                    <p>An order has been shipped</p>
-                                                    <span>14/05/2022, 09:00 PM</span>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-4 w-full">
-                                                <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
-                                                    <Check className="w-8 h-8" />
-                                                </div>
-                                                <div className="flex flex-col text-sm">
-                                                    <h2 className="font-semibold">Delivered</h2>
-                                                    <p>An order has been delivered</p>
-                                                    <span>15/05/2022, 06:00 PM</span>
-                                                </div>
-                                            </div>
+                                            {order?.data?.statusUpdateTime?.map((status, index) => {
+                                                const date = new Date(status?.time);
+                                                const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}, ${date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
+                                                let icon = null;
+                                                let message = "";
+                                                switch (status?.status) {
+                                                    case 'pending':
+                                                        icon = <AlertCircle className="w-8 h-8" />;
+                                                        message = "An order has been pending for confirmation";
+                                                        break;
+                                                    case 'processing':
+                                                        icon = <Gift className="w-8 h-8" />;
+                                                        message = "An order has been processed";
+                                                        break;
+                                                    case 'placed':
+                                                        icon = <ShoppingCart className="w-8 h-8" />;
+                                                        message = "An order has been placed";
+                                                        break;
+                                                    case 'dispatched':
+                                                        icon = <Truck className="w-8 h-8" />;
+                                                        message = "An order has been dispatched";
+                                                        break;
+                                                    case 'shipped':
+                                                        icon = <Container className="w-8 h-8" />;
+                                                        message = "An order has been shipped";
+                                                        break;
+                                                    case 'delivered':
+                                                        icon = <CheckCircle className="w-8 h-8" />;
+                                                        message = "An order has been delivered";
+                                                        break;
+                                                    case 'cancelled':
+                                                        icon = <XCircle className="w-8 h-8" />;
+                                                        message = "An order has been cancelled";
+                                                        break;
+                                                    default:
+                                                        icon = <AlertOctagon className="w-8 h-8" />;
+                                                }
+                                                return (
+                                                    <div key={index} className="flex items-center gap-4 w-full">
+                                                        <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
+                                                            {icon}
+                                                        </div>
+                                                        <div className="flex flex-col text-sm">
+                                                            <h2 className="font-semibold">{_.capitalize(status?.status)}</h2>
+                                                            <p>{message}</p>
+                                                            <span>{formattedDate}</span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     </CardContent>
                                 </Card>
