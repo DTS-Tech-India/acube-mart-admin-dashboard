@@ -50,7 +50,10 @@ export const columns = [
         accessorKey: "paymentMode",
         header: "Payment Mode",
     },
-    
+    {
+        accessorKey: "amount",
+        header: "Amount",
+    },
     {
         accessorKey: "status",
         header: "Status",
