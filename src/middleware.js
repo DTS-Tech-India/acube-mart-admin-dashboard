@@ -1,31 +1,25 @@
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { getSession, updateSession } from './lib/session'
-
- //const superAdminRoutes = ['/dashboard/admin'] 
- //const adminRoutes = ['/admins', '/settings']
  
-// This function can be marked `async` if using `await` inside
 export async function middleware(request) {
     
-    //const path = request.nextUrl.pathname
+    const path = request.nextUrl.pathname
     //console.log(path)
     
-    //const session = await getSession()
+    const session = await getSession()
     
-    //if(!session) return NextResponse.redirect(new URL('/signin', request.url))
+    if(!session) return NextResponse.redirect(new URL('/signin', request.url))
 
-    //const role = await session.admin.role
+    const role = await session.admin.role
     //console.log(role);
 
-    //if(role === 'admin' && superAdminRoutes.includes(path)) return NextResponse.redirect(new URL('/unauthorized', request.url))
-    
-    //if(role === 'manager' && (/* superAdminRoutes.includes(path) || */ adminRoutes.includes(path))) return NextResponse.redirect(new URL('/unauthorized', request.url))
+    if (role === 'manager' && (path.startsWith('/admins') || path.startsWith('/settings'))) return NextResponse.redirect(new URL('/unauthorized', request.url))
 
   return NextResponse.next()
 }
  
-// See "Matching Paths" below to learn more
+//Matching Paths
 export const config = {
-  matcher: ['/', '/admins/:path*', '/products/:path*', '/categories/:path*', '/orders/:path*', '/customers/:path*', '/transactions/:path*', '/coupons/:path*', '/profile', '/settings/:path*', '/support', '/unauthorized'], 
+  matcher: ['/', '/admins/:path*', '/settings/:path*', '/products/:path*', '/categories/:path*', '/orders/:path*', '/customers/:path*', '/transactions/:path*', '/coupons/:path*', '/support/:path*'],
 }

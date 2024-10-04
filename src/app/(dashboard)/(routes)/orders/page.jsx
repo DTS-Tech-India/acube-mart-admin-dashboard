@@ -40,8 +40,8 @@ export default function Orders() {
             total: order.total,
             date: order.createdAt,
             status: order.status,
-            image: order.products[0].productId.featuredImage.url,
-            product: order.products.map((product) => product.productId.name),
+            image: order.products[0]?.productId?.featuredImage?.url,
+            product: order.products.map((product) => product?.productId?.name),
             payment: order?.transactionId?.paymentMode || "N/A",
             customer: order?.userId?.name,
           }

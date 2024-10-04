@@ -37,6 +37,7 @@ import { Button } from "./ui/button"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import axios from "axios"
+import { cn } from "@/lib/utils"
 
 const MainHeader = () => {
     const router = useRouter()
@@ -74,7 +75,7 @@ const MainHeader = () => {
                         </Avatar>
                         <div className="hidden md:flex flex-col items-start ">
                             <h2 className="font-semibold text-sm">{admin?.name}</h2>
-                            <p className="text-xs text-muted-foreground">{admin?.role}</p>
+                            <p className={cn("text-xs text-muted-foreground", admin?.role === "admin" ? "text-green-500" : "text-sky-500")}>{admin?.role}</p>
                         </div>
                         <ChevronDown className="w-8 h-8 p-2" />
                     </DropdownMenuTrigger>
