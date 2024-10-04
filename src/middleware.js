@@ -5,7 +5,7 @@ import getUserRole from './lib/session'
  
 export async function middleware(request) {
     
-    const path = request.nextUrl.pathname
+    //const path = request.nextUrl.pathname
     //console.log(path)
     
     //const session = await getSession()
@@ -15,12 +15,12 @@ export async function middleware(request) {
 
     //const role = await session.admin.role
     //console.log(role);
-    const role = await getUserRole()
+    //const role = await getUserRole()
     //console.log(role);
 
-    if (!role) return NextResponse.redirect(new URL('/signin', request.url))
+    //if (!role) return NextResponse.redirect(new URL('/signin', request.url))
 
-    if (role === 'manager' && (path.startsWith('/admins') || path.startsWith('/settings'))) return NextResponse.redirect(new URL('/unauthorized', request.url))
+    //if (role === 'manager' && (path.startsWith('/admins') || path.startsWith('/settings'))) return NextResponse.redirect(new URL('/unauthorized', request.url))
 
   return NextResponse.next()
 }
