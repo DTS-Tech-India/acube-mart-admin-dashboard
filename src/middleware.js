@@ -12,13 +12,15 @@ export async function middleware(request) {
     //console.log(session)
     
     //if(!session) return NextResponse.redirect(new URL('/signin', request.url))
+    const session = cookies().get('session').value
+    //console.log(session)
 
     //const role = await session.admin.role
     //console.log(role);
     //const role = await getUserRole()
     //console.log(role);
 
-    //if (!role) return NextResponse.redirect(new URL('/signin', request.url))
+    if (!session) return NextResponse.redirect(new URL('/signin', request.url))
 
     //if (role === 'manager' && (path.startsWith('/admins') || path.startsWith('/settings'))) return NextResponse.redirect(new URL('/unauthorized', request.url))
 
