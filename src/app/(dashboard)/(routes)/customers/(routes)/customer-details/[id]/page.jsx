@@ -56,8 +56,8 @@ export default function CustomerDetails({ params }) {
             total: order.total,
             date: order.createdAt,
             status: order.status,
-            image: order.products[0].productId.featuredImage.url,
-            product: order.products.map((product) => product.productId.name),
+            image: order?.products[0]?.productId?.featuredImage?.url,
+            product: order?.products?.map((product) => product?.productId?.name),
           }
         })
       }, [orders])
