@@ -41,13 +41,13 @@ export default function AddPaymentMethod() {
         })
     }
 
-   /*  const handleChangeStatus = (e) => {
+    const handleChangeStatus = (e) => {
         setData({
             ...data,
             status: e.target.checked ? "enabled" : "disabled"
         })
     }
-    console.log(data) */
+    console.log(data)
   return (
     <div className="w-full h-full flex flex-col gap-4">
             <h1 className="text-2xl font-semi">Add Payment Method</h1>
@@ -83,7 +83,7 @@ export default function AddPaymentMethod() {
                         <div className="flex flex-col md:flex-row items-center justify-between gap-2">
                             <Label htmlFor="status" className="w-full max-w-xs">Enable/Disable</Label>
                             <div className='w-full flex items-center gap-2 text-muted-foreground'>
-                               <Checkbox name="status" /* onCheckedChange={handleChangeStatus} */ /> 
+                               <Checkbox name="status" checked={data.status} onCheckedChange={handleChangeStatus} /> 
                                <p>Enable Payments</p>
                             </div>
                             

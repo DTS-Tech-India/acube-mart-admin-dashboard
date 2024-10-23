@@ -37,7 +37,7 @@ export default function Transactions() {
             id: transaction._id,
             transactionId: transaction._id,
             orderId: transaction?.orderId?._id,
-            userId: transaction.userId._id,
+            userId: transaction.userId?._id,
             paymentMode: transaction.paymentMode,
             amount: transaction?.amount,
             date: transaction.createdAt,
