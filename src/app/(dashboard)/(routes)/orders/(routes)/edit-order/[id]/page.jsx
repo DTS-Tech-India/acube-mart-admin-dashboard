@@ -48,7 +48,8 @@ import {
     Truck, 
     Upload, 
     User, 
-    X 
+    X, 
+    XCircle
 } from "lucide-react";
 import { 
     Card, 
@@ -335,7 +336,7 @@ export default function OrderEdit({ params }) {
                                             <TableFooter>
                                                 <TableRow>
                                                     <TableCell colSpan={5}>Sub Total</TableCell>
-                                                    <TableCell>₹{order?.data?.total}</TableCell>
+                                                    <TableCell>₹{orderList.reduce((acc, curr) => acc + curr.sp * curr.quantity, 0)}</TableCell>
                                                 </TableRow>
                                                 <TableRow>
                                                     <TableCell colSpan={5}>Shipping Rate</TableCell>
@@ -347,7 +348,7 @@ export default function OrderEdit({ params }) {
                                                 </TableRow>
                                                 <TableRow>
                                                     <TableCell colSpan={5}>Grand Total</TableCell>
-                                                    <TableCell>₹{order?.data?.total + orderList.reduce((acc, curr) => acc + curr.deliveryCharges, 0) + orderList.reduce((acc, curr) => acc + curr.codCharges, 0)}</TableCell>
+                                                    <TableCell>₹{order?.data?.total}</TableCell>
                                                 </TableRow>
                                             </TableFooter>
                                         </Table>
