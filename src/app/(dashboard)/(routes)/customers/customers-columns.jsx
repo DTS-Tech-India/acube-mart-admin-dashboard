@@ -146,7 +146,6 @@ export const columns = [
                     <Pen className="w-6 h-6 p-0.5" />
                 </Link> */}
                 <Button 
-                    href={`#`}
                     variant="ghost"
                     className="p-2 hover:text-red-500 hover:bg-muted rounded-md"
                     onClick={handleDeleteUser}

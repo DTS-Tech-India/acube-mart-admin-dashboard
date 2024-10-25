@@ -34,14 +34,14 @@ export default function Products() {
         return data?.data.map((product) => {
           return {
             id: product._id,
-            slug: product.slug,
-            name: product.name,
-            price: product.price,
+            slug: product?.slug,
+            name: product?.name,
+            price: product?.price,
             date: product.createdAt,
-            status: product.status,
-            image: product.featuredImage?.url,
-            stock: product.stock,
-            variants: product.variants
+            status: product?.status,
+            image: product?.featuredImage?.url,
+            stock: product?.stock,
+            variants: product?.variants
           }
         })
       }, [data])

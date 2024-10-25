@@ -30,13 +30,13 @@ export default function Coupons() {
         return data?.data.map((coupon) => {
           return {
             id: coupon._id,
-            code: coupon.code,
-            couponType: coupon.couponType,
-            amount: coupon.amount,
-            usageLimit: coupon.usageLimit,
-            expiry: coupon.expiry,
+            code: coupon?.code,
+            couponType: coupon?.couponType,
+            amount: coupon?.amount,
+            usageLimit: coupon?.usageLimit,
+            expiry: coupon?.expiry,
             created: coupon.createdAt,
-            status: coupon.status
+            status: coupon?.status
 
           }
         })

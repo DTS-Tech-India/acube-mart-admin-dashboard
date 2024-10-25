@@ -37,11 +37,11 @@ export default function Orders() {
           return {
             id: order._id,
             orderId: order._id,
-            total: order.total,
+            total: order?.total,
             date: order.createdAt,
-            status: order.status,
-            image: order.products[0]?.productId?.featuredImage?.url,
-            product: order.products.map((product) => product?.productId?.name),
+            status: order?.status,
+            image: order?.products[0]?.productId?.featuredImage?.url,
+            product: order?.products.map((product) => product?.productId?.name),
             payment: order?.transactionId?.paymentMode || "N/A",
             customer: order?.userId?.name,
           }

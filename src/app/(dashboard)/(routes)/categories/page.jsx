@@ -62,11 +62,11 @@ export default function CategoriesPage() {
         return data?.map((element) => {
           return {
             id: element._id,
-            name: element.name,
+            name: element?.name,
             image: element?.mediaId?.url,
             added: element.createdAt,
-            type: element.typeId?.name,
-            category: element.categoryId?.name
+            type: element?.typeId?.name,
+            category: element?.categoryId?.name
           }
         })
       }, [data]);
@@ -76,10 +76,10 @@ export default function CategoriesPage() {
         return category?.map((category) => {
           return {
             id: category._id,
-            name: category.name,
+            name: category?.name,
             image: category?.mediaId?.url,
             added: category.createdAt,
-            type: category.typeId?.name,
+            type: category?.typeId?.name,
           }
         })
       }, [category]);
@@ -89,8 +89,8 @@ export default function CategoriesPage() {
         return brand?.map((brand) => {
           return {
             id: brand._id,
-            name: brand.name,
-            type: brand.typeId?.name,
+            name: brand?.name,
+            type: brand?.typeId?.name,
             added: brand.createdAt,
             image: brand?.mediaId?.url
           }
@@ -102,9 +102,9 @@ export default function CategoriesPage() {
         return model?.map((model) => {
           return {
             id: model._id,
-            name: model.name,
-            type: model.typeId?.name,
-            brand: model.brandId?.name,
+            name: model?.name,
+            type: model?.typeId?.name,
+            brand: model?.brandId?.name,
             added: model.createdAt,
             image: model?.mediaId?.url
           }

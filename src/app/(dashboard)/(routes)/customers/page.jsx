@@ -35,14 +35,14 @@ export default function Customers() {
         return data?.data.map((user) => {
             return {
                 id: user._id,
-                name: user.name,
+                name: user?.name,
                 avatar: user?.avatar?.url || `https://picsum.photos/${200 + Math.floor(Math.random() * 100) + 1}`,
-                email: user.email,
-                phone: user.phone || Math.floor(Math.random() * 10000000000),
+                email: user?.email,
+                phone: user?.phone ,
                 created: user.createdAt,
-                orders: user.orders.length || Math.floor(Math.random() * 10),
-                balance: user.balance || Math.floor(Math.random() * 1000),
-                status: user.status || Math.floor(Math.random() * 2) === 0 ? "active" : "blocked",
+                orders: user?.orders?.length || 0,
+                balance: user?.balance || 0,
+                status: user?.status,
             }
         })
     }, [data])

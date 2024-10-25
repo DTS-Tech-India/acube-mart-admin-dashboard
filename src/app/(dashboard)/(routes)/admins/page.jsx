@@ -35,11 +35,11 @@ export default function Admins() {
         return adminData?.data.admins.map((admin) => {
           return {
             id: admin._id,
-            name: admin.name,
-            email: admin.email,
+            name: admin?.name,
+            email: admin?.email,
             avatar: admin?.avatar?.url || `https://picsum.photos/${200 + Math.floor(Math.random() * 100) + 1}`,
             created: admin.createdAt,
-            role: admin.role,
+            role: admin?.role,
           }
         })
       }, [adminData])

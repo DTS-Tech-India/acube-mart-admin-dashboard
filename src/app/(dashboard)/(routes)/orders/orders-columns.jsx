@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 
 
 
@@ -20,7 +21,7 @@ export const columns = [
             />
           ),
           cell: ({ row }) => {
-            const user = row.original;
+            const order = row.original;
             return (
               <Checkbox
               checked={row.getIsSelected()}
@@ -126,23 +127,48 @@ export const columns = [
         accessorKey: "action",
         header: "Action",
         cell: ({ row }) => {
-            const user = row.original;
+            const order = row.original;
+            const handleDeleteOrder = () => {
+                // delete order by order id
+                console.log(order.id);
+
+                // Delete order from database
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/delete/${order.id}`, {
+                    method: "DELETE",
+                })
+                .then((res) => res.json())
+                .then((data) => {
+                    //console.log(data);
+                    console.log(data);
+                    toast.success(data.message);
+                })
+                .catch((err) => {
+                    //console.log(err);
+                    toast.error(err.message);
+                })
+            }
             return (
               <div className="flex gap-0.5">
                 <Link 
-                    href={`/orders/order-details/${user.orderId}`} 
+                    href={`/orders/order-details/${order.orderId}`} 
                     variant="ghost" 
                     className="p-2 hover:text-green-500 hover:bg-muted rounded-md"
                     >
                         <Eye className="w-6 h-6 p-0.5" />
                 </Link>
                 <Link 
-                    href={`/orders/edit-order/${user.orderId}`} 
+                    href={`/orders/edit-order/${order.orderId}`} 
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
                 >
                     <Pen className="w-6 h-6 p-0.5" />
                 </Link>
-                
+                <Button 
+                    variant="ghost"
+                    className="p-2 hover:text-red-500 hover:bg-muted rounded-md"
+                    onClick={handleDeleteOrder}
+                    >
+                        <Trash2 className="w-6 h-6 p-0.5" />
+                </Button>
               </div>
             )
         }
