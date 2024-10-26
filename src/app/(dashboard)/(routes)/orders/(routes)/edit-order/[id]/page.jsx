@@ -66,9 +66,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import _ from 'lodash';
+import { Input } from "@/components/ui/input";
 
 export default function OrderEdit({ params }) {
     const [status, setStatus] = useState("");
+    const [remark, setRemark] = useState("");
     const router = useRouter();
 
     const { data: order, isLoading: isLoadingOrder, isError: isErrorOrder, refetch } = useQuery({
@@ -101,7 +103,8 @@ export default function OrderEdit({ params }) {
     if (isErrorOrder) return <div>Error occurred while fetching order</div>
     const handleOrderUpdate = () => {
         axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/update/${params.id}`, {
-            status
+            status,
+            remark
         })
         .then(res => {
             //console.log(res)
@@ -152,6 +155,7 @@ export default function OrderEdit({ params }) {
                             <SelectItem value="cancelled">Cancelled</SelectItem>
                         </SelectContent>
                     </Select>
+                    <Input value={remark} onChange={(e) => setRemark(e.target.value)} placeholder="Enter Remark" className="w-full max-w-xs" />
                     <Button variant="outline" onClick={() => router.push("/orders")}> <X className="h-4 w-4" /> Cancel</Button>
                     <Button onClick={handleOrderUpdate}>Update Order</Button> 
                 </div>
@@ -435,6 +439,16 @@ export default function OrderEdit({ params }) {
                                                             <h2 className="font-semibold">{_.capitalize(status?.status)}</h2>
                                                             <p>{message}</p>
                                                             <span>{formattedDate}</span>
+                                                            <div className="flex">
+                                                                {status?.remark ? (
+                                                                <div>
+                                                                    <span className="font-semibold">Remark: </span>
+                                                                    <span className="text-violet-600">{status?.remark}</span>
+                                                                </div>
+                                                                ) : (
+                                                                <></>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 );
