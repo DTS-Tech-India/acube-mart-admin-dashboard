@@ -42,7 +42,8 @@ export default function Transactions() {
             amount: transaction?.amount,
             date: transaction.createdAt,
             status: transaction?.status,
-            created: transaction.createdAt
+            created: transaction.createdAt,
+            orderNumber: transaction?.orderId?.orderNumber
           }
         })
       }, [data])

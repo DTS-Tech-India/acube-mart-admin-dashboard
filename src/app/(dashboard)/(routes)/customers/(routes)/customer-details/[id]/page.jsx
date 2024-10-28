@@ -58,6 +58,7 @@ export default function CustomerDetails({ params }) {
             status: order.status,
             image: order?.products[0]?.productId?.featuredImage?.url,
             product: order?.products?.map((product) => product?.productId?.name),
+            orderNumber: order?.orderNumber,
           }
         })
       }, [orders])
@@ -69,7 +70,7 @@ export default function CustomerDetails({ params }) {
     if(isErrorOrders) {
         return <div>Error while fetching orders</div>
     }
-    //console.log(orders)
+    console.log(orders)
     //console.log(customer)
     const quickCards = [
         {

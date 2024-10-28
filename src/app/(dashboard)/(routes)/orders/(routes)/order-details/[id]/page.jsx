@@ -148,7 +148,7 @@ export default function OrderDetails({ params }) {
                                     <CardHeader className="flex flex-row items-center justify-between">
                                         <div className="flex flex-col gap-1">
                                             <h2 className=" font-semibold">Order </h2>
-                                            <p className="text-sm">#{params.id}</p>
+                                            <p className="text-sm">#{order?.data.orderNumber}</p>
                                         </div>
                                         <span 
                                             className={cn(

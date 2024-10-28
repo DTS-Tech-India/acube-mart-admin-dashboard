@@ -35,13 +35,13 @@ export const columns = [
         accessorKey: "orderId",
         header: "Order ID",
         cell: ({ row }) => {
-            const orderId = row.getValue("orderId");
+            const order = row.original;
             return (
                 <Link
-                    href={`/orders/order-details/${orderId}`}
+                    href={`/orders/order-details/${order.orderId}`}
                     className="text-blue-600 hover:underline"
                 >
-                    {orderId}
+                    {order.orderNumber}
                 </Link>
             )
         }

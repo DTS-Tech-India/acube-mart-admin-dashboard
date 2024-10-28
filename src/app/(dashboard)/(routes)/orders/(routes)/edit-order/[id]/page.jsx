@@ -169,7 +169,7 @@ export default function OrderEdit({ params }) {
                                     <CardHeader className="flex flex-row items-center justify-between">
                                         <div className="flex flex-col gap-1">
                                             <h2 className=" font-semibold">Order </h2>
-                                            <p className="text-sm">#{params.id}</p>
+                                            <p className="text-sm">#{order?.data?.orderNunmber}</p>
                                         </div>
                                         <span 
                                             className={cn(
@@ -205,7 +205,7 @@ export default function OrderEdit({ params }) {
                                                 
                                                 <p>Payment Method</p>
                                             </div>
-                                            <p>Visa</p>
+                                            <p>{order?.data?.transactionId?.[0]?.paymentMode}</p>
                                         </div>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-4">
@@ -235,7 +235,7 @@ export default function OrderEdit({ params }) {
                                             </div>
                                             <p>{order?.data?.userId?.name}</p>
                                         </div>
-                                        <div className="flex items-center justify-between">
+                                        <div className="flex items-center justify-between gap-2">
                                             <div className="flex items-center gap-4">
                                                 <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
                                                     <Mail className="w-8 h-8" />

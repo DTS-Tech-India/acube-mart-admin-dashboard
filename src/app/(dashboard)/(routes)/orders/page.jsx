@@ -33,7 +33,7 @@ export default function Orders() {
 
     const modifiedData = useMemo(() => {
         
-        return orders?.data.map((order) => {
+        return orders?.data.map((order, index) => {
           return {
             id: order._id,
             orderId: order._id,
@@ -42,8 +42,9 @@ export default function Orders() {
             status: order?.status,
             image: order?.products[0]?.productId?.featuredImage?.url,
             product: order?.products.map((product) => product?.productId?.name),
-            payment: order?.transactionId?.paymentMode || "N/A",
+            payment: order?.transactionId?.[0]?.paymentMode || "N/A",
             customer: order?.userId?.name,
+            orderNumber: order?.orderNumber,
           }
         })
       }, [orders])
