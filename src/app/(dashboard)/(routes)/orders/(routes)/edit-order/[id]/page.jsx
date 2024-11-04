@@ -81,8 +81,8 @@ export default function OrderEdit({ params }) {
     //console.log(order)
     useEffect(() => {
         setStatus(order?.data.status)
-    }, [setStatus, order])
-   
+    }, [setStatus, order])    
+    
     const orderList = useMemo(() => {
         return order?.data.products.map((product) => {
             return {
@@ -169,7 +169,7 @@ export default function OrderEdit({ params }) {
                                     <CardHeader className="flex flex-row items-center justify-between">
                                         <div className="flex flex-col gap-1">
                                             <h2 className=" font-semibold">Order </h2>
-                                            <p className="text-sm">#{order?.data?.orderNunmber}</p>
+                                            <p className="text-sm">#{order?.data?.orderNumber}</p>
                                         </div>
                                         <span 
                                             className={cn(

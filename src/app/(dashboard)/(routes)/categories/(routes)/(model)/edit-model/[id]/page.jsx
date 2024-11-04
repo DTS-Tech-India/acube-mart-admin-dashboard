@@ -150,7 +150,7 @@ export default function EditModel({ params }) {
                         <CardContent className="flex flex-col gap-4">
                             <div>
                                 <Label htmlFor="status">Type</Label>
-                                <Select defaultValue={model.data.data.typeId._id} onValueChange={(value) => handleChangeType(value)} required>
+                                <Select defaultValue={model?.data?.data?.typeId?._id} onValueChange={(value) => handleChangeType(value)} required>
                                     <SelectTrigger>
                                     
                                         <SelectValue placeholder="Select type" />
@@ -165,7 +165,7 @@ export default function EditModel({ params }) {
                             </div>
                             <div>
                                 <Label htmlFor="brandId">Brand</Label>
-                                <Select defaultValue={model.data.data.brandId._id} onValueChange={(value) => handleChangeBrand(value)} required>
+                                <Select defaultValue={model?.data?.data?.brandId?._id} onValueChange={(value) => handleChangeBrand(value)} required>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select model" />
                                     </SelectTrigger>
