@@ -80,6 +80,7 @@ export default function Dashboard() {
         product: order.products.map((product) => product.productId?.name),
         payment: order?.transactionId?.paymentMode || "N/A",
         customer: order?.userId?.name,
+        orderNumber: order?.orderNumber,
       }
     })
   }, [ordersList])
