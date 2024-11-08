@@ -71,7 +71,7 @@ export default function AddSubCategory() {
 
     const handleAddCategory = (e) => {
         e.preventDefault();
-        if (!categoryData.name || !categoryData.typeId || !categoryData.categoryId || !categoryData.image) {
+        if (!categoryData.name || !categoryData.typeId || !categoryData.categoryId ) {
             toast.error("All fields are required");
             return;
         }

@@ -34,6 +34,7 @@ import { Label } from "@/components/ui/label";
 import { categoryColumns } from "./categories-columns";
 import { brandColumns } from "./brand-columns";
 import { modelColumns } from "./model-columns";
+import { isActive } from "@tiptap/core";
 export default function CategoriesPage() {
     const router = useRouter();
 
@@ -66,7 +67,8 @@ export default function CategoriesPage() {
             image: element?.mediaId?.url,
             added: element.createdAt,
             type: element?.typeId?.name,
-            category: element?.categoryId?.name
+            category: element?.categoryId?.name,
+            isActive: element?.isActive
           }
         })
       }, [data]);
@@ -80,6 +82,7 @@ export default function CategoriesPage() {
             image: category?.mediaId?.url,
             added: category.createdAt,
             type: category?.typeId?.name,
+            isActive: category?.isActive
           }
         })
       }, [category]);
@@ -92,7 +95,8 @@ export default function CategoriesPage() {
             name: brand?.name,
             type: brand?.typeId?.name,
             added: brand.createdAt,
-            image: brand?.mediaId?.url
+            image: brand?.mediaId?.url,
+            isActive: brand?.isActive,
           }
         })
       }, [brand]);
@@ -106,7 +110,8 @@ export default function CategoriesPage() {
             type: model?.typeId?.name,
             brand: model?.brandId?.name,
             added: model.createdAt,
-            image: model?.mediaId?.url
+            image: model?.mediaId?.url,
+            isActive: model?.isActive
           }
         })
       }, [model]);

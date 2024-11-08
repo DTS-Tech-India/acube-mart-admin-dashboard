@@ -2,7 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import axios from "axios";
 import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -86,6 +88,38 @@ export const modelColumns = [
             return (
                 <div suppressHydrationWarning>
                     {new Date(date).toLocaleDateString()}
+                </div>
+            )
+        }
+    },
+    {
+        accessorKey: "isActive",
+        header: "Active",
+        cell: ({ row }) => {
+            const isActive = row.getValue("isActive");
+            const handleToggleChange = () => {
+                // update category by category id
+                axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/model/update/${row.original.id}`, {
+                    isActive: !isActive,
+                })
+                .then((res) => {
+                    console.log(res);
+                    if (res.data.success) {
+                        toast.success(res.data.message);
+                        
+                    }
+                })
+                .catch((err) => {
+                    //console.log(err);
+                    toast.error(err.message);
+                })
+            }
+            return (
+                <div suppressHydrationWarning>
+                    <Switch
+                        checked={isActive}
+                        onCheckedChange={handleToggleChange}
+                    />
                 </div>
             )
         }

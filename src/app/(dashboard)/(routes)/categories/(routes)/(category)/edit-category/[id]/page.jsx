@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { getApiData } from "@/lib/get-api-data";
 import axios from "axios";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 export default function EditCategory({ params }) {
     const router = useRouter();
     const [categoryData, setCategoryData] = useState({});
@@ -68,6 +69,10 @@ export default function EditCategory({ params }) {
         setCategoryData({ ...categoryData, image: e.target.files[0] });
     }
 
+    const handleChangeIsActive = () => {
+        setCategoryData({ ...categoryData, isActive: !categoryData.isActive });
+    }
+console.log(categoryData);
     const handleEditCategory = (e) => {
         e.preventDefault();
         axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category/update/${params.id}`, categoryData)
@@ -219,6 +224,15 @@ export default function EditCategory({ params }) {
                                     <Label htmlFor="description">Description</Label>
                                     <Textarea name="description" defaultValue={category.data.data?.description} onChange={handleChange} placeholder="Type product description here..." />
                                 </div>
+                               {/*  <div className="flex items-center gap-4">
+                                    <Label htmlFor="isActive">Is Active</Label>
+                                    <Switch
+                                        name="isActive"
+                                        defaultValue={category.data.data?.isActive}
+                                        checked={categoryData.isActive}
+                                        onCheckedChange={handleChangeIsActive}
+                                    />
+                                </div> */}
                         </CardContent>
                     </Card>
                     
