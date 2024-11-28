@@ -467,6 +467,23 @@ const handleDeselectAllModels = () => {
         setVariantImage([]);
     }
 
+    const handleDeleteVariantImage = (variantId, imageId) => {
+
+        axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/${variantId}/image/delete/${imageId}`)
+        .then((res) => {
+            console.log(res);
+            if (res.data.success) {
+                //console.log(res.data.message);
+                toast.success(res.data.message);
+                refetchProduct();
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            toast.error(err.response.data.message);
+        })
+    }
+
     const handleDeleteVarient = (id) => {
 
         axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/delete/${id}`)
@@ -1030,7 +1047,8 @@ const handleDeselectAllModels = () => {
                                         {variant.image.length > 0 &&
                                             <div className="w-full flex gap-4">
                                                 {variant.image.map((image, index) => (
-                                                    <div key={index} className="w-full max-w-xs aspect-square rounded-sm bg-slate-200">
+                                                    <div key={image._id} className="w-full max-w-xs aspect-square rounded-sm relative bg-slate-200">
+                                                        <Button variant="ghost" onClick={() => handleDeleteVariantImage(variant._id, image._id)} className="absolute top-2 right-2 text-red-600 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
                                                         <Image src={image.url} alt="varientImage" width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                                     </div>
                                                 ))}

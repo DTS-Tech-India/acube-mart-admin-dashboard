@@ -31,7 +31,7 @@ export default function Products() {
     });
 
     const modifiedData = useMemo(() => {
-        return data?.data.map((product) => {
+        return data?.data?.map((product) => {
           return {
             id: product._id,
             slug: product?.slug,
@@ -70,6 +70,7 @@ export default function Products() {
                 <div className="flex items-center gap-2">
                     <Button variant="outline"><Upload className="w-8 h-8 p-2" /> Export</Button>
                     <Button onClick={() => {router.push("/products/add-product")}}>Add Products</Button> 
+                    <Button onClick={() => {router.push("/products/bulk-edit-products")}}>Bulk Edit Products</Button>
                 </div>
             </header>
             {isLoading ? (

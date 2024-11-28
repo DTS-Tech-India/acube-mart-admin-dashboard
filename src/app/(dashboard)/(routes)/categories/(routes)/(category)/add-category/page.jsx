@@ -72,7 +72,7 @@ export default function AddCategory() {
 
     const handleAddCategory = (e) => {
         e.preventDefault();
-        if (!categoryData.name || !categoryData.typeId || !categoryData.image) {
+        if (!categoryData.name || !categoryData.typeId) {
             toast.error("All fields are required");
             return;
         }
