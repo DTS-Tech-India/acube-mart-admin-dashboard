@@ -97,6 +97,11 @@ export default function Page({ params }) {
     });
     const [attributesUpdate, setAttributesUpdate] = useState([]);
     const [varientUpdate, setVarientUpdate] = useState({});
+    const [newVariantImages, setNewVariantImages] = useState({
+        images: [],
+        imagesUrls: [],
+        variantId: "",
+    });
    const {data: product, isLoading: isProductLoading, isError: isProductError, isSuccess, refetch: refetchProduct} = useQuery({
        queryKey: ["product"],
        queryFn: async() => await getApiDataByQuery(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/${params.id}`),
@@ -396,6 +401,17 @@ const handleDeselectAllModels = () => {
         )
     }
 
+    const handleNewVarientImageChange = (e, variantId) => {
+        setNewVariantImages({
+            ...newVariantImages,
+            images: e.target.files,
+            imagesUrls: Array.from(e.target.files).map((file) => {
+                return URL.createObjectURL(file);
+            }),
+            variantId: variantId
+        });
+    }
+
     const handleDescriptionChange = (html) => {
         //setProductData({ ...productData, description: html });
         setDescription(html);
@@ -414,9 +430,43 @@ const handleDeselectAllModels = () => {
         //console.log(Varient.description);
     }
 
+    const handleUploadNewVariantImages = (variantId) => {
+        //console.log(newVariantImages, variantId, params.id);
+        if (newVariantImages.images.length === 0) {
+            toast.error("Please select images");
+            return;
+        }
+        
+        for (let i = 0; i < newVariantImages.images.length; i++) {
+            const formData = new FormData();
+            formData.append("image", newVariantImages.images[i], newVariantImages.images[i].name);
+            formData.append("variantId", variantId);
+            formData.append("productId", params.id);
+        
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/add/variant`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((res) => {
+                //console.log(res);
+                if (res.data.success) {
+                    //console.log(res.data.message);
+                    toast.success(res.data.message);
+                    refetchProduct();
+                }
+            })
+            .catch((err) => {
+                //console.log(err);
+                toast.error(err.response.data.message);
+            })
+        }   
+       setNewVariantImages({ images: [], imagesUrls: [], variantId: "" });
+    }
+
     const addNewVarient = () => {
         if (Varient.name === "" || Varient.image === "" || Varient.mrp === "" || Varient.sp === "" || Varient.deliveryCharges === "" || Varient.codCharges === "" || Varient.discount === "" || Varient.variantAttributes.length === 0) {
-            toast.error("Please fill variant name and value");
+            toast.error("Please fill variant name and values");
             return;
         }
         const variantData = {
@@ -460,7 +510,7 @@ const handleDeselectAllModels = () => {
                         //console.log(err);
                         toast.error(err.response.data.message);
                     })
-                }
+                }  
             }
         })
         setVarient({ name: "", value: "", mrp: "", sp: "", deliveryCharges: "", codCharges: "", discount: "", video: "", image: [] , variantAttributes: [], description: "", sku: "", barcode: "", stock: "" });
@@ -471,7 +521,7 @@ const handleDeselectAllModels = () => {
 
         axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/${variantId}/image/delete/${imageId}`)
         .then((res) => {
-            console.log(res);
+            //console.log(res);
             if (res.data.success) {
                 //console.log(res.data.message);
                 toast.success(res.data.message);
@@ -479,7 +529,7 @@ const handleDeselectAllModels = () => {
             }
         })
         .catch((err) => {
-            console.log(err);
+            //console.log(err);
             toast.error(err.response.data.message);
         })
     }
@@ -1045,6 +1095,25 @@ const handleDeselectAllModels = () => {
                                             </div>
                                         ))}
                                         {variant.image.length > 0 &&
+                                        <div className="flex flex-col gap-4 w-full">
+                                            <Input 
+                                                name="newVariantImages"
+                                                type="file"
+                                                multiple
+                                                onChange={(e) => handleNewVarientImageChange(e, variant._id)}
+                                            />
+                                            {(newVariantImages.imagesUrls.length > 0 && newVariantImages.variantId === variant._id) && (
+                                                <>
+                                                    <div className="flex gap-4">
+                                                        {newVariantImages.imagesUrls.map((image) => (
+                                                            <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
+                                                                <Image src={image} alt={"newVarientImage"} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    <Button onClick={() => handleUploadNewVariantImages(variant._id)}>Upload New Images</Button>
+                                                </>
+                                            )}
                                             <div className="w-full flex gap-4">
                                                 {variant.image.map((image, index) => (
                                                     <div key={image._id} className="w-full max-w-xs aspect-square rounded-sm relative bg-slate-200">
@@ -1053,6 +1122,7 @@ const handleDeselectAllModels = () => {
                                                     </div>
                                                 ))}
                                             </div>
+                                        </div>
                                         }
                                     <div className="flex gap-4">
                                         <div className="w-full">
