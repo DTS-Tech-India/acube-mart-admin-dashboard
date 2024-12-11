@@ -95,7 +95,7 @@ export default function Dashboard() {
   const quickCards = [
     {
       title: "Total Revenue",
-      value: modifiedData?.reduce((acc, curr) => acc + curr.total, 0) || 0,
+      value: (modifiedData?.reduce((acc, curr) => acc + curr.total, 0)).toFixed(2) || 0,
       icon: ReceiptIndianRupee,
       percentage: 36,
       color: "text-green-800",
