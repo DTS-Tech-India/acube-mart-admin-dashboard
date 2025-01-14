@@ -95,7 +95,7 @@ export default function Dashboard() {
   const quickCards = [
     {
       title: "Total Revenue",
-      value: (modifiedData?.reduce((acc, curr) => acc + curr.total, 0)).toFixed(2) || 0,
+      value: modifiedData ? (modifiedData.reduce((acc, curr) => acc + curr.total, 0)).toFixed(2) : 0,
       icon: ReceiptIndianRupee,
       percentage: 36,
       color: "text-green-800",
@@ -150,7 +150,7 @@ export default function Dashboard() {
       </header>
       {/* Quick Details Cards */}
       <div className="w-full flex flex-wrap justify-between gap-4">
-      {quickCards.map((card) => (
+      {modifiedData && quickCards.map((card) => (
         <Card key={card.title} className="aspect-[16/9] w-full max-w-64">
           <CardHeader>
             <card.icon className={cn("w-10 h-10 p-2 rounded-full", card.bg, card.color)} />
