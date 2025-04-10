@@ -13,7 +13,7 @@ export async function middleware(request) {
     
     //if(!session) return NextResponse.redirect(new URL('/signin', request.url))
     const session = cookies().get('session')
-    //console.log(session)
+    //console.log(session.value)
 
     //const role = await session.admin.role
     //console.log(role);
