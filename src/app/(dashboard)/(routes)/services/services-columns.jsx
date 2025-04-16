@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import axios from "axios";
 import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,7 +22,7 @@ export const columns = [
             />
           ),
           cell: ({ row }) => {
-            const user = row.original;
+            const service = row.original;
             return (
               <Checkbox
               checked={row.getIsSelected()}
@@ -69,19 +70,16 @@ export const columns = [
         accessorKey: "action",
         header: "Action",
         cell: ({ row }) => {
-            const user = row.original;
-            const handleDeleteUser = () => {
-                // delete user by user id
-                console.log(user.id);
+            const service = row.original;
+            const handleDeleteService = () => {
+                // delete service by service id
+                //console.log(service.id);
 
-                // Delete user from database
-                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/delete/${user.id}`, {
-                    method: "DELETE",
-                })
-                .then((res) => res.json())
-                .then((data) => {
+                // Delete service from database
+                axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/service/delete/${service.id}`)
+                .then((res) => {
                     //console.log(data);
-                    toast.success(data.message);
+                    toast.success(res.data.message);
                 })
                 .catch((err) => {
                     //console.log(err);
@@ -98,7 +96,7 @@ export const columns = [
                         <Eye className="w-6 h-6 p-0.5" />
                 </Link> */}
                 <Link 
-                    href={`/services/edit-service/${user.id}`} 
+                    href={`/services/edit-service/${service.id}`} 
                     variant="ghost" 
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
                 >
@@ -107,7 +105,7 @@ export const columns = [
                 <Button 
                     variant="ghost"
                     className="p-2 hover:text-red-500 hover:bg-muted rounded-md"
-                    onClick={handleDeleteUser}
+                    onClick={handleDeleteService}
                     >
                         <Trash2 className="w-6 h-6 p-0.5" />
                 </Button>
