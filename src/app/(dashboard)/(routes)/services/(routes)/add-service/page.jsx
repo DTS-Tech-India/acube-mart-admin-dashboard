@@ -25,12 +25,15 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import dynamic from "next/dynamic";
+import 'react-quill/dist/quill.snow.css';
 
 export default function AddAdmin() {
     const router = useRouter();
+    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -41,6 +44,11 @@ export default function AddAdmin() {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
+    }
+
+    const handleDescriptionChange = (value) => {
+        setFormData({ ...formData, description: value });
+        //console.log(productData.description);
     }
 
     const handleAddService = (e) => {
@@ -109,7 +117,8 @@ export default function AddAdmin() {
                                 </div>
                                 <div>
                                     <Label htmlFor="description">Description</Label>
-                                    <Textarea name="description" onChange={handleChange} placeholder="Type service description here..." required />
+                                    {/* <Textarea name="description" onChange={handleChange} placeholder="Type service description here..." required /> */}
+                                    <ReactQuill theme="snow" value={formData.description} onChange={handleDescriptionChange} placeholder="Type service description here..." />
                                 </div>
                         </CardContent>
                     </Card>

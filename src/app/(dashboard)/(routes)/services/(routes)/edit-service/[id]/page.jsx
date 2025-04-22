@@ -25,14 +25,16 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
+import 'react-quill/dist/quill.snow.css';
 
 export default function EditService({ params }) {
     const router = useRouter();
-
+    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
     const [formData, setFormData] = useState({
         name: "",
         price: "",
@@ -54,6 +56,11 @@ export default function EditService({ params }) {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
+    }
+
+    const handleDescriptionChange = (value) => {
+        setFormData({ ...formData, description: value });
+        //console.log(productData.description);
     }
 
     const handleEditService = (e) => {
@@ -122,7 +129,7 @@ export default function EditService({ params }) {
                                 </div>
                                 <div>
                                     <Label htmlFor="description">Description</Label>
-                                    <Textarea name="description" value={formData.description} onChange={handleChange} placeholder="Type service description here..." required />
+                                    <ReactQuill theme="snow" value={formData.description} onChange={handleDescriptionChange} placeholder="Type service description here..." />
                                 </div>
                         </CardContent>
                     </Card>
