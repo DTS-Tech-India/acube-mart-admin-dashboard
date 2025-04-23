@@ -48,6 +48,7 @@ export default function Appointment() {
                     pendingPayment: appointment?.pendingPayment,
                     status: appointment?.status,
                     transactionId: appointment?.transactionId,
+                    paymentMode: appointment?.paymentMode,
                 }
             })
         }),

@@ -51,6 +51,7 @@ export default function AddAdmin({ params }) {
         startTime: "",
         endTime: "",
         transactionId: "",
+        paymentMode: "",
     })
     const [loading, setLoading] = useState(false);
 
@@ -202,6 +203,10 @@ export default function AddAdmin({ params }) {
                                     <Label htmlFor="name">Transaction ID</Label>
                                     <Input name="name" type="text" value={appointment.transactionId}  placeholder="Type transaction ID here..." readOnly />
                                 </div> 
+                                <div>
+                                    <Label htmlFor="name">Payment Mode</Label>
+                                    <Input name="name" type="text" value={appointment.paymentMode}  placeholder="Type payment mode here..." readOnly />
+                                </div>
                             </form>
                         </CardContent>
                     </Card>

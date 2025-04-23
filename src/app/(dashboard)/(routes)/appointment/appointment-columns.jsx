@@ -60,6 +60,10 @@ export const columns = [
         header: "Price",
     },
     {
+        accessorKey: "paymentMode",
+        header: "Payment Mode",
+    },
+    {
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => {
