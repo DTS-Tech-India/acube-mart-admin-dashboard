@@ -145,6 +145,8 @@ export default function AddAdmin({ params }) {
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="pending">Pending</SelectItem>
+                                            <SelectItem value="called">Called</SelectItem>
+                                            <SelectItem value="confirmed">Confirmed</SelectItem>
                                             <SelectItem value="booked">Booked</SelectItem>
                                             <SelectItem value="completed">Completed</SelectItem>
                                             <SelectItem value="cancelled">Cancelled</SelectItem>
