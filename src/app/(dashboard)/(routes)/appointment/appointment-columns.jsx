@@ -72,11 +72,12 @@ export const columns = [
                 <div className={cn(
                     "font-medium p-1 px-3 flex items-center justify-center rounded-full",
                      status === "completed" && "text-green-600 bg-green-100",
+                     status === "called" && "text-sky-600 bg-sky-100",
+                     status === "confirmed" && "text-orange-600 bg-orange-100",
                      status === "booked" &&  "text-indigo-600 bg-indigo-100",
-                     //status === "shipped" && "text-sky-600 bg-sky-100",
                      status === "pending" &&  "text-gray-600 bg-gray-100",
                      status === "cancelled" && "text-red-600 bg-red-100",
-                     //status === "processing" && "text-orange-600 bg-orange-100",
+                     
                      )}>
                     {status}
                 </div>

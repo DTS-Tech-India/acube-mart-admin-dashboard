@@ -70,7 +70,7 @@ export default function CustomerDetails({ params }) {
     if(isErrorOrders) {
         return <div>Error while fetching orders</div>
     }
-    console.log(orders)
+    //console.log(orders)
     //console.log(customer)
     const quickCards = [
         {
