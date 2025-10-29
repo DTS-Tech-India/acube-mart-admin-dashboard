@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { useConfirm } from "@/lib/confirm-provider";
 import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -128,9 +129,13 @@ export const columns = [
         header: "Action",
         cell: ({ row }) => {
             const order = row.original;
-            const handleDeleteOrder = () => {
+            const confirm = useConfirm();
+            const handleDeleteOrder = async () => {
                 // delete order by order id
                 console.log(order.id);
+
+                const confirmed = await confirm("Are you sure you want to delete this order? This action is permanent and cannot be undone.")
+                if (!confirmed) return;
 
                 // Delete order from database
                 fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/order/delete/${order.id}`, {

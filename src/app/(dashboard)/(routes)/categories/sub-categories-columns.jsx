@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { useConfirm } from "@/lib/confirm-provider";
 import axios from "axios";
 import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -129,9 +130,13 @@ export const elementColumns = [
         header: "Action",
         cell: ({ row }) => {
             const category = row.original;
-            const handleDeleteCategory = () => {
+            const confirm = useConfirm();
+            const handleDeleteCategory = async () => {
                 // delete category by category id
                 //console.log(category.id);
+
+                const confirmed = await confirm("Are you sure you want to delete this sub-category? This action is permanent and cannot be undone.")
+                if (!confirmed) return;
 
                 // Delete category from database
                 fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/element/delete/${category.id}`, {

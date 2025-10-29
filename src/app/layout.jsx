@@ -3,6 +3,7 @@ import "./globals.css";
 import Providers from "@/lib/query-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { UserProvider } from "@/lib/user-contex";
+import { ConfirmProvider } from "@/lib/confirm-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,8 +18,10 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <UserProvider>
           <Providers>
-            {children}
-            <Toaster />
+            <ConfirmProvider>
+              {children}
+              <Toaster />
+            </ConfirmProvider>
           </Providers>
         </UserProvider>
       </body>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { useConfirm } from "@/lib/confirm-provider";
 import axios from "axios";
 import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -128,9 +129,13 @@ export const brandColumns = [
         header: "Action",
         cell: ({ row }) => {
             const brand = row.original;
-            const handleDeleteBrand = () => {
+            const confirm = useConfirm();
+            const handleDeleteBrand = async () => {
                 // delete brand by brand id
                 //console.log(brand.id);
+
+                const confirmed = await confirm("Are you sure you want to delete this brand? This action is permanent and cannot be undone.")
+                if (!confirmed) return;
 
                 // Delete brand from database
                 fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/brand/delete/${brand.id}`, {

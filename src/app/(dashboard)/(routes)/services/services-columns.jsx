@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { useConfirm } from "@/lib/confirm-provider";
 import axios from "axios";
 import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -71,9 +72,13 @@ export const columns = [
         header: "Action",
         cell: ({ row }) => {
             const service = row.original;
-            const handleDeleteService = () => {
+            const confirm = useConfirm();
+            const handleDeleteService = async () => {
                 // delete service by service id
                 //console.log(service.id);
+
+                const confirmed = await confirm("Are you sure you want to delete this service? This action is permanent and cannot be undone.")
+                if (!confirmed) return;
 
                 // Delete service from database
                 axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/service/delete/${service.id}`)
