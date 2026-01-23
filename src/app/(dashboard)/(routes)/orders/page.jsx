@@ -34,14 +34,21 @@ export default function Orders() {
     const modifiedData = useMemo(() => {
         
         return orders?.data.map((order, index) => {
+          const firstProduct = order?.products[0];
+          const variantImage = firstProduct?.variantId?.variantAttributes?.[0]?.image?.[0]?.url; // Assuming variant has images
+          // Based on the backend code provided: 
+          // .populate({ path: "products.variantId", select: "name mrp sp variantAttributes _id" })
+          // We might need to check how Variant image is stored. Looking at products/edit-product, Variant has images.
+          
           return {
             id: order._id,
             orderId: order._id,
             total: order?.total,
             date: order.createdAt,
             status: order?.status,
-            image: order?.products[0]?.productId?.featuredImage?.url,
+            image: firstProduct?.variantId?.image?.[0]?.url || firstProduct?.productId?.featuredImage?.url,
             product: order?.products.map((product) => product?.productId?.name),
+            variant: order?.products.map((product) => product?.variantId?.name).filter(Boolean).join(", ") || "N/A",
             payment: order?.transactionId?.[0]?.paymentMode || "N/A",
             customer: order?.userId?.name,
             orderNumber: order?.orderNumber,

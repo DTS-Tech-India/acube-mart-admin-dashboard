@@ -88,14 +88,16 @@ export default function OrderEdit({ params }) {
             return {
                 id: product.productId._id,
                 name: product.productId.name,
-                imageUrl: product.productId.featuredImage.url,
-                sku: product.productId.sku,
-                price: product.productId.price,
-                sp: product.productId.sp,
+                variantName: product.variantId?.name,
+                variantAttributes: product.variantId?.variantAttributes,
+                imageUrl: product.variantId?.image?.[0]?.url || product.productId.featuredImage.url,
+                sku: product.variantId?.sku || product.productId.sku,
+                price: product.variantId?.mrp || product.productId.price,
+                sp: product.variantId?.sp || product.productId.sp,
                 quantity: product.quantity,
-                total: product.productId.price * product.quantity,
-                deliveryCharges: product.productId.deliveryCharges,
-                codCharges: product.productId.codCharges,
+                total: (product.variantId?.sp || product.productId.sp) * product.quantity,
+                deliveryCharges: product.variantId?.deliveryCharges || product.productId.deliveryCharges,
+                codCharges: product.variantId?.codCharges || product.productId.codCharges,
             }
         })
     } , [order])
@@ -259,40 +261,31 @@ export default function OrderEdit({ params }) {
                                 </Card>
                                 <Card className="w-full">
                                     <CardHeader className="flex flex-row items-center justify-between">
-                                        <h2 className=" font-semibold">Document</h2>
+                                        <h2 className=" font-semibold">Variant Details</h2>
                                         
                                     </CardHeader>
                                     <CardContent className="flex flex-col gap-2 text-sm">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-4">
-                                                <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
-                                                    <ScrollText className="w-8 h-8" />
-                                                </div>
-                                                
-                                                <p>Invoice</p>
+                                        {order?.data.products.map((product, idx) => (
+                                            <div key={idx} className="flex flex-col gap-1 border-b pb-2 last:border-0">
+                                                <p className="font-medium text-indigo-600">{product.productId.name}</p>
+                                                {product.variantId ? (
+                                                    <>
+                                                        <div className="flex items-center justify-between">
+                                                            <p className="text-muted-foreground">Variant:</p>
+                                                            <p>{product.variantId.name}</p>
+                                                        </div>
+                                                        {product.variantId.variantAttributes?.map((attr, aIdx) => (
+                                                            <div key={aIdx} className="flex items-center justify-between">
+                                                                <p className="text-muted-foreground">{attr.name}:</p>
+                                                                <p>{attr.value}</p>
+                                                            </div>
+                                                        ))}
+                                                    </>
+                                                ) : (
+                                                    <p className="text-muted-foreground italic">No variant selected</p>
+                                                )}
                                             </div>
-                                            <p>INV-32547</p>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-4">
-                                                <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
-                                                    <Truck className="w-8 h-8" />
-                                                </div>
-                                                
-                                                <p>Shipping</p>
-                                            </div>
-                                            <p>SHP-2011REG</p>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-4">
-                                                <div className="flex items-center justify-center w-10 h-10 p-2 bg-muted rounded-full">
-                                                    <BadgeCheckIcon className="w-8 h-8" />
-                                                </div>
-                                                
-                                                <p>Rewards</p>
-                                            </div>
-                                            <p>480 points</p>
-                                        </div>
+                                        ))}
                                     </CardContent>
                                 </Card>
                         </div>   
@@ -316,24 +309,36 @@ export default function OrderEdit({ params }) {
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
-                                                {orderList.map((order) => (
-                                                    <TableRow key={order.id}>
+                                                {orderList.map((orderItem) => (
+                                                    <TableRow key={orderItem.id}>
                                                         <TableCell>
                                                             <div className="w-10 h-10">
                                                                 <Image
-                                                                    src={order?.imageUrl}
-                                                                    alt={order.name}
+                                                                    src={orderItem?.imageUrl}
+                                                                    alt={orderItem.name}
                                                                     width={200}
                                                                     height={200}
                                                                     className="rounded-md w-full h-full object-cover"
                                                                 />
                                                             </div>
                                                         </TableCell>
-                                                        <TableCell>{order.name}</TableCell>
-                                                        <TableCell>{order.sku}</TableCell>
-                                                        <TableCell>{order.quantity}</TableCell>
-                                                        <TableCell>₹{order.sp}</TableCell>
-                                                        <TableCell>₹{order.quantity * order.sp}</TableCell>
+                                                        <TableCell>
+                                                            <div className="flex flex-col">
+                                                                <span>{orderItem.name}</span>
+                                                                {orderItem.variantName && (
+                                                                    <span className="text-xs text-indigo-600 font-medium">
+                                                                        Variant: {orderItem.variantName}
+                                                                        {orderItem.variantAttributes?.length > 0 && (
+                                                                            <span> ({orderItem.variantAttributes.map(a => `${a.name}: ${a.value}`).join(', ')})</span>
+                                                                        )}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>{orderItem.sku}</TableCell>
+                                                        <TableCell>{orderItem.quantity}</TableCell>
+                                                        <TableCell>₹{orderItem.sp}</TableCell>
+                                                        <TableCell>₹{orderItem.quantity * orderItem.sp}</TableCell>
                                                     </TableRow>
                                                 ))}
                                             </TableBody>

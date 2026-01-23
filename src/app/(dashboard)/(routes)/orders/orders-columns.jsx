@@ -55,7 +55,7 @@ export const columns = [
             return (
                 <div className="w-10 h-10">
                     <Image
-                        src={image}
+                        src={image || "/placeholder.png"}
                         alt="product image"
                         width={200}
                         height={200}
@@ -68,6 +68,18 @@ export const columns = [
     {
         accessorKey: "product",
         header: "Product",
+    },
+    {
+        accessorKey: "variant",
+        header: "Variant",
+        cell: ({ row }) => {
+            const variant = row.getValue("variant");
+            return (
+                <div className="font-medium">
+                    {variant || "Default"}
+                </div>
+            )
+        }
     },
     {
         accessorKey: "date",
