@@ -1,220 +1,264 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useQuery } from "@tanstack/react-query"
+import axios from "axios"
+import { Check, Plus, Search, X } from "lucide-react"
+import { toast } from "sonner"
 
 import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-  } from "@/components/ui/breadcrumb"
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-
-import { Plus, X } from "lucide-react"
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { getApiData, products } from '@/lib/get-api-data'
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from '@/components/ui/skeleton'
+import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
-  import Multiselect from "multiselect-react-dropdown";
-import { toast } from 'sonner'
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { getApiData, products } from "@/lib/get-api-data"
+
+const relationshipOptions = {
+  category: { label: "Category", source: "categories" },
+  element: { label: "Sub Category", source: "elements" },
+  brand: { label: "Brand", source: "brands" },
+  model: { label: "Model", source: "models" },
+}
 
 export default function BulkEditProducts() {
-    const router = useRouter()
-    const [data, setData] = useState({
-        categoryType: "element",
-        category: "",
-        products: [],
+  const router = useRouter()
+  const [relationshipType, setRelationshipType] = useState("element")
+  const [relationshipId, setRelationshipId] = useState("")
+  const [selectedProducts, setSelectedProducts] = useState([])
+  const [searchQuery, setSearchQuery] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const { data: apiData, isLoading: isApiDataLoading, isError: isApiDataError } = useQuery({
+    queryKey: ["apiData"],
+    queryFn: getApiData,
+    gcTime: 1000 * 60 * 60 * 2,
+  })
+
+  const { data: productsData = [], isLoading: isProductsLoading, isError: isProductsError } = useQuery({
+    queryKey: ["products"],
+    queryFn: products,
+  })
+
+  const filteredProducts = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
+    if (!query) return productsData
+    return productsData.filter((product) =>
+      [product.name, product.sku, product.slug]
+        .filter(Boolean)
+        .some((value) => value.toLowerCase().includes(query))
+    )
+  }, [productsData, searchQuery])
+
+  const selectedSet = useMemo(() => new Set(selectedProducts), [selectedProducts])
+  const currentRelationship = relationshipOptions[relationshipType]
+  const availableRelationships = apiData?.[currentRelationship.source] || []
+  const allVisibleSelected =
+    filteredProducts.length > 0 && filteredProducts.every((product) => selectedSet.has(product._id))
+
+  if (isProductsError || isApiDataError) {
+    return <div>An error occurred while fetching product data.</div>
+  }
+
+  const toggleProduct = (productId) => {
+    setSelectedProducts((current) =>
+      current.includes(productId)
+        ? current.filter((id) => id !== productId)
+        : [...current, productId]
+    )
+  }
+
+  const toggleVisibleProducts = () => {
+    const visibleIds = filteredProducts.map((product) => product._id)
+    setSelectedProducts((current) => {
+      if (allVisibleSelected) {
+        return current.filter((id) => !visibleIds.includes(id))
+      }
+      return Array.from(new Set([...current, ...visibleIds]))
     })
+  }
 
-    const { data: apiData, isLoading: isApiDataLoading, isError: isApiDataError } = useQuery({
-        queryKey: ["apiData"],
-        queryFn: async() => await getApiData(),
-        gcTime:  1000 * 60 * 60 * 2, //120 minutes
-    })
-
-    const { data: productsData, isLoading: isProductsLoading, isError: isProductsError } = useQuery({
-        queryKey: ["products"],
-        queryFn: async() => await products(),
-    })
-
-    if (isProductsError || isApiDataError) return <div>An error has occurred while fetching products data.</div>;
-
-    const handleChange = (e) => {
-        setData({
-            ...data,
-            [e.target.name]: e.target.value
-        })
+  const handleBulkEditProducts = async () => {
+    if (!relationshipId || selectedProducts.length === 0) {
+      toast.error("Select a value and at least one product")
+      return
     }
 
-    const handleSelectCategory = (value) => {
-        setData({
-            ...data,
-            categoryType: value
-        });
-    }
-    const handleSelectCategoryToAdd = (value) => {
-        setData({
-            ...data,
-            category: value
-        });
-    }
-
-    const handleSelectAllProducts = () => {
-        setData({
-            ...data,
-            products: productsData.map((product) => product._id)
-        })
-    }
-
-    const handleDeselectAllProducts = () => {
-        setData({
-            ...data,
-            products: []
-        })
-    }
-
-    const handleAddProducts = (list, value) => {
-        setData({
-            ...data,
-            products: [...data.products, value._id]
-        })
-    }
-
-    const handleRemoveProducts = (list, value) => {
-        setData({
-            ...data,
-            products: list.map((item) => item)
-        })
-    }
-
-    const handleBulkEditProducts = () => {
-        //console.log(data)
-
-        if( !data.categoryType || data.category === "" || data.products.length < 1) {
-            return toast.error("Please select category and products")
+    setIsSubmitting(true)
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/bulk/edit`,
+        {
+          categoryType: relationshipType,
+          category: relationshipId,
+          products: selectedProducts,
         }
-        toast.success("Bulk edit started");
-       axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/bulk/edit`, data)
-       .then((res) => {
-           console.log(res);
-           if (res.data.success) {
-               toast.success(res.data.message);
-               router.push("/products")
-           }
-       })
-       .catch((err) => {
-           console.log(err);
-           toast.error(err.message);
-       }) 
+      )
+      toast.success(response.data.message || "Products updated successfully")
+      router.push("/products")
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Unable to update the selected products")
+    } finally {
+      setIsSubmitting(false)
     }
+  }
+
   return (
-    <div className="w-full h-full flex flex-col gap-4">
-            <h1 className="text-2xl font-semi">Bulk Edit Products</h1>
-            <div className="flex items-center justify-between">
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                                <Link href="/">Dashboard</Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                                <Link href="/products">Products</Link>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>
-                                Bulk Edit Products
-                            </BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={() => {router.push("/product")}}><X className="w-8 h-8 p-2" /> Cancel</Button>
-                    <Button onClick={handleBulkEditProducts} ><Plus className="w-8 h-8 p-2" /> Add</Button>
-                </div>
-            </div>
-            {(isProductsLoading || isApiDataLoading) ? (
-                <Skeleton className="h-96 w-full aspect-auto" />
-                ) : (
-                <div className='w-full h-full flex flex-col gap-4'>
-                    <Card className="w-full h-full">
-                        <CardHeader className="font-semibold">
-                            Bulk Edit Products Information 
-                        </CardHeader>
-                        <CardContent className="flex flex-col gap-4">
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-2">
-                                <Label htmlFor="merchantId" className="w-full max-w-xs">Select Category Type</Label>
-                                <Select value={data.categoryType} onValueChange={(value) => handleSelectCategory(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select Category Type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="category">Category</SelectItem>
-                                        <SelectItem value="element">Sub Category</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-2">
-                                <Label htmlFor="merchantId" className="w-full max-w-xs">Select Category to add</Label>
-                                <Select value={data.category} onValueChange={(value) => handleSelectCategoryToAdd(value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select Category to add" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {data.categoryType === "category" ? (apiData?.categories.map((category) => {
-                                            return (
-                                                <SelectItem key={category._id} value={category._id}>{category.name}</SelectItem>
-                                            )
-                                        })) : (apiData?.elements.map((element) => {
-                                            return (
-                                                <SelectItem key={element._id} value={element._id}>{element.name}</SelectItem>
-                                            )
-                                        }))}
-                                        {/* <SelectItem value="category">Category</SelectItem>
-                                        <SelectItem value="element">Sub Category</SelectItem> */}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="flex flex-col items-center justify-between gap-2 w-full">
-                                <Label htmlFor="status" className="w-full">Select Products to add category</Label>
-                                {productsData?.length > 0 &&
-                                <Multiselect 
-                                    options={productsData}
-                                    selectedValues={data?.products}
-                                    displayValue="name"
-                                    onSelect={handleAddProducts}
-                                    onRemove={handleRemoveProducts}
-                                    placeholder="Select Products to add category"
-                                    showCheckbox
-                                    showArrow
-                                    avoidHighlightFirstOption
-    
-                                /> }
-                                <div className="flex items-center justify-between gap-4">
-                                    <Button variant="ghost" onClick={handleSelectAllProducts}>Select All</Button>
-                                    <Button variant="ghost" onClick={handleDeselectAllProducts}>Deselect All</Button>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>   
-                </div>
-            )}
+    <div className="flex h-full w-full flex-col gap-4">
+      <h1 className="text-2xl font-semibold">Bulk Edit Products</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem><Link href="/">Dashboard</Link></BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem><Link href="/products">Products</Link></BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem><BreadcrumbPage>Bulk Edit Products</BreadcrumbPage></BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => router.push("/products")}>
+            <X className="mr-2 h-4 w-4" /> Cancel
+          </Button>
+          <Button onClick={handleBulkEditProducts} disabled={isSubmitting}>
+            {isSubmitting ? <Check className="mr-2 h-4 w-4" /> : <Plus className="mr-2 h-4 w-4" />}
+            {isSubmitting ? "Updating..." : `Update ${selectedProducts.length || ""} Products`}
+          </Button>
         </div>
+      </div>
+
+      {isProductsLoading || isApiDataLoading ? (
+        <Skeleton className="h-96 w-full" />
+      ) : (
+        <Card className="w-full">
+          <CardHeader className="font-semibold">Assign product relationships</CardHeader>
+          <CardContent className="space-y-5">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Relationship type</Label>
+                <Select
+                  value={relationshipType}
+                  onValueChange={(value) => {
+                    setRelationshipType(value)
+                    setRelationshipId("")
+                  }}
+                >
+                  <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(relationshipOptions).map(([value, option]) => (
+                      <SelectItem key={value} value={value}>{option.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>{currentRelationship.label} to assign</Label>
+                <Select value={relationshipId} onValueChange={setRelationshipId}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={`Select ${currentRelationship.label.toLowerCase()}`} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableRelationships.map((item) => (
+                      <SelectItem key={item._id} value={item._id}>{item.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="font-medium">Choose products</p>
+                <p className="text-sm text-muted-foreground">
+                  {selectedProducts.length} selected out of {productsData.length}
+                </p>
+              </div>
+              <div className="relative w-full max-w-sm">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Search name, SKU, or slug"
+                  className="pl-9"
+                />
+              </div>
+            </div>
+
+            <div className="max-h-[520px] overflow-auto rounded-md border">
+              <Table>
+                <TableHeader className="sticky top-0 z-10 bg-background">
+                  <TableRow>
+                    <TableHead className="w-12">
+                      <Checkbox checked={allVisibleSelected} onCheckedChange={toggleVisibleProducts} />
+                    </TableHead>
+                    <TableHead className="w-16">Image</TableHead>
+                    <TableHead>Product</TableHead>
+                    <TableHead>SKU</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredProducts.map((product) => (
+                    <TableRow
+                      key={product._id}
+                      data-state={selectedSet.has(product._id) ? "selected" : undefined}
+                      className="cursor-pointer"
+                      onClick={() => toggleProduct(product._id)}
+                    >
+                      <TableCell onClick={(event) => event.stopPropagation()}>
+                        <Checkbox
+                          checked={selectedSet.has(product._id)}
+                          onCheckedChange={() => toggleProduct(product._id)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {product.featuredImage?.url ? (
+                          <img src={product.featuredImage.url} alt="" className="h-10 w-10 rounded object-contain" />
+                        ) : (
+                          <div className="h-10 w-10 rounded bg-muted" />
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <p className="max-w-2xl font-medium">{product.name}</p>
+                        <p className="text-xs text-muted-foreground">{product.variants?.length || 0} variants</p>
+                      </TableCell>
+                      <TableCell>{product.sku || "-"}</TableCell>
+                      <TableCell className="capitalize">{product.status || "-"}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              {filteredProducts.length === 0 && (
+                <p className="p-8 text-center text-sm text-muted-foreground">No products match this search.</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   )
 }

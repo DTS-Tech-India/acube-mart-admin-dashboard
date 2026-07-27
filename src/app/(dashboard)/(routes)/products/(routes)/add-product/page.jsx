@@ -27,7 +27,7 @@ import {
     AccordionItem,
     AccordionTrigger,
   } from "@/components/ui/accordion"
-import { ImageIcon, Upload, X } from "lucide-react";
+import { GripVertical, ImageIcon, Upload, X } from "lucide-react";
 import { 
     Card, 
     CardContent, 
@@ -51,6 +51,13 @@ import 'react-quill/dist/quill.snow.css';
 import Multiselect from 'multiselect-react-dropdown';
 import { Skeleton } from "@/components/ui/skeleton";
 //import TiptapEditor from "@/components/tiptap";
+
+const moveArrayItem = (items, fromIndex, toIndex) => {
+    const reordered = [...items];
+    const [movedItem] = reordered.splice(fromIndex, 1);
+    reordered.splice(toIndex, 0, movedItem);
+    return reordered;
+};
 
 export default function AddProduct() {
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
@@ -182,15 +189,25 @@ export default function AddProduct() {
     }
 
     const handleImagesChange = (e) => {
-        setProductData({ ...productData, images: e.target.files });
+        const selectedFiles = Array.from(e.target.files || []);
+        setProductData({ ...productData, images: selectedFiles });
         //console.log(productData.images);
         //Set Images url array
         setImages(
-            Array.from(e.target.files).map((file) => {
+            selectedFiles.map((file) => {
                 return URL.createObjectURL(file);
             })
         )
     }
+
+    const handleReorderProductImages = (fromIndex, toIndex) => {
+        if (fromIndex === toIndex) return;
+        setImages((current) => moveArrayItem(current, fromIndex, toIndex));
+        setProductData((current) => ({
+            ...current,
+            images: moveArrayItem(current.images, fromIndex, toIndex),
+        }));
+    };
 
     const handleChangeFeaturedImage = (e) => {
         setProductData({ ...productData, image: e.target.files[0] });
@@ -297,14 +314,24 @@ export default function AddProduct() {
     }
 
     const handleVarientImageChange = (e) => {
-        setVarient({ ...Varient, image: e.target.files});
+        const selectedFiles = Array.from(e.target.files || []);
+        setVarient({ ...Varient, image: selectedFiles});
         //console.log(Varient);
         setVariantImage(
-            Array.from(e.target.files).map((file) => {
+            selectedFiles.map((file) => {
                 return URL.createObjectURL(file);
             })
         )
     }
+
+    const handleReorderVariantImages = (fromIndex, toIndex) => {
+        if (fromIndex === toIndex) return;
+        setVariantImage((current) => moveArrayItem(current, fromIndex, toIndex));
+        setVarient((current) => ({
+            ...current,
+            image: moveArrayItem(current.image, fromIndex, toIndex),
+        }));
+    };
 
     const handleDescriptionChange = (value) => {
         setProductData({ ...productData, description: value });
@@ -576,8 +603,20 @@ export default function AddProduct() {
                             {/* preview image before upload */}
                             {images.length > 0 ? (
                                     <div className="grid grid-cols-5 gap-4">
-                                        {images.map((image) => (
-                                            <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
+                                        {images.map((image, index) => (
+                                            <div
+                                                className="w-full max-w-xs aspect-square rounded-sm bg-slate-200 relative cursor-grab active:cursor-grabbing"
+                                                key={image}
+                                                draggable
+                                                onDragStart={(event) => event.dataTransfer.setData("text/plain", String(index))}
+                                                onDragOver={(event) => event.preventDefault()}
+                                                onDrop={(event) => {
+                                                    event.preventDefault();
+                                                    handleReorderProductImages(Number(event.dataTransfer.getData("text/plain")), index);
+                                                }}
+                                                title="Drag to change the storefront order"
+                                            >
+                                                <span className="absolute left-2 top-2 z-10 rounded bg-white/90 p-1 shadow-sm"><GripVertical className="h-4 w-4" /></span>
                                                 <Image src={image} alt={image} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                             </div>
                                         ))}
@@ -833,8 +872,20 @@ export default function AddProduct() {
                                         
                                     {variantImage.length > 0 ? ( 
                                         <div className="flex gap-4">
-                                            {variantImage.map((image) => (
-                                                <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
+                                            {variantImage.map((image, index) => (
+                                                <div
+                                                    className="w-full max-w-xs aspect-square rounded-sm bg-slate-200 relative cursor-grab active:cursor-grabbing"
+                                                    key={image}
+                                                    draggable
+                                                    onDragStart={(event) => event.dataTransfer.setData("text/plain", String(index))}
+                                                    onDragOver={(event) => event.preventDefault()}
+                                                    onDrop={(event) => {
+                                                        event.preventDefault();
+                                                        handleReorderVariantImages(Number(event.dataTransfer.getData("text/plain")), index);
+                                                    }}
+                                                    title="Drag to change the storefront order"
+                                                >
+                                                    <span className="absolute left-2 top-2 z-10 rounded bg-white/90 p-1 shadow-sm"><GripVertical className="h-4 w-4" /></span>
                                                     <Image src={image} alt={image} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                                 </div>
                                             ))}

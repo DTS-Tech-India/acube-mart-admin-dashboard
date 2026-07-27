@@ -56,12 +56,11 @@ export default function Products() {
         setLoading(true);
         axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/googlesheetproducts/update`)
             .then((res) => {
-                //console.log(res);
-                toast.success("Products updated to Google Merchant Center successfully.");
+                toast.success(res.data.message || "Merchant product sheet updated successfully.");
             })
             .catch((err) => {
                 console.error(err);
-                toast.error("An error occurred while updating products to Google Merchant Center.");
+                toast.error(err.response?.data?.message || "Unable to update the Merchant product sheet.");
             })
             .finally(() => {
                 setLoading(false);
@@ -91,7 +90,9 @@ export default function Products() {
                     <Button onClick={() => {router.push("/products/bulk-edit-products")}}>Bulk Edit Products</Button>
                 </div>
             </header>
-            <Button onClick={handleUpdateProductsToGoogleMerchantCenter} disabled={loading}>Update Products to Google Merchant Center</Button>
+            <Button onClick={handleUpdateProductsToGoogleMerchantCenter} disabled={loading}>
+                {loading ? "Syncing Merchant product sheet..." : "Sync products to Merchant product sheet"}
+            </Button>
             {isLoading ? (
                 <Skeleton
                     className="h-96 w-full aspect-auto" 

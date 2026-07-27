@@ -28,7 +28,7 @@ import {
     AccordionItem,
     AccordionTrigger,
   } from "@/components/ui/accordion"
-import { ImageIcon, Trash2, Upload, X } from "lucide-react";
+import { GripVertical, ImageIcon, Trash2, Upload, X } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -43,6 +43,13 @@ import dynamic from "next/dynamic";
 import 'react-quill/dist/quill.snow.css';
 import Multiselect from "multiselect-react-dropdown";
 import axios from "axios";
+
+const moveArrayItem = (items, fromIndex, toIndex) => {
+    const reordered = [...items];
+    const [movedItem] = reordered.splice(fromIndex, 1);
+    reordered.splice(toIndex, 0, movedItem);
+    return reordered;
+};
 
 
 export default function Page({ params }) {
@@ -220,14 +227,41 @@ const handleDeselectAllModels = () => {
     }
 
     const handleImagesChange = (e) => {
+        const selectedFiles = Array.from(e.target.files || []);
         //Set Images url array
         setImages(
-            Array.from(e.target.files).map((file) => {
+            selectedFiles.map((file) => {
                 return URL.createObjectURL(file);
             })
         )
-        setUpdateData({ ...updateData, images: e.target.files })
+        setUpdateData({ ...updateData, images: selectedFiles })
     }
+
+    const handleReorderNewProductImages = (fromIndex, toIndex) => {
+        if (fromIndex === toIndex) return;
+        setImages((current) => moveArrayItem(current, fromIndex, toIndex));
+        setUpdateData((current) => ({
+            ...current,
+            images: moveArrayItem(Array.from(current.images || []), fromIndex, toIndex),
+        }));
+    };
+
+    const handleReorderProductImages = async (fromIndex, toIndex) => {
+        if (fromIndex === toIndex) return;
+        const previousImages = productImages.galleryImages;
+        const reorderedImages = moveArrayItem(previousImages, fromIndex, toIndex);
+        setProductImages((current) => ({ ...current, galleryImages: reorderedImages }));
+
+        try {
+            await axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/image/order/${params.id}`, {
+                imagesOrder: reorderedImages.map((image) => image._id),
+            });
+            toast.success("Gallery order saved");
+        } catch (error) {
+            setProductImages((current) => ({ ...current, galleryImages: previousImages }));
+            toast.error(error.response?.data?.message || "Could not save gallery order");
+        }
+    };
 
     const handleChangeFeaturedImage = (e) => {
         //setProductData({ ...productData, featuredImage: e.target.files[0] });
@@ -390,27 +424,73 @@ const handleDeselectAllModels = () => {
     }
 
     const handleVarientImageChange = (e) => {
-        setVarient({ ...Varient, image: e.target.files});
+        const selectedFiles = Array.from(e.target.files || []);
+        setVarient({ ...Varient, image: selectedFiles});
         //console.log(Varient);
         //Set Image url
         /* if(e.target.files[0] === undefined) return setVariantImage([]); */
         setVariantImage(
-            Array.from(e.target.files).map((file) => {
+            selectedFiles.map((file) => {
                 return URL.createObjectURL(file);
             })
         )
     }
 
+    const handleReorderNewVariantImages = (fromIndex, toIndex) => {
+        if (fromIndex === toIndex) return;
+        setVariantImage((current) => moveArrayItem(current, fromIndex, toIndex));
+        setVarient((current) => ({
+            ...current,
+            image: moveArrayItem(Array.from(current.image || []), fromIndex, toIndex),
+        }));
+    };
+
+    const handleReorderVariantImages = async (variantId, fromIndex, toIndex) => {
+        if (fromIndex === toIndex) return;
+        const variant = productData.variants?.find((item) => item._id === variantId);
+        if (!variant) return;
+
+        const previousImages = variant.image;
+        const reorderedImages = moveArrayItem(previousImages, fromIndex, toIndex);
+        const updateVariantInProduct = (imagesToUse) => (current) => ({
+            ...current,
+            variants: current.variants.map((item) => (
+                item._id === variantId ? { ...item, image: imagesToUse } : item
+            )),
+        });
+
+        setProductData(updateVariantInProduct(reorderedImages));
+        try {
+            await axios.patch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/variant/image/update/${variantId}`, {
+                imagesOrder: reorderedImages.map((image) => image._id),
+            });
+            toast.success("Variant image order saved");
+        } catch (error) {
+            setProductData(updateVariantInProduct(previousImages));
+            toast.error(error.response?.data?.message || "Could not save variant image order");
+        }
+    };
+
     const handleNewVarientImageChange = (e, variantId) => {
+        const selectedFiles = Array.from(e.target.files || []);
         setNewVariantImages({
             ...newVariantImages,
-            images: e.target.files,
-            imagesUrls: Array.from(e.target.files).map((file) => {
+            images: selectedFiles,
+            imagesUrls: selectedFiles.map((file) => {
                 return URL.createObjectURL(file);
             }),
             variantId: variantId
         });
     }
+
+    const handleReorderAdditionalVariantImages = (fromIndex, toIndex) => {
+        if (fromIndex === toIndex) return;
+        setNewVariantImages((current) => ({
+            ...current,
+            images: moveArrayItem(current.images, fromIndex, toIndex),
+            imagesUrls: moveArrayItem(current.imagesUrls, fromIndex, toIndex),
+        }));
+    };
 
     const handleDescriptionChange = (html) => {
         //setProductData({ ...productData, description: html });
@@ -727,8 +807,20 @@ const handleDeselectAllModels = () => {
                             {(productImages.galleryImages || images) ? (
                                 <>
                                     <div className="grid grid-cols-5 gap-4">
-                                        {productImages.galleryImages.map((image) => (
-                                            <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200 relative" key={image._id}>
+                                        {productImages.galleryImages.map((image, index) => (
+                                            <div
+                                                className="group w-full max-w-xs aspect-square rounded-sm bg-slate-200 relative cursor-grab active:cursor-grabbing"
+                                                key={image._id}
+                                                draggable
+                                                onDragStart={(event) => event.dataTransfer.setData("text/plain", String(index))}
+                                                onDragOver={(event) => event.preventDefault()}
+                                                onDrop={(event) => {
+                                                    event.preventDefault();
+                                                    handleReorderProductImages(Number(event.dataTransfer.getData("text/plain")), index);
+                                                }}
+                                                title="Drag to change the storefront order"
+                                            >
+                                                <span className="absolute left-2 top-2 z-10 rounded bg-white/90 p-1 shadow-sm"><GripVertical className="h-4 w-4" /></span>
                                                 <Button variant="ghost" onClick={() => handleDeleteImage(image._id)} className="absolute top-2 right-2 text-red-600 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
                                                 <Image src={image.url} alt={image._id} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                             </div>
@@ -737,8 +829,20 @@ const handleDeselectAllModels = () => {
                                     {images.length > 0 ? (
                                         <div className="flex flex-col gap-4">
                                             <div className="grid grid-cols-5 gap-4">
-                                                {images.map((image) => (
-                                                    <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
+                                                {images.map((image, index) => (
+                                                    <div
+                                                        className="w-full max-w-xs aspect-square rounded-sm bg-slate-200 relative cursor-grab active:cursor-grabbing"
+                                                        key={image}
+                                                        draggable
+                                                        onDragStart={(event) => event.dataTransfer.setData("text/plain", String(index))}
+                                                        onDragOver={(event) => event.preventDefault()}
+                                                        onDrop={(event) => {
+                                                            event.preventDefault();
+                                                            handleReorderNewProductImages(Number(event.dataTransfer.getData("text/plain")), index);
+                                                        }}
+                                                        title="Drag to change the upload order"
+                                                    >
+                                                        <span className="absolute left-2 top-2 z-10 rounded bg-white/90 p-1 shadow-sm"><GripVertical className="h-4 w-4" /></span>
                                                         <Image src={image} alt={image} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                                     </div>
                                                 ))}
@@ -990,8 +1094,20 @@ const handleDeselectAllModels = () => {
                                         />
                                     {variantImage.length > 0 ? (
                                         <div className="flex gap-4">
-                                            {variantImage.map((image) => (
-                                                <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
+                                            {variantImage.map((image, index) => (
+                                                <div
+                                                    className="w-full max-w-xs aspect-square rounded-sm bg-slate-200 relative cursor-grab active:cursor-grabbing"
+                                                    key={image}
+                                                    draggable
+                                                    onDragStart={(event) => event.dataTransfer.setData("text/plain", String(index))}
+                                                    onDragOver={(event) => event.preventDefault()}
+                                                    onDrop={(event) => {
+                                                        event.preventDefault();
+                                                        handleReorderNewVariantImages(Number(event.dataTransfer.getData("text/plain")), index);
+                                                    }}
+                                                    title="Drag to change the upload order"
+                                                >
+                                                    <span className="absolute left-2 top-2 z-10 rounded bg-white/90 p-1 shadow-sm"><GripVertical className="h-4 w-4" /></span>
                                                     <Image src={image} alt={image} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                                 </div>
                                             ))}
@@ -1105,8 +1221,20 @@ const handleDeselectAllModels = () => {
                                             {(newVariantImages.imagesUrls.length > 0 && newVariantImages.variantId === variant._id) && (
                                                 <>
                                                     <div className="flex gap-4">
-                                                        {newVariantImages.imagesUrls.map((image) => (
-                                                            <div className="w-full max-w-xs aspect-square rounded-sm bg-slate-200" key={image}>
+                                                        {newVariantImages.imagesUrls.map((image, index) => (
+                                                            <div
+                                                                className="w-full max-w-xs aspect-square rounded-sm bg-slate-200 relative cursor-grab active:cursor-grabbing"
+                                                                key={image}
+                                                                draggable
+                                                                onDragStart={(event) => event.dataTransfer.setData("text/plain", String(index))}
+                                                                onDragOver={(event) => event.preventDefault()}
+                                                                onDrop={(event) => {
+                                                                    event.preventDefault();
+                                                                    handleReorderAdditionalVariantImages(Number(event.dataTransfer.getData("text/plain")), index);
+                                                                }}
+                                                                title="Drag to change the upload order"
+                                                            >
+                                                                <span className="absolute left-2 top-2 z-10 rounded bg-white/90 p-1 shadow-sm"><GripVertical className="h-4 w-4" /></span>
                                                                 <Image src={image} alt={"newVarientImage"} width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                                             </div>
                                                         ))}
@@ -1116,7 +1244,19 @@ const handleDeselectAllModels = () => {
                                             )}
                                             <div className="w-full flex gap-4">
                                                 {variant.image.map((image, index) => (
-                                                    <div key={image._id} className="w-full max-w-xs aspect-square rounded-sm relative bg-slate-200">
+                                                    <div
+                                                        key={image._id}
+                                                        className="w-full max-w-xs aspect-square rounded-sm relative bg-slate-200 cursor-grab active:cursor-grabbing"
+                                                        draggable
+                                                        onDragStart={(event) => event.dataTransfer.setData("text/plain", String(index))}
+                                                        onDragOver={(event) => event.preventDefault()}
+                                                        onDrop={(event) => {
+                                                            event.preventDefault();
+                                                            handleReorderVariantImages(variant._id, Number(event.dataTransfer.getData("text/plain")), index);
+                                                        }}
+                                                        title="Drag to change the storefront order"
+                                                    >
+                                                        <span className="absolute left-2 top-2 z-10 rounded bg-white/90 p-1 shadow-sm"><GripVertical className="h-4 w-4" /></span>
                                                         <Button variant="ghost" onClick={() => handleDeleteVariantImage(variant._id, image._id)} className="absolute top-2 right-2 text-red-600 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
                                                         <Image src={image.url} alt="varientImage" width={1000} height={1000} className="w-full h-full object-cover rounded-sm" />
                                                     </div>
