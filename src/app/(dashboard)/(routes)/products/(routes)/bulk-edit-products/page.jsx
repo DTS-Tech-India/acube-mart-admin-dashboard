@@ -53,16 +53,35 @@ export default function BulkEditProducts() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const { data: apiData, isLoading: isApiDataLoading, isError: isApiDataError } = useQuery({
-    queryKey: ["apiData"],
+  const { data: apiResponse, isLoading: isApiDataLoading, isError: isApiDataError } = useQuery({
+    queryKey: ["bulk-edit-products", "relationships"],
     queryFn: getApiData,
     gcTime: 1000 * 60 * 60 * 2,
   })
 
-  const { data: productsData = [], isLoading: isProductsLoading, isError: isProductsError } = useQuery({
-    queryKey: ["products"],
+  const { data: productsResponse, isLoading: isProductsLoading, isError: isProductsError } = useQuery({
+    queryKey: ["bulk-edit-products", "products"],
     queryFn: products,
   })
+
+  const productsData = useMemo(() => {
+    if (Array.isArray(productsResponse)) return productsResponse
+    if (Array.isArray(productsResponse?.data)) return productsResponse.data
+    return []
+  }, [productsResponse])
+
+  const apiData = useMemo(() => {
+    const response = apiResponse?.data && !Array.isArray(apiResponse)
+      ? apiResponse.data
+      : apiResponse
+
+    return Object.fromEntries(
+      Object.keys(relationshipOptions).map((key) => {
+        const source = relationshipOptions[key].source
+        return [source, Array.isArray(response?.[source]) ? response[source] : []]
+      })
+    )
+  }, [apiResponse])
 
   const filteredProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -76,7 +95,7 @@ export default function BulkEditProducts() {
 
   const selectedSet = useMemo(() => new Set(selectedProducts), [selectedProducts])
   const currentRelationship = relationshipOptions[relationshipType]
-  const availableRelationships = apiData?.[currentRelationship.source] || []
+  const availableRelationships = apiData[currentRelationship.source] || []
   const allVisibleSelected =
     filteredProducts.length > 0 && filteredProducts.every((product) => selectedSet.has(product._id))
 
