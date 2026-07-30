@@ -35,6 +35,26 @@ async function getProducts() {
     return data.data;
 }
 
+async function getProductRelationshipSources(query, excludeId) {
+    const params = new URLSearchParams({
+        query,
+        limit: "15",
+    });
+    if (excludeId) {
+        params.set("excludeId", excludeId);
+    }
+
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/relationship-sources?${params.toString()}`
+    );
+    if (!res.ok) {
+        throw new Error("Unable to search source products");
+    }
+
+    const data = await res.json();
+    return Array.isArray(data.data) ? data.data : [];
+}
+
 async function getUsers() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/all`);
     const data = await res.json();
@@ -65,6 +85,8 @@ export const elements = async() => await getElements();
 export const brands = async() => await getBrands();
 export const models = async() => await getModels();
 export const products = async() => await getProducts();
+export const productRelationshipSources = async(query, excludeId) =>
+    await getProductRelationshipSources(query, excludeId);
 export const users = async() => await getUsers();
 export const orders = async() => await getOrders();
 export const transactions = async() => await getTransactions();

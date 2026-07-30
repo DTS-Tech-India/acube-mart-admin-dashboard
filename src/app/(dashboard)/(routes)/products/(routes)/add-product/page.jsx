@@ -50,6 +50,7 @@ import dynamic from "next/dynamic";
 import 'react-quill/dist/quill.snow.css';
 import Multiselect from 'multiselect-react-dropdown';
 import { Skeleton } from "@/components/ui/skeleton";
+import ProductRelationshipImporter from "@/components/products/ProductRelationshipImporter";
 //import TiptapEditor from "@/components/tiptap";
 
 const moveArrayItem = (items, fromIndex, toIndex) => {
@@ -176,6 +177,27 @@ export default function AddProduct() {
     const handleDeselectAllModels = () => {
         setMultiselectAll({ ...multiselectAll, model: [] });
         setProductData({ ...productData, model: [] });
+    }
+
+    const handleImportRelationships = (sourceProduct, importedRelationships) => {
+        const importedIds = Object.fromEntries(
+            Object.entries(importedRelationships).map(([key, relationships]) => [
+                key,
+                relationships.map((item) => item._id || item),
+            ])
+        );
+
+        setMultiselectAll((current) => ({
+            ...current,
+            ...importedRelationships,
+        }));
+        setProductData((current) => ({
+            ...current,
+            ...importedIds,
+        }));
+        toast.success(
+            `${Object.keys(importedRelationships).length} relationship groups imported from ${sourceProduct.name}`
+        );
     }
 
     const handleChange = (e) => {
@@ -1084,6 +1106,7 @@ export default function AddProduct() {
                             Category
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
+                            <ProductRelationshipImporter onImport={handleImportRelationships} />
                             <div className="flex flex-col gap-2">
                                 <Label htmlFor="status">Type</Label>
                                 <Multiselect 
@@ -1123,14 +1146,14 @@ export default function AddProduct() {
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <Label htmlFor="status">Element</Label>
+                                <Label htmlFor="status">Subcategory</Label>
                                 <Multiselect 
                                     options={data.elements}
                                     displayValue="name"
                                     onSelect={handleAddElement}
                                     onRemove={handleRemoveElement}
                                     selectedValues={multiselectAll.element}
-                                    placeholder="Select elements"
+                                    placeholder="Select subcategories"
                                     showCheckbox
                                     showArrow
                                     avoidHighlightFirstOption

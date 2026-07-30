@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
@@ -39,6 +39,7 @@ import {
 import { getApiData, products } from "@/lib/get-api-data"
 
 const relationshipOptions = {
+  type: { label: "Type", source: "types" },
   category: { label: "Category", source: "categories" },
   element: { label: "Sub Category", source: "elements" },
   brand: { label: "Brand", source: "brands" },
@@ -50,6 +51,7 @@ export default function BulkEditProducts() {
   const [relationshipType, setRelationshipType] = useState("element")
   const [relationshipId, setRelationshipId] = useState("")
   const [selectedProducts, setSelectedProducts] = useState([])
+  const [existingProducts, setExistingProducts] = useState([])
   const [searchQuery, setSearchQuery] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -99,6 +101,31 @@ export default function BulkEditProducts() {
   const allVisibleSelected =
     filteredProducts.length > 0 && filteredProducts.every((product) => selectedSet.has(product._id))
 
+  useEffect(() => {
+    if (!relationshipId) {
+      setExistingProducts([])
+      setSelectedProducts([])
+      return
+    }
+
+    const matchingProductIds = productsData
+      .filter((product) => {
+        const relationships = Array.isArray(product[relationshipType])
+          ? product[relationshipType]
+          : product[relationshipType]
+            ? [product[relationshipType]]
+            : []
+        return relationships.some(
+          (relationship) =>
+            String(relationship?._id || relationship) === relationshipId
+        )
+      })
+      .map((product) => product._id)
+
+    setExistingProducts(matchingProductIds)
+    setSelectedProducts(matchingProductIds)
+  }, [productsData, relationshipId, relationshipType])
+
   if (isProductsError || isApiDataError) {
     return <div>An error occurred while fetching product data.</div>
   }
@@ -122,8 +149,11 @@ export default function BulkEditProducts() {
   }
 
   const handleBulkEditProducts = async () => {
-    if (!relationshipId || selectedProducts.length === 0) {
-      toast.error("Select a value and at least one product")
+    const removeProducts = existingProducts.filter(
+      (productId) => !selectedProducts.includes(productId)
+    )
+    if (!relationshipId || (selectedProducts.length === 0 && removeProducts.length === 0)) {
+      toast.error("Select a relationship and change at least one product")
       return
     }
 
@@ -135,6 +165,7 @@ export default function BulkEditProducts() {
           categoryType: relationshipType,
           category: relationshipId,
           products: selectedProducts,
+          removeProducts,
         }
       )
       toast.success(response.data.message || "Products updated successfully")
@@ -184,6 +215,8 @@ export default function BulkEditProducts() {
                   onValueChange={(value) => {
                     setRelationshipType(value)
                     setRelationshipId("")
+                    setExistingProducts([])
+                    setSelectedProducts([])
                   }}
                 >
                   <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
@@ -214,6 +247,9 @@ export default function BulkEditProducts() {
                 <p className="font-medium">Choose products</p>
                 <p className="text-sm text-muted-foreground">
                   {selectedProducts.length} selected out of {productsData.length}
+                  {relationshipId
+                    ? ` · ${existingProducts.length} currently assigned`
+                    : ""}
                 </p>
               </div>
               <div className="relative w-full max-w-sm">
@@ -237,6 +273,7 @@ export default function BulkEditProducts() {
                     <TableHead className="w-16">Image</TableHead>
                     <TableHead>Product</TableHead>
                     <TableHead>SKU</TableHead>
+                    <TableHead>Relationship</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -266,6 +303,15 @@ export default function BulkEditProducts() {
                         <p className="text-xs text-muted-foreground">{product.variants?.length || 0} variants</p>
                       </TableCell>
                       <TableCell>{product.sku || "-"}</TableCell>
+                      <TableCell>
+                        {existingProducts.includes(product._id) ? (
+                          <span className="inline-flex items-center rounded bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700">
+                            Already assigned
+                          </span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Not assigned</span>
+                        )}
+                      </TableCell>
                       <TableCell className="capitalize">{product.status || "-"}</TableCell>
                     </TableRow>
                   ))}

@@ -39,6 +39,7 @@ import { getApiData, getApiDataByQuery } from "@/lib/get-api-data";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import ProductRelationshipImporter from "@/components/products/ProductRelationshipImporter";
 import dynamic from "next/dynamic";
 import 'react-quill/dist/quill.snow.css';
 import Multiselect from "multiselect-react-dropdown";
@@ -206,6 +207,31 @@ const handleDeselectAllModels = () => {
     setMultiselectAll({ ...multiselectAll, model: [] });
     setProductData({ ...productData, model: [] });
     setUpdateData({ ...updateData, model: [] });
+}
+
+const handleImportRelationships = (sourceProduct, importedRelationships) => {
+    const importedIds = Object.fromEntries(
+        Object.entries(importedRelationships).map(([key, relationships]) => [
+            key,
+            relationships.map((item) => item._id || item),
+        ])
+    );
+
+    setMultiselectAll((current) => ({
+        ...current,
+        ...importedRelationships,
+    }));
+    setProductData((current) => ({
+        ...current,
+        ...importedIds,
+    }));
+    setUpdateData((current) => ({
+        ...current,
+        ...importedIds,
+    }));
+    toast.success(
+        `${Object.keys(importedRelationships).length} relationship groups imported from ${sourceProduct.name}`
+    );
 }
 
 
@@ -1355,6 +1381,10 @@ const handleDeselectAllModels = () => {
                             Category
                         </CardHeader>
                         <CardContent className="flex flex-col gap-4">
+                            <ProductRelationshipImporter
+                                currentProductId={params.id}
+                                onImport={handleImportRelationships}
+                            />
                             <div className="flex flex-col gap-2">
                                 <Label htmlFor="status">Type</Label>
                                 <Multiselect 
@@ -1396,7 +1426,7 @@ const handleDeselectAllModels = () => {
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <Label htmlFor="status">Element</Label>
+                                <Label htmlFor="status">Subcategory</Label>
                                 <Multiselect 
                                     options={apiData.elements}
                                     selectedValues={multiselectAll.element}
@@ -1404,7 +1434,7 @@ const handleDeselectAllModels = () => {
                                     onSelect={handleAddElement}
                                     onRemove={handleRemoveElement}
                                     //selectedValues={(value) => console.log(value)}
-                                    placeholder="Select elements"
+                                    placeholder="Select subcategories"
                                     showCheckbox
                                     showArrow
                                     avoidHighlightFirstOption
