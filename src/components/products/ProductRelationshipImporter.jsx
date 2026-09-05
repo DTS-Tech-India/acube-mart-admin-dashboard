@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { Copy, Loader2, Search, X } from "lucide-react"
+import { Copy, ImageIcon, Loader2, Search, X } from "lucide-react"
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -32,6 +33,31 @@ const relationshipNames = (relationships) => {
   return `${names.slice(0, 3).join(", ")} +${names.length - 3} more`
 }
 
+const productImageUrl = (product) =>
+  product?.featuredImage?.url ||
+  product?.image?.find((image) => image?.isFeatured)?.url ||
+  product?.image?.[0]?.url
+
+const ProductThumbnail = ({ product }) => {
+  const imageUrl = productImageUrl(product)
+
+  return (
+    <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded border bg-white">
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={`${product.name} featured image`}
+          width={48}
+          height={48}
+          className="h-full w-full object-contain"
+        />
+      ) : (
+        <ImageIcon className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+      )}
+    </span>
+  )
+}
+
 export default function ProductRelationshipImporter({
   currentProductId,
   onImport,
@@ -58,6 +84,7 @@ export default function ProductRelationshipImporter({
     data: productOptions = [],
     isFetching,
     isError,
+    error,
   } = useQuery({
     queryKey: [
       "relationship-import-products",
@@ -130,7 +157,7 @@ export default function ProductRelationshipImporter({
         <div className="max-h-64 overflow-y-auto rounded-md border">
           {isError && (
             <p className="px-3 py-4 text-sm text-red-600">
-              Unable to search products. Please try again.
+              {error?.message || "Unable to search products. Please try again."}
             </p>
           )}
           {!isError && !isFetching && productOptions.length === 0 && (
@@ -142,21 +169,17 @@ export default function ProductRelationshipImporter({
             <button
               key={product._id}
               type="button"
-              className="flex w-full items-start justify-between gap-4 border-b px-3 py-3 text-left last:border-b-0 hover:bg-muted"
+              className="flex w-full items-start gap-3 border-b px-3 py-3 text-left last:border-b-0 hover:bg-muted"
               onClick={() => selectProduct(product)}
             >
-              <span className="min-w-0">
-                <span className="block truncate text-sm font-medium">
+              <ProductThumbnail product={product} />
+              <span className="min-w-0 flex-1">
+                <span className="block whitespace-normal break-words text-sm font-medium leading-5">
                   {product.name}
                 </span>
-                {product.sku && (
-                  <span className="block truncate text-xs text-muted-foreground">
-                    SKU: {product.sku}
-                  </span>
-                )}
-              </span>
-              <span className="shrink-0 font-mono text-xs text-muted-foreground">
-                {product._id}
+                <span className="mt-1 block break-all font-mono text-[11px] leading-4 text-muted-foreground">
+                  ID: {product._id}
+                </span>
               </span>
             </button>
           ))}
@@ -172,13 +195,16 @@ export default function ProductRelationshipImporter({
       {selectedProduct && (
         <div className="space-y-4 rounded-md border p-3">
           <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium">
-                {selectedProduct.name}
-              </p>
-              <p className="break-all font-mono text-xs text-muted-foreground">
-                {selectedProduct._id}
-              </p>
+            <div className="flex min-w-0 flex-1 items-start gap-3">
+              <ProductThumbnail product={selectedProduct} />
+              <div className="min-w-0 flex-1">
+                <p className="whitespace-normal break-words text-sm font-medium leading-5">
+                  {selectedProduct.name}
+                </p>
+                <p className="mt-1 break-all font-mono text-[11px] leading-4 text-muted-foreground">
+                  ID: {selectedProduct._id}
+                </p>
+              </div>
             </div>
             <Button
               type="button"

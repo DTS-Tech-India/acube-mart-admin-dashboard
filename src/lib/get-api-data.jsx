@@ -35,7 +35,57 @@ async function getProducts() {
     return data.data;
 }
 
+const PRODUCT_ID_PATTERN = /^[a-f\d]{24}$/i;
+let relationshipSourcesEndpointUnavailable = false;
+
+const readJson = async (response) => {
+    try {
+        return await response.json();
+    } catch {
+        return {};
+    }
+};
+
+const normalizeRelationshipSources = (products, excludeId) =>
+    (Array.isArray(products) ? products : [])
+        .filter((product) => product?._id && product._id !== excludeId)
+        .map((product) => ({
+            ...product,
+            type: Array.isArray(product.type) ? product.type.filter(Boolean) : [],
+            category: Array.isArray(product.category) ? product.category.filter(Boolean) : [],
+            element: Array.isArray(product.element) ? product.element.filter(Boolean) : [],
+            brand: Array.isArray(product.brand) ? product.brand.filter(Boolean) : [],
+            model: Array.isArray(product.model) ? product.model.filter(Boolean) : [],
+        }));
+
+const getProductRelationshipSourcesFallback = async (query, excludeId) => {
+    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const isProductId = PRODUCT_ID_PATTERN.test(query);
+    const res = isProductId
+        ? await fetch(`${baseUrl}/api/product/${encodeURIComponent(query)}`)
+        : await fetch(`${baseUrl}/api/product/search`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ searchQuery: query }),
+        });
+    const data = await readJson(res);
+
+    if (res.status === 404 && isProductId) return [];
+    if (!res.ok) {
+        throw new Error(data.message || `Unable to search products (${res.status})`);
+    }
+
+    return normalizeRelationshipSources(
+        isProductId ? [data.data] : data.data,
+        excludeId
+    ).slice(0, 15);
+};
+
 async function getProductRelationshipSources(query, excludeId) {
+    if (relationshipSourcesEndpointUnavailable) {
+        return getProductRelationshipSourcesFallback(query, excludeId);
+    }
+
     const params = new URLSearchParams({
         query,
         limit: "15",
@@ -47,12 +97,23 @@ async function getProductRelationshipSources(query, excludeId) {
     const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/product/relationship-sources?${params.toString()}`
     );
+    const data = await readJson(res);
+
     if (!res.ok) {
-        throw new Error("Unable to search source products");
+        const endpointIsMissing =
+            res.status === 404 ||
+            (res.status === 500 &&
+                String(data.message || "").includes('value "relationship-sources"'));
+
+        if (endpointIsMissing) {
+            relationshipSourcesEndpointUnavailable = true;
+            return getProductRelationshipSourcesFallback(query, excludeId);
+        }
+
+        throw new Error(data.message || `Unable to search products (${res.status})`);
     }
 
-    const data = await res.json();
-    return Array.isArray(data.data) ? data.data : [];
+    return normalizeRelationshipSources(data.data, excludeId);
 }
 
 async function getUsers() {
