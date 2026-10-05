@@ -59,7 +59,7 @@ export const columns = [
                         alt="product image"
                         width={200}
                         height={200}
-                        className="w-full h-full object-cover rounded-md"
+                        className="w-full h-full rounded-md bg-white object-contain"
                     />
                 </div>
             )

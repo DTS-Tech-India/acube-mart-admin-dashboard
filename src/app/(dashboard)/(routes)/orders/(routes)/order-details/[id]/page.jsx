@@ -297,7 +297,7 @@ export default function OrderDetails({ params }) {
                                                                     alt={orderItem.name}
                                                                     width={200}
                                                                     height={200}
-                                                                    className="rounded-md w-full h-full object-cover"
+                                                                    className="w-full h-full rounded-md bg-white object-contain"
                                                                 />
                                                             </div>
                                                         </TableCell>
