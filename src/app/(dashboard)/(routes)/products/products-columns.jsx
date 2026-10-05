@@ -151,7 +151,7 @@ export const columns = [
               <div className="flex gap-0.5">
                 {/* link to external website */}
                 <Link 
-                    href={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/p/${product.id}`}
+                    href={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/product/${product.slug}`}
                     variant="ghost" 
                     className="p-2 hover:text-green-500 hover:bg-muted rounded-md"
                     target="_blank"
