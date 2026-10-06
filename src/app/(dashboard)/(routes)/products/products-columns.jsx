@@ -8,6 +8,7 @@ import { ArrowUpDown, Eye, Pen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
+import CopyProductLinkButton from "@/components/copy-product-link-button";
 
 
 
@@ -148,7 +149,7 @@ export const columns = [
                 })
             }
             return (
-              <div className="flex gap-0.5">
+              <div className="flex items-center gap-0.5">
                 {/* link to external website */}
                 <Link 
                     href={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/product/${product.slug}`}
@@ -158,6 +159,7 @@ export const columns = [
                     >
                         <Eye className="w-6 h-6 p-0.5" />
                 </Link>
+                <CopyProductLinkButton productId={product.id} productName={product.name} />
                 <Link 
                     href={`/products/edit-product/${product.id}`} 
                     className="p-2 hover:text-indigo-500 hover:bg-muted rounded-md"
