@@ -29,5 +29,5 @@ export async function middleware(request) {
  
 //Matching Paths
 export const config = {
-  matcher: ['/', '/admins/:path*', '/settings/:path*', '/products/:path*', '/categories/:path*', '/orders/:path*', '/customers/:path*', '/transactions/:path*', '/coupons/:path*', '/support/:path*'],
+  matcher: ['/', '/admins/:path*', '/settings/:path*', '/products/:path*', '/categories/:path*', '/orders/:path*', '/customers/:path*', '/transactions/:path*', '/coupons/:path*', '/support/:path*', '/warranty/:path*'],
 }

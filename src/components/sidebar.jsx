@@ -30,7 +30,8 @@ import {
     ServerCogIcon,
     ServerCrash,
     BikeIcon,
-    CarIcon
+    CarIcon,
+    ShieldCheck
 } from "lucide-react"
 import { ScrollArea, ScrollBar } from "./ui/scroll-area"
 
@@ -94,6 +95,11 @@ const Sidebar = () => {
             label: "Appointments",
             icon: BikeIcon,
             href: "/appointment",
+        },
+        {
+            label: "Warranty",
+            icon: ShieldCheck,
+            href: "/warranty",
         },
     ]
 
