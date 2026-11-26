@@ -59,10 +59,19 @@ export const TYPE_LABEL = {
 };
 
 export const SOURCE_LABEL = {
-    social_media: "Social media",
+    instagram_reels: "Instagram Reels",
+    social_media: "Other social media",
     friends: "Friends",
     google: "Google",
+    ai_chat: "AI chat",
     other: "Other / Random",
+};
+
+/* Warranty is stored in months; show whole years as years. */
+export const formatPeriod = (months) => {
+    const m = Number(months) || 0;
+    if (m > 0 && m % 12 === 0) return `${m / 12} year${m === 12 ? "" : "s"}`;
+    return `${m} month${m === 1 ? "" : "s"}`;
 };
 
 // Dates are stored as UTC midnight; show them in UTC so the day never shifts.

@@ -22,6 +22,7 @@ import {
     errorMessage,
     fetchWarrantyByRegistrationId,
     formatDate,
+    formatPeriod,
     formatPrice,
     statusLabel,
     updateWarranty,
@@ -30,12 +31,24 @@ import { statusClass } from "../../../warranty-columns";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-const toDraft = (items = []) => items.map((item) => ({
-    name: item.name,
-    warrantyMonths: String(item.warrantyMonths),
-    price: String(item.price),
-    startDate: item.startDate ? item.startDate.slice(0, 10) : "",
-}));
+/* The period is entered as a number + unit (months or years) and saved as months.
+   Whole years load back as years. */
+const toDraft = (items = []) => items.map((item) => {
+    const months = Number(item.warrantyMonths) || 0;
+    const inYears = months > 0 && months % 12 === 0;
+    return {
+        name: item.name,
+        period: String(inYears ? months / 12 : months),
+        unit: inYears ? "years" : "months",
+        price: String(item.price),
+        startDate: item.startDate ? item.startDate.slice(0, 10) : "",
+    };
+});
+
+const periodToMonths = (item) => {
+    const n = Number(item.period);
+    return item.unit === "years" ? n * 12 : n;
+};
 
 function Info({ label, value }) {
     return (
@@ -70,7 +83,7 @@ function EditWarrantyForm({ registrationId }) {
         setItems((current) => current.map((item, i) => (i === index ? { ...item, [field]: value } : item)));
 
     const addItem = () =>
-        setItems((current) => [...current, { name: "", warrantyMonths: "12", price: "", startDate: today() }]);
+        setItems((current) => [...current, { name: "", period: "1", unit: "years", price: "", startDate: today() }]);
 
     const removeItem = (index) => setItems((current) => current.filter((_, i) => i !== index));
 
@@ -81,7 +94,7 @@ function EditWarrantyForm({ registrationId }) {
                 status,
                 items: items.map((item) => ({
                     name: item.name.trim(),
-                    warrantyMonths: Number(item.warrantyMonths),
+                    warrantyMonths: periodToMonths(item),
                     price: Number(item.price),
                     startDate: item.startDate,
                 })),
@@ -123,7 +136,7 @@ function EditWarrantyForm({ registrationId }) {
                     </Card>
                     <Card>
                         <CardHeader className="font-semibold flex flex-row items-center justify-between space-y-0">
-                            <span>Items (warranty period, price)</span>
+                            <span>Items (warranty period, price: price is internal, customers don't see it)</span>
                             <Button variant="outline" size="sm" onClick={addItem}>
                                 <Plus className="w-4 h-4 mr-1" /> Add Item
                             </Button>
@@ -133,17 +146,36 @@ function EditWarrantyForm({ registrationId }) {
                                 <p className="text-sm text-muted-foreground">No items yet. Add the products fitted and their warranty period.</p>
                             )}
                             {items.map((item, index) => (
-                                <div key={index} className="grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1.2fr_auto] gap-2 items-end">
-                                    <div className="col-span-2 md:col-span-1">
+                                <div key={index} className="grid grid-cols-2 md:grid-cols-[auto_8rem_10rem_auto] gap-2 items-end border-b last:border-0 pb-4 last:pb-0">
+                                    <div className="col-span-full">
                                         <Label>Item name</Label>
                                         <Input value={item.name} onChange={(e) => updateItem(index, "name", e.target.value)} placeholder="e.g. Full body PPF" />
                                     </div>
                                     <div>
-                                        <Label>Warranty (months)</Label>
-                                        <Input type="number" min={1} max={240} step={1} value={item.warrantyMonths} onChange={(e) => updateItem(index, "warrantyMonths", e.target.value)} />
+                                        <Label>Warranty</Label>
+                                        <div className="flex gap-1">
+                                            <Input
+                                                type="number"
+                                                min={1}
+                                                max={item.unit === "years" ? 20 : 240}
+                                                step={1}
+                                                className="w-20"
+                                                value={item.period}
+                                                onChange={(e) => updateItem(index, "period", e.target.value)}
+                                            />
+                                            <Select value={item.unit} onValueChange={(value) => updateItem(index, "unit", value)}>
+                                                <SelectTrigger className="w-[100px]">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="months">Months</SelectItem>
+                                                    <SelectItem value="years">Years</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
                                     </div>
                                     <div>
-                                        <Label>Price (₹)</Label>
+                                        <Label>Price (₹, internal)</Label>
                                         <Input type="number" min={0} step="0.01" value={item.price} onChange={(e) => updateItem(index, "price", e.target.value)} />
                                     </div>
                                     <div>
@@ -190,7 +222,7 @@ function EditWarrantyForm({ registrationId }) {
                                 <div key={item._id} className="border-b last:border-0 pb-2">
                                     <p className="font-medium">{item.name}</p>
                                     <p className="text-muted-foreground">
-                                        {item.warrantyMonths} months · {formatPrice(item.price)}
+                                        {formatPeriod(item.warrantyMonths)} · {formatPrice(item.price)}
                                     </p>
                                     <p className="text-muted-foreground">
                                         {formatDate(item.startDate)} to {formatDate(item.expiryDate)}
